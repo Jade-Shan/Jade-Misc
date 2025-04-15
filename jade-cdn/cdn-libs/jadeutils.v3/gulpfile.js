@@ -84,10 +84,12 @@ gulp.task('check-scripts', () => {
 // 合并、压缩、重命名havascript
 gulp.task('process-scripts', gulp.series('clean-scripts', () => {
 	return gulp.src([
-		scriptSrc + 'base.js',
+		scriptSrc + 'basic.js',
+		scriptSrc + 'jqueryTools.js',
+		scriptSrc + 'datetime.js',
+		scriptSrc + 'web.js',
 		scriptSrc + 'dataStructure.js',
 		scriptSrc + 'instance.js',
-		scriptSrc + 'customHtmlTag.js',
 		scriptSrc + 'wiki.js'
 	]).pipe(jshint()).pipe(jshint.reporter('default'))
 		.pipe(gulp.dest(scriptTag))
