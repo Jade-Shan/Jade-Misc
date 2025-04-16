@@ -86,7 +86,6 @@ gulp.task('process-scripts', gulp.series('clean-scripts', () => {
 	return gulp.src([
 		scriptSrc + 'basic.js',
 		scriptSrc + 'jqueryTools.js',
-		scriptSrc + 'datetime.js',
 		scriptSrc + 'web.js',
 		scriptSrc + 'dataStructure.js',
 		scriptSrc + 'instance.js',
