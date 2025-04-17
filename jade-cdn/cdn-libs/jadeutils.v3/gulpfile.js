@@ -110,6 +110,7 @@ gulp.task('process-typescript', gulp.series('clean-scripts', () => {
 		noImplicitAny: true,
 		strict: true,
 		// sourcemap: true
+		// lib: ["ES2021.String"]
     })).pipe(gulp.dest(scriptTag))
 		//.pipe(concat('all.js'))
 		//.pipe(gulp.dest(scriptTag))
