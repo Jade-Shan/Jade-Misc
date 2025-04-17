@@ -9,6 +9,8 @@ const gulp      = require('gulp');
 const less      = require('gulp-less');        //less编译
 const minifycss = require('gulp-minify-css');  //css压缩
 const jshint    = require('gulp-jshint');      //js检查
+const ts        = require('gulp-typescript');      // typescript编译
+const sourcemaps = require('gulp-sourcemaps');      // typescript编译
 const uglify    = require('gulp-uglify-es').default;      //js压缩
 const rename    = require('gulp-rename');      //重命名
 const concat    = require('gulp-concat');      //合并文件
@@ -81,7 +83,7 @@ gulp.task('check-scripts', () => {
 });
 
 
-// 合并、压缩、重命名havascript
+// 合并、压缩、重命名javascript
 gulp.task('process-scripts', gulp.series('clean-scripts', () => {
 	return gulp.src([
 		scriptSrc + 'basic.js',
@@ -96,7 +98,26 @@ gulp.task('process-scripts', gulp.series('clean-scripts', () => {
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
 		.pipe(gulp.dest(scriptTag))
 }));
-themeTasks.push('process-scripts')
+// themeTasks.push('process-scripts')
+
+// 合并、压缩、重命名typescript
+gulp.task('process-typescript', gulp.series('clean-scripts', () => {
+	return gulp.src([
+		scriptSrc + 'basic.ts',
+	]).pipe(ts({
+		target: "es6",
+		module: "es6",
+		noImplicitAny: true,
+		strict: true,
+		// sourcemap: true
+    })).pipe(gulp.dest(scriptTag))
+		//.pipe(concat('all.js'))
+		//.pipe(gulp.dest(scriptTag))
+		.pipe(rename({suffix: '.min'})).pipe(uglify())
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest(scriptTag))
+}));
+themeTasks.push('process-typescript');
 
 gulp.task('default', gulp.parallel(themeTasks))
 
