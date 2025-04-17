@@ -69,41 +69,50 @@ themes.forEach((theme) => {
 // javascript
 // =======================
 
-const scriptSrc = 'src/scripts/';
-const scriptTag = 'webroot/scripts/';
-gulp.task('clean-scripts', () => {
-	return gulp.src([scriptTag + '*'], 
+const scriptJsSrc = 'src/scripts/js/';
+const scriptJsTag = 'webroot/scripts/js/';
+gulp.task('clean-javascript', () => {
+	return gulp.src([scriptJsTag + '*'], 
 		{read: false, allowEmpty: true}).pipe(clean());
 });
 
 // 检查javascript
-gulp.task('check-scripts', () => {
-	return gulp.src(scriptSrc + '**/*.js').pipe(jshint())
+gulp.task('check-javascript', () => {
+	return gulp.src(scriptJsSrc + '**/*.js').pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
 
 
 // 合并、压缩、重命名javascript
-gulp.task('process-scripts', gulp.series('clean-scripts', () => {
+gulp.task('process-javascript', gulp.series('clean-javascript', () => {
 	return gulp.src([
-		scriptSrc + 'basic.js',
-		scriptSrc + 'jqueryTools.js',
-		scriptSrc + 'web.js',
-		scriptSrc + 'dataStructure.js',
-		scriptSrc + 'wiki.js'
+		scriptJsSrc + 'basic.js',
+		scriptJsSrc + 'jqueryTools.js',
+		scriptJsSrc + 'web.js',
+		scriptJsSrc + 'dataStructure.js',
+		scriptJsSrc + 'wiki.js'
 	]).pipe(jshint()).pipe(jshint.reporter('default'))
-		.pipe(gulp.dest(scriptTag))
+		.pipe(gulp.dest(scriptJsTag))
 		//.pipe(concat('all.js'))
-		//.pipe(gulp.dest(scriptTag))
+		//.pipe(gulp.dest(scriptJsTag))
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
-		.pipe(gulp.dest(scriptTag))
+		.pipe(gulp.dest(scriptJsTag))
 }));
-// themeTasks.push('process-scripts')
+themeTasks.push('process-javascript')
+
+const scriptTsSrc = 'src/scripts/ts/';
+const scriptTsTag = 'webroot/scripts/ts/';
+
+gulp.task('clean-typescript', () => {
+	return gulp.src([scriptTsTag + '*'], 
+		{read: false, allowEmpty: true}).pipe(clean());
+});
 
 // 合并、压缩、重命名typescript
-gulp.task('process-typescript', gulp.series('clean-scripts', () => {
+gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 	return gulp.src([
-		scriptSrc + 'basic.ts',
+		scriptTsSrc + 'basic.ts',
+		scriptTsSrc + 'web.ts',
 	]).pipe(ts({
 		target: "es6",
 		module: "es6",
@@ -111,12 +120,12 @@ gulp.task('process-typescript', gulp.series('clean-scripts', () => {
 		strict: true,
 		// sourcemap: true
 		// lib: ["ES2021.String"]
-    })).pipe(gulp.dest(scriptTag))
+    })).pipe(gulp.dest(scriptTsTag))
 		//.pipe(concat('all.js'))
-		//.pipe(gulp.dest(scriptTag))
+		//.pipe(gulp.dest(scriptTsTag))
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
 		.pipe(sourcemaps.write())
-		.pipe(gulp.dest(scriptTag))
+		.pipe(gulp.dest(scriptTsTag))
 }));
 themeTasks.push('process-typescript');
 
