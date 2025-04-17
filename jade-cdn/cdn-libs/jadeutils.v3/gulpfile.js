@@ -113,6 +113,7 @@ gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 	return gulp.src([
 		scriptTsSrc + 'basic.ts',
 		scriptTsSrc + 'web.ts',
+		scriptTsSrc + 'dataStructure.ts',
 	]).pipe(ts({
 		target: "es6",
 		module: "es6",
