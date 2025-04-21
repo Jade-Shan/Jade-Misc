@@ -10,9 +10,9 @@ let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) =
 }
 
 
-export class TestBasic {
+export class TestJadeUtils {
 
-	static testWebUtil() {
+	static testAll() {
 		testFunc("Basic YWFhOmJiYg==" === WebUtil.webAuthBasic("aaa", "bbb"), (msg, sty, mk) => {
 			console.log(msg, "WebUtil.webAuthBasic()", sty, mk);
 		});
