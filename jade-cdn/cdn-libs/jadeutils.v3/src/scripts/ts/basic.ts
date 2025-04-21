@@ -4,6 +4,11 @@
 export class NumUtil {
 
 	/** 四舍五入：  Number(num).toFixed(size); */
+	static toFixed(n: number, size: number) {
+		let m = Math.pow(10, size);
+		return Math.floor(n * m + 0.50000000001) / m;
+	}
+
 
 	/**
 	 * 以可读的形式格式化数字
@@ -14,21 +19,59 @@ export class NumUtil {
 	 * @param formatExp: 格式表达式（代码还没有写，默认`##,###.##`的形式）
 	 * @returns: 人类可读性的字符串
 	 */
-	static format(n: number, formatExp: string) {
-		let numStr: string = n.toString().replace(/\$|\,/g, '');
+	static format(n: number, formatExp?: string) {
+		// let numStr: string = n.toString().replace(/\$|\,/g, '');
+		let p = 0; // 分隔位符
+		let m = 0; // 小数位数
+		if (formatExp && formatExp.length > 0) {
+			let sArr = formatExp.split(".");
+			let s1 = sArr[0]; // 整数格式
+			if (s1.length > 0) {
+				let pArr = s1.split(",");
+				if (pArr.length > 0) {
+					for (let pt of pArr) {
+						if (pt.length > p) { p = pt.length; } 
+					}
+				}
+			}
+			let s2 = sArr[1]; // 小数格式
+			if (s2.length > 0) {
+				for (let ms of s2) {
+					if ("#" == ms) { m = m + 1;}
+				}
+			}
+		}
+		if (p < 3) { p = 3; }
+		if (!formatExp && m < 1) { m = 2; }
+		//
+		let numStr: string = n.toString();
 		try {
-			let num: number = + numStr;
-			let sign = (num == (num = Math.abs(num)));
-			num = Math.floor(num * 100 + 0.50000000001);
-			numStr = Math.floor(num / 100).toString();
-			let cents = num % 100;
-			let centsStr = "" + cents;
-			if (cents < 10)
-				centsStr = "0" + cents;
-			for (var i = 0; i < Math.floor((numStr.length - (1 + i)) / 3); i++)
-				numStr = numStr.substring(0, numStr.length - (4 * i + 3)) + ',' +
-					numStr.substring(numStr.length - (4 * i + 3));
-			return (((sign) ? '' : '-') + numStr + '.' + centsStr);
+			let num: number = Math.abs(n);
+			let sign = num == n;
+			let sArr = this.toFixed(num, m).toString().split(".");
+			let s1 = sArr[0] ? sArr[0] : "" ; // 整数字符串
+			let s2 = sArr[1] ? sArr[1] : "" ; // 小数字符串
+			if (s2.length < m) {
+				for (let i = s2.length; i < m ; i++) {
+					s2 = s2 + '0';
+				}
+			}
+			//
+			let part1 = "";
+			for (let i = 0; i < s1.length; i++) {
+				part1 = s1[s1.length - 1 - i] + part1;
+				if (i > 0 && i < (s1.length - 1) && 0 == ((i + 1) % p)) {
+					part1 = "," + part1;
+				}
+			}
+			let part2 = "";
+			for (let i = 0; i < s2.length; i++) {
+				part2 = part2 + s2[i];
+				if (i > 0 && i < (s2.length - 1) && 0 == ((i + 1) % p)) {
+					part2 = part2 + ",";
+				}
+			}
+			return (((sign) ? '' : '-') + part1 + '.' + part2);
 		} catch (e) {
 			console.error(e);
 			numStr = "NaN";
@@ -48,11 +91,11 @@ export class NumUtil {
 		try { r1 = n1.toString().split(".")[1].length; } catch (e) { r1 = 0; }
 		try { r2 = n2.toString().split(".")[1].length; } catch (e) { r2 = 0; }
 		let m = Math.pow(10, Math.max(r1, r2));
-		var val = (n1 * m + n2 * m) / m;
-		let mStr = val.toString();
-		var tmpNum = mStr.split(".");
-		if (tmpNum.length > 1) { var l = tmpNum[1]; if (l.length < 2) { mStr = mStr + "0"; } }
-		return m;
+		var value = (n1 * m + n2 * m) / m;
+		//let mStr = value.toString();
+		//var tmpNum = mStr.split(".");
+		//if (tmpNum.length > 1) { var l = tmpNum[1]; if (l.length < 2) { mStr = mStr + "0"; } }
+		return value;
 	}
 
 	/**
@@ -67,11 +110,11 @@ export class NumUtil {
 		try { r1 = n1.toString().split(".")[1].length; } catch (e) { r1 = 0; }
 		try { r2 = n2.toString().split(".")[1].length; } catch (e) { r2 = 0; }
 		let m = Math.pow(10, Math.max(r1, r2));
-		let val = (n1 * m - n2 * m) / m;
-		let mStr = val.toString();
-		var tmpNum = mStr.split(".");
-		if (tmpNum.length > 1) { var l = tmpNum[1]; if (l.length < 2) { mStr = mStr + "0"; } }
-		return m;
+		let value = (n1 * m - n2 * m) / m;
+		let mStr = value.toString();
+		//var tmpNum = mStr.split(".");
+		//if (tmpNum.length > 1) { var l = tmpNum[1]; if (l.length < 2) { mStr = mStr + "0"; } }
+		return value;
 	}
 
 	/**
@@ -85,14 +128,14 @@ export class NumUtil {
 		let m = 0, s1 = n1.toString(), s2 = n2.toString();
 		try { m += s1.split(".")[1].length; } catch (e) { }
 		try { m += s2.split(".")[1].length; } catch (e) { }
-		var val = Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-		let mStr = val.toString();
-		var tmpNum = mStr.split(".");
-		if (tmpNum.length > 1) {
-			var l = tmpNum[1];
-			if (l.length < 2) { mStr = mStr + "0"; }
-		}
-		return m;
+		let value = Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+		//let mStr = value.toString();
+		//var tmpNum = mStr.split(".");
+		//if (tmpNum.length > 1) {
+		//	var l = tmpNum[1];
+		//	if (l.length < 2) { mStr = mStr + "0"; }
+		//}
+		return value;
 	}
 
 	/**
@@ -106,9 +149,11 @@ export class NumUtil {
 		let t1 = 0, t2 = 0;
 		try { t1 = n1.toString().split(".")[1].length; } catch (e) { }
 		try { t2 = n2.toString().split(".")[1].length; } catch (e) { }
+		let m = t2 - t1;
 		let r1 = Number(n1.toString().replace(".", ""));
 		let r2 = Number(n2.toString().replace(".", ""));
-		return (r1 / r2) * Math.pow(10, t2 - t1);
+		let value = (r1 / r2) * Math.pow(10, m + 1);
+		return value / 10;
 	}
 
 }
