@@ -1,4 +1,4 @@
-import { NumUtil } from './basic.js';
+import { NumUtil, StrUtil } from './basic.js';
 import { WebUtil } from './web.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
@@ -77,7 +77,12 @@ class TestBasicUtil {
 		testFunc( "2.00" === NumUtil.format(NumUtil.div(  4.0 , 2   )), (msg, sty, mk) => { console.log(msg, "NumUtil.div()", sty, mk); });
 		testFunc("46.58" === NumUtil.format(NumUtil.div(155.11, 3.33)), (msg, sty, mk) => { console.log(msg, "NumUtil.div()", sty, mk); });
 		testFunc("50.00" === NumUtil.format(NumUtil.div(150   , 3   )), (msg, sty, mk) => { console.log(msg, "NumUtil.div()", sty, mk); });
+	}
 
+	static testStr() {
+		console.log(StrUtil.trim("   \t   aaaa   \t   "));
+		console.log(StrUtil.trimLeft("   \t   aaaa   \t   "));
+		console.log(StrUtil.trimRight("   \t   aaaa   \t   "));
 	}
 
 
@@ -99,6 +104,7 @@ export class TestJadeUtils {
 	static testAll() {
 		// 
 		TestBasicUtil.testNum();
+		TestBasicUtil.testStr();
 		// 
 		TestWebUtil.testToos01();
 	}
