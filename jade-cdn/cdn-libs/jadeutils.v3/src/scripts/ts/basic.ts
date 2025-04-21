@@ -21,6 +21,7 @@ export class NumUtil {
 	 */
 	static format(n: number, formatExp?: string) {
 		// let numStr: string = n.toString().replace(/\$|\,/g, '');
+		// 解析格式
 		let p = 0; // 分隔位符
 		let m = 0; // 小数位数
 		if (formatExp && formatExp.length > 0) {
@@ -43,7 +44,7 @@ export class NumUtil {
 		}
 		if (p < 3) { p = 3; }
 		if (!formatExp && m < 1) { m = 2; }
-		//
+		// 开始格式化数字
 		let numStr: string = n.toString();
 		try {
 			let num: number = Math.abs(n);
@@ -56,7 +57,7 @@ export class NumUtil {
 					s2 = s2 + '0';
 				}
 			}
-			//
+			// 给整数部分加上分隔符
 			let part1 = "";
 			for (let i = 0; i < s1.length; i++) {
 				part1 = s1[s1.length - 1 - i] + part1;
@@ -64,6 +65,7 @@ export class NumUtil {
 					part1 = "," + part1;
 				}
 			}
+			// 给小数部分加上分隔符
 			let part2 = "";
 			for (let i = 0; i < s2.length; i++) {
 				part2 = part2 + s2[i];
@@ -77,6 +79,16 @@ export class NumUtil {
 			numStr = "NaN";
 		}
 		return numStr;
+	}
+
+	/**
+	 * 
+	 * @param s 
+	 * @returns 
+	 */
+	static unformat(s: string) {
+		let ns = s.replace(/[^\d\.-]/g, "");
+		return ns.includes(".") ? parseFloat(ns) : parseInt(ns);
 	}
 
 	/**
@@ -209,31 +221,22 @@ export class StrUtil {
 	}
 
 
-	/**
-	 * 
-	 * @param num 
-	 * @param scale 
-	 * @returns 
-	 */
-	static formatNumber(num: number, scale: number) {
-		scale = scale > 0 && scale <= 20 ? scale : 2;
-		let numStr = num.toFixed(scale) + "";
-		let l = numStr.split(".")[0].split("").reverse(), r = numStr.split(".")[1];
-		let t = "";
-		for (var i = 0; i < l.length; i++) {
-			t += l[i] + ((i + 1) % 3 === 0 && (i + 1) != l.length ? "," : "");
-		}
-		return t.split("").reverse().join("") + "." + r;
-	}
-
-	/**
-	 * 
-	 * @param s 
-	 * @returns 
-	 */
-	static unformatNumber(s: string) {
-		return parseFloat(s.replace(/[^\d\.-]/g, ""));
-	}
+// 	/**
+// 	 * 
+// 	 * @param num 
+// 	 * @param scale 
+// 	 * @returns 
+// 	 */
+// 	static formatNumber(num: number, scale: number) {
+// 		scale = scale > 0 && scale <= 20 ? scale : 2;
+// 		let numStr = num.toFixed(scale) + "";
+// 		let l = numStr.split(".")[0].split("").reverse(), r = numStr.split(".")[1];
+// 		let t = "";
+// 		for (var i = 0; i < l.length; i++) {
+// 			t += l[i] + ((i + 1) % 3 === 0 && (i + 1) != l.length ? "," : "");
+// 		}
+// 		return t.split("").reverse().join("") + "." + r;
+// 	}
 
 	/**
 	 * 
