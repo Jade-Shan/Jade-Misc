@@ -14,6 +14,11 @@ class TestBasicUtil {
 
 	static testNum() {
 		//
+		console.log(NumUtil.div(  1.11, 3.33));
+		console.log(NumUtil.div(  4.0 , 2   ));
+		console.log(NumUtil.div(155.11, 3.33));
+		console.log(NumUtil.div(150   , 3   ));
+		//
 		testFunc(1         === NumUtil.toFixed(1.1234567, 0), (msg, sty, mk) => { console.log(msg, "NumUtil.toFixed()", sty, mk); });
 		testFunc(1.1       === NumUtil.toFixed(1.1234567, 1), (msg, sty, mk) => { console.log(msg, "NumUtil.toFixed()", sty, mk); });
 		testFunc(1.12      === NumUtil.toFixed(1.1234567, 2), (msg, sty, mk) => { console.log(msg, "NumUtil.toFixed()", sty, mk); });
