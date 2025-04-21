@@ -80,9 +80,14 @@ class TestBasicUtil {
 	}
 
 	static testStr() {
-		console.log(StrUtil.trim("   \t   aaaa   \t   "));
-		console.log(StrUtil.trimLeft("   \t   aaaa   \t   "));
+		//
+		console.log(StrUtil.trim     ("   \t   aaaa   \t   "));
+		console.log(StrUtil.trimLeft ("   \t   aaaa   \t   "));
 		console.log(StrUtil.trimRight("   \t   aaaa   \t   "));
+		//
+		testFunc("aaaa"          === StrUtil.trim     ("   \t   aaaa   \t   "), (msg, sty, mk) => { console.log(msg, "StrUtil.trim()"     , sty, mk); });
+		testFunc("aaaa   	   " === StrUtil.trimLeft ("   \t   aaaa   \t   "), (msg, sty, mk) => { console.log(msg, "StrUtil.trimLeft()" , sty, mk); });
+		testFunc("   	   aaaa" === StrUtil.trimRight("   \t   aaaa   \t   "), (msg, sty, mk) => { console.log(msg, "StrUtil.trimRight()", sty, mk); });
 	}
 
 
