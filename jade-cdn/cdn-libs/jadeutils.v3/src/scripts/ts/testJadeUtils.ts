@@ -116,10 +116,10 @@ class TestBasicUtil {
 
 class TestWebUtil {
 
-	static testToos01() {
-		testFunc("Basic YWFhOmJiYg==" === WebUtil.webAuthBasic("aaa", "bbb"), (msg, sty, mk) => {
-			console.log(msg, "WebUtil.webAuthBasic()", sty, mk);
-		});
+	static testHtml() {
+		WebUtil.initCustomElements();
+
+		testFunc("Basic YWFhOmJiYg==" === WebUtil.webAuthBasic("aaa", "bbb"), (msg, sty, mk) => { console.log(msg, "WebUtil.webAuthBasic()", sty, mk); });
 	}
 
 }
@@ -133,7 +133,7 @@ export class TestJadeUtils {
 		TestBasicUtil.testStr();
 		TestBasicUtil.testTime();
 		// 
-		TestWebUtil.testToos01();
+		TestWebUtil.testHtml();
 	}
 
 }

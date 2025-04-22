@@ -12,7 +12,8 @@ export class WebUtil {
 			constructor() {
 				super();
 				let oldHtml = this.innerHTML;
-				this.innerHTML = "&#x" + oldHtml + ";";
+				// this.innerHTML = "&#x" + oldHtml + ";";
+				this.innerHTML = oldHtml.replace(/(&amp;#x?[0-9a-fA-F]{1,6};)/m, (e => e.replace('&amp;', '&')));
 			}
 		}
 		/** 创建自定义标签必须要有一个连字符*/
