@@ -1,4 +1,4 @@
-import { NumUtil, StrUtil } from './basic.js';
+import { NumUtil, StrUtil, TimeUtil } from './basic.js';
 import { WebUtil } from './web.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
@@ -81,13 +81,25 @@ class TestBasicUtil {
 
 	static testStr() {
 		//
-		console.log(StrUtil.trim     ("   \t   aaaa   \t   "));
-		console.log(StrUtil.trimLeft ("   \t   aaaa   \t   "));
-		console.log(StrUtil.trimRight("   \t   aaaa   \t   "));
-		//
 		testFunc("aaaa"          === StrUtil.trim     ("   \t   aaaa   \t   "), (msg, sty, mk) => { console.log(msg, "StrUtil.trim()"     , sty, mk); });
 		testFunc("aaaa   	   " === StrUtil.trimLeft ("   \t   aaaa   \t   "), (msg, sty, mk) => { console.log(msg, "StrUtil.trimLeft()" , sty, mk); });
 		testFunc("   	   aaaa" === StrUtil.trimRight("   \t   aaaa   \t   "), (msg, sty, mk) => { console.log(msg, "StrUtil.trimRight()", sty, mk); });
+		//
+		testFunc("0123456789abcdefg" === StrUtil.utf8to16("0123456789abcdefg"), (msg, sty, mk) => { console.log(msg, "StrUtil.utf8to16()", sty, mk); });
+		testFunc("0123456789abcdefg" === StrUtil.utf16to8("0123456789abcdefg"), (msg, sty, mk) => { console.log(msg, "StrUtil.utf16to8()", sty, mk); });
+		//
+		testFunc("SGVsbG8gV29ybGQh" === StrUtil.base64encode("Hello World!"    ), (msg, sty, mk) => { console.log(msg, "StrUtil.base64encode()", sty, mk); });
+		testFunc("Hello World!"     === StrUtil.base64decode("SGVsbG8gV29ybGQh"), (msg, sty, mk) => { console.log(msg, "StrUtil.base64decode()", sty, mk); });
+		//
+		testFunc("^^^^^^^^^^^^test-str" === StrUtil.leftPad ("test-str", 20, '^'), (msg, sty, mk) => { console.log(msg, "StrUtil.leftPad ()", sty, mk); });
+		testFunc("test-str^^^^^^^^^^^^" === StrUtil.rightPad("test-str", 20, '^'), (msg, sty, mk) => { console.log(msg, "StrUtil.rightPad()", sty, mk); });
+	}
+
+	static testTime() {
+		//
+		let d = new Date(1736656496123);
+		//
+		testFunc("2025-01-12 12:34:56.123" === TimeUtil.format(d, "yyyy-MM-dd HH:mm:ss.S"), (msg, sty, mk) => { console.log(msg, "TimeUtil.format()", sty, mk); });
 	}
 
 
@@ -110,6 +122,7 @@ export class TestJadeUtils {
 		// 
 		TestBasicUtil.testNum();
 		TestBasicUtil.testStr();
+		TestBasicUtil.testTime();
 		// 
 		TestWebUtil.testToos01();
 	}

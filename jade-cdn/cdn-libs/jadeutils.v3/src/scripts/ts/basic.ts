@@ -188,6 +188,22 @@ export class StrUtil {
 		return s.replace(/(\s*$)/g, ""); 
 	}
 
+	static leftPad(str: string, max: number, place?: string) {
+		place = place ? place : " ";
+		while(str.length < max) {
+			str = place + str;
+		}
+		return str;
+	}
+
+	static rightPad(str: string, max: number, place?: string) {
+		place = place ? place : " ";
+		while(str.length < max) {
+			str = str + place;
+		}
+		return str;
+	}
+
 
 	/**
 	 * 字符串格式化工具，用名称来替换
@@ -402,24 +418,21 @@ export class TimeUtil {
 	 * @returns 
 	 */
 	static format(d: Date, fmt: string) {
-		let yearstr = "" + d.getFullYear();
-		yearstr = yearstr.length >= 4 ? yearstr : '0000'.substr(0, 4 - yearstr.length) + yearstr;
-		if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (yearstr + "").substr(4 - RegExp.$1.length));
-
 		let processPart = (part: string, num: number) => {
-			if (new RegExp('(M+)').test(fmt)) {
-				let str01 = RegExp.$1;
-				let str02 = `${num}`;
-				fmt = fmt.replace(str01, (str01.length == 1) ? (str02) : (("00" + str02).substr(str02.length)));
+			if (new RegExp(`(${part})`).test(fmt)) {
+				let mark = RegExp.$1;
+				let text = `${num}`;
+				fmt = fmt.replace(mark, StrUtil.leftPad(text, mark.length, '0'));
 			}
 		} 
+		processPart("y+", d.getFullYear());
 		processPart("M+", d.getMonth() + 1);
 		processPart("d+", d.getDate()     );
 		processPart("H+", d.getHours()    );
 		processPart("m+", d.getMinutes()  );
 		processPart("s+", d.getSeconds()  );
 		processPart("q+", Math.floor((d.getMonth() + 3) / 3));
-		processPart("S" , d.getMilliseconds());
+		processPart("S+" , d.getMilliseconds());
 		return fmt;
 	}
 
