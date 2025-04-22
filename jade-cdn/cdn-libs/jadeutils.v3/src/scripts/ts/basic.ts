@@ -413,16 +413,17 @@ export class TimeUtil {
 	 * JS时间Date格式化参数
 	 *
 	 * @param d: date
-	 * @param fmt : 格式化字符串如：'yyyy-MM-dd HH:mm:ss'
+	 * @param result : 格式化字符串如：'yyyy-MM-dd HH:mm:ss'
 	 *
 	 * @returns 
 	 */
-	static format(d: Date, fmt: string) {
+	static format(d: Date, f?: string) {
+		let result = f ? f : "yyyy-MM-dd HH:mm:ss.SSS";
 		let processPart = (part: string, num: number) => {
-			if (new RegExp(`(${part})`).test(fmt)) {
+			if (new RegExp(`(${part})`).test(result)) {
 				let mark = RegExp.$1;
 				let text = `${num}`;
-				fmt = fmt.replace(mark, StrUtil.leftPad(text, mark.length, '0'));
+				result = result.replace(mark, StrUtil.leftPad(text, mark.length, '0'));
 			}
 		} 
 		processPart("y+", d.getFullYear());
@@ -433,7 +434,7 @@ export class TimeUtil {
 		processPart("s+", d.getSeconds()  );
 		processPart("q+", Math.floor((d.getMonth() + 3) / 3));
 		processPart("S+" , d.getMilliseconds());
-		return fmt;
+		return result;
 	}
 
 
@@ -445,7 +446,7 @@ export class TimeUtil {
 	 * @returns 
 	 */
 	static addMilliseconds(d: Date, ms: number) {
-		var date = new Date(d);
+		let date = new Date(d);
 		date.setTime(date.getTime() + ms);
 		return date;
 	}
@@ -503,7 +504,7 @@ export class TimeUtil {
 	 *
 	 * @returns 
 	 */
-	static addYear(d: Date, years: number) {
+	static addYears(d: Date, years: number) {
 		var date = new Date(d);
 		date.setFullYear(date.getFullYear() + years);
 		return date;
@@ -519,6 +520,23 @@ export class TimeUtil {
 		newDate.setTime(date.getTime());
 		newDate.setHours(0, 0, 0, 0);
 		return newDate;
+	}
+
+	/**
+	 * 取得两天之间的时间范围
+	 * 
+	 * @param date 
+	 * @param days 
+	 * @returns 
+	 */
+	static getTimeArea(date: Date, days: number) {
+		var d1 = TimeUtil.cleanDay(date);
+		var d2 = TimeUtil.cleanDay(TimeUtil.addDays(d1, days));
+		if (d1 < d2) {
+			return { floor: d1, ceil: d2 };
+		} else {
+			return { floor: d2, ceil: d1 };
+		}
 	}
 
 	/**
@@ -609,31 +627,12 @@ export class TimeUtil {
 	}
 
 	/**
-	 * 取得两天之间的时间范围
-	 * 
-	 * @param date 
-	 * @param days 
-	 * @returns 
-	 */
-	static getTimeArea(date: Date, days: number) {
-		var d1 = TimeUtil.cleanDay(date);
-		var d2 = TimeUtil.cleanDay(TimeUtil.addDays(d1, days));
-		if (d1 < d2) {
-			return { floor: d1, ceil: d2 };
-		} else {
-			return { floor: d2, ceil: d1 };
-		}
-	}
-
-	/**
 	 * 取得时间的可读文本
 	 * @param date 
 	 * @returns 
 	 */
 	static getLocalTimeStr(date: Date) {
-		return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
-			date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" +
-			date.getSeconds();
+		return this.format(date, "yyyy-MM-dd HH:mm:ss.SSS");
 	}
 
 
