@@ -72,5 +72,47 @@ export class SimpleMap<K, T> {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param value
+	 * @returns 
+	 */
+	containsValue(value: T): boolean {
+		if (null == this.recs || this.recs.length < 1) {
+			return false;
+		}
+		for (let r of this.recs) {
+			if (r[1] === value) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @returns 
+	 */
+	keys(): Array<K> {
+		let arr: Array<K> = [];
+		for (let r of this.recs) {
+			arr.push(r[0]);
+		}
+		return arr;
+	}
+
+
+	/**
+	 * 
+	 * @returns 
+	 */
+	values(): Array<T> {
+		let arr: Array<T> = [];
+		for (let r of this.recs) {
+			arr.push(r[1]);
+		}
+		return arr;
+	}
+
 }
 
