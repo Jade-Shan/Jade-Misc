@@ -116,3 +116,178 @@ export class SimpleMap<K, T> {
 
 }
 
+export class SimpleStack<T> {
+
+	recs: Array<T>;
+
+	constructor(recs?: Array<T>) {
+		this.recs = recs ? recs : new Array();
+	}
+
+	/**
+	 * 
+	 * @param elems 
+	 * @returns 
+	 */
+	push(elems: Array<T>): void {
+		if (!elems || elems.length < 1) {
+			return;
+		}
+		if (!this.recs) {
+			this.recs = new Array();
+		}
+		for (let elem of elems) {
+			this.recs.push(elem);
+		}
+	}
+
+	/**
+		 * 元素出栈 当堆栈元素为空时,返回null
+	 * 
+	 * @returns 
+	 */
+	pop(): (T | null) {
+		if (!this.recs || this.recs.length < 1) {
+			return null;
+		} else {
+			let c = this.recs.pop();
+			return c ? c : null;
+		}
+	}
+
+	/**
+	 * 
+	 * @returns 
+	 */
+	size(): number {
+		return this.recs ? this.recs.length : 0;
+	}
+
+	isEmpty(): boolean {
+		return !this.recs || this.recs.length < 1;
+	}
+
+	/**
+		 * 返回栈顶元素值 若堆栈为空则返回null
+	 * 
+	 * @returns 
+	 */
+	getTop(): (T | null) {
+		if (!this.recs || this.recs.length < 1) {
+			return null;
+		} else {
+			return this.recs[0];
+		}
+	}
+
+	/**
+	 * 
+	 */
+	removeAll(): void {
+		this.recs = new Array();
+	}
+
+	/**
+	 * 
+	 * @returns 
+	 */
+	toString(): string {
+		let arr: Array<T> = new Array();
+		if (this.recs && this.recs.length > 0) {
+			for (let i = this.recs.length - 1; i > -1; i--) {
+				let r = this.recs[i]
+				arr.push(r);
+			}
+		}
+		return arr.toString();
+	}
+
+}
+
+
+export class SimpleQueue<T> {
+
+	recs: Array<T>;
+
+	constructor(recs?: Array<T>) {
+		this.recs = recs ? recs : new Array();
+	}
+
+	/**
+	 * 
+	 * @param elems 
+	 * @returns 
+	 */
+	push(elems: Array<T>): void {
+		if (!elems || elems.length < 1) {
+			return;
+		}
+		if (!this.recs) {
+			this.recs = new Array();
+		}
+		for (let elem of elems) {
+			this.recs.push(elem);
+		}
+	}
+
+	/**
+	 * 元素出 当堆栈元素为空时,返回null
+	 * 
+	 * @returns 
+	 */
+	pop(): (T | null) {
+		if (!this.recs || this.recs.length < 1) {
+			return null;
+		} else {
+			let c = this.recs.shift();
+			return c ? c : null;
+		}
+	}
+
+	/**
+	 * 
+	 * @returns 
+	 */
+	size(): number {
+		return this.recs ? this.recs.length : 0;
+	}
+
+	isEmpty(): boolean {
+		return !this.recs || this.recs.length < 1;
+	}
+
+	/**
+	 * 返回栈元素值 若堆栈为空则返回null
+	 * 
+	 * @returns 
+	 */
+	getHead(): (T | null) {
+		if (!this.recs || this.recs.length < 1) {
+			return null;
+		} else {
+			return this.recs[0];
+		}
+	}
+
+	/**
+	 * 
+	 */
+	removeAll(): void {
+		this.recs = new Array();
+	}
+
+	/**
+	 * 
+	 * @returns 
+	 */
+	toString(): string {
+		let arr: Array<T> = new Array();
+		if (this.recs && this.recs.length > 0) {
+			for (let i = this.recs.length - 1; i > -1; i--) {
+				let r = this.recs[i]
+				arr.push(r);
+			}
+		}
+		return arr.toString();
+	}
+}
