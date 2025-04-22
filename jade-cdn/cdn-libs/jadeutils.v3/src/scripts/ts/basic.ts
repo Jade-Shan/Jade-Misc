@@ -4,7 +4,7 @@
 export class NumUtil {
 
 	/** 四舍五入：  Number(num).toFixed(size); */
-	static toFixed(n: number, size: number) {
+	static toFixed(n: number, size: number): number {
 		let m = Math.pow(10, size);
 		return Math.floor(n * m + 0.50000000001) / m;
 	}
@@ -19,7 +19,7 @@ export class NumUtil {
 	 * @param formatExp: 格式表达式（代码还没有写，默认`##,###.##`的形式）
 	 * @returns: 人类可读性的字符串
 	 */
-	static format(n: number, formatExp?: string) {
+	static format(n: number, formatExp?: string): string {
 		// let numStr: string = n.toString().replace(/\$|\,/g, '');
 		// 解析格式
 		let p = 0; // 分隔位符
@@ -86,7 +86,7 @@ export class NumUtil {
 	 * @param s 
 	 * @returns 
 	 */
-	static unformat(s: string) {
+	static unformat(s: string): number {
 		let ns = s.replace(/[^\d\.-]/g, "");
 		return ns.includes(".") ? parseFloat(ns) : parseInt(ns);
 	}
@@ -98,7 +98,7 @@ export class NumUtil {
 	 * @param n2
 	 * @returns 
 	 */
-	static add(n1: number, n2: number) {
+	static add(n1: number, n2: number): number {
 		let r1: number, r2: number;
 		try { r1 = n1.toString().split(".")[1].length; } catch (e) { r1 = 0; }
 		try { r2 = n2.toString().split(".")[1].length; } catch (e) { r2 = 0; }
@@ -117,7 +117,7 @@ export class NumUtil {
 	 * @param n2
 	 * @returns
 	 */
-	static sub(n1: number, n2: number) {
+	static sub(n1: number, n2: number): number {
 		let r1: number, r2: number;
 		try { r1 = n1.toString().split(".")[1].length; } catch (e) { r1 = 0; }
 		try { r2 = n2.toString().split(".")[1].length; } catch (e) { r2 = 0; }
@@ -134,9 +134,9 @@ export class NumUtil {
 	 * 调用例子：var total = Number(parseInt(num)).mul(parseFloat(dj));
 	 * @param n1
 	 * @param n2
-	 * @returns {String}
+	 * @returns 
 	 */
-	static mul(n1: number, n2: number) {
+	static mul(n1: number, n2: number): number {
 		let m = 0, s1 = n1.toString(), s2 = n2.toString();
 		try { m += s1.split(".")[1].length; } catch (e) { }
 		try { m += s2.split(".")[1].length; } catch (e) { }
@@ -157,7 +157,7 @@ export class NumUtil {
 	 * @param n2
 	 * @returns {String}
 	 */
-	static div(n1: number, n2: number) {
+	static div(n1: number, n2: number): number {
 		let t1 = 0, t2 = 0;
 		try { t1 = n1.toString().split(".")[1].length; } catch (e) { }
 		try { t2 = n2.toString().split(".")[1].length; } catch (e) { }
@@ -176,19 +176,19 @@ export class NumUtil {
  */
 export class StrUtil {
 
-	static trim(s: string) {
+	static trim(s: string): string {
 		return s.replace(/(^\s*)|(\s*$)/g, ""); 
 	}
 
-	static trimLeft(s: string) {
+	static trimLeft(s: string): string {
 		return s.replace(/(^\s*)/g, ""); 
 	}
 
-	static trimRight(s: string) {
+	static trimRight(s: string): string {
 		return s.replace(/(\s*$)/g, ""); 
 	}
 
-	static leftPad(str: string, max: number, place?: string) {
+	static leftPad(str: string, max: number, place?: string): string {
 		place = place ? place : " ";
 		while(str.length < max) {
 			str = place + str;
@@ -196,7 +196,7 @@ export class StrUtil {
 		return str;
 	}
 
-	static rightPad(str: string, max: number, place?: string) {
+	static rightPad(str: string, max: number, place?: string): string {
 		place = place ? place : " ";
 		while(str.length < max) {
 			str = str + place;
@@ -209,7 +209,7 @@ export class StrUtil {
 	 * 字符串格式化工具，用名称来替换
 	 * 例： "我是{name}，今年{age}了".format({name:"loogn",age:22});
 	 */
-	static format(s: string, args: string) {
+	static format(s: string, args: string): string {
 		let result = s;
 		if (arguments.length < 1) {
 			return result;
@@ -232,7 +232,7 @@ export class StrUtil {
 	 * @param exp 被替换部分的正则
 	 * @param newStr 替换成的字符串
 	 */
-	static replaceAll(s: String, exp: string, newStr: string) {
+	static replaceAll(s: String, exp: string, newStr: string): string {
 		return s.replace(new RegExp(exp, "gm"), newStr);
 	}
 
@@ -259,7 +259,7 @@ export class StrUtil {
 	 * @param str 
 	 * @returns 
 	 */
-	static utf16to8(str: string) {
+	static utf16to8(str: string): string {
 		let out = "";
 		let len = str.length;
 		for (let i = 0; i < len; i++) {
@@ -283,7 +283,7 @@ export class StrUtil {
 	 * @param str 
 	 * @returns 
 	 */
-	static utf8to16(str: string) {
+	static utf8to16(str: string): string {
 		let out = "";
 		let len = str.length;
 		let i = 0;
@@ -317,7 +317,7 @@ export class StrUtil {
 	 * @param str 
 	 * @returns 
 	 */
-	static base64encode(str: string) {
+	static base64encode(str: string): string {
 		let base64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
 			"abcdefghijklmnopqrstuvwxyz0123456789+/";
 		let len = str.length;
@@ -354,7 +354,7 @@ export class StrUtil {
 	 * @param str 
 	 * @returns 
 	 */
-	static base64decode(str: string) {
+	static base64decode(str: string): string {
 		let base64DecodeChars = new Array(
 			-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 			-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -409,6 +409,11 @@ export class StrUtil {
  */
 export class TimeUtil {
 
+	static readonly UNIT_SEC: number = 1000;
+	static readonly UNIT_MIN: number = 1000 * 60;
+	static readonly UNIT_HUR: number = 1000 * 60 * 60;
+	static readonly UNIT_DAY: number = 1000 * 60 * 60 * 24;
+
 	/**
 	 * JS时间Date格式化参数
 	 *
@@ -417,7 +422,7 @@ export class TimeUtil {
 	 *
 	 * @returns 
 	 */
-	static format(d: Date, f?: string) {
+	static format(d: Date, f?: string): string {
 		let result = f ? f : "yyyy-MM-dd HH:mm:ss.SSS";
 		let processPart = (part: string, num: number) => {
 			if (new RegExp(`(${part})`).test(result)) {
@@ -445,7 +450,7 @@ export class TimeUtil {
 	 * @param ms: 加上的毫秒数
 	 * @returns 
 	 */
-	static addMilliseconds(d: Date, ms: number) {
+	static addMilliseconds(d: Date, ms: number): Date {
 		let date = new Date(d);
 		date.setTime(date.getTime() + ms);
 		return date;
@@ -460,7 +465,7 @@ export class TimeUtil {
 	 *
 	 * @returns {Date}
 	 */
-	static addSeconds(d: Date, secs: number) {
+	static addSeconds(d: Date, secs: number): Date {
 		var date = new Date(d);
 		date.setSeconds(date.getSeconds() + secs);
 		return date;
@@ -475,7 +480,7 @@ export class TimeUtil {
 	 *
 	 * @returns  加上天数以后的日期
 	 */
-	static addDays(d: Date, days: number) {
+	static addDays(d: Date, days: number): Date {
 		var date = new Date(d);
 		date.setDate(date.getDate() + days);
 		return date;
@@ -489,7 +494,7 @@ export class TimeUtil {
 	 *
 	 * @returns 
 	 */
-	static addMonths(d: Date, months: number) {
+	static addMonths(d: Date, months: number): Date {
 		var date = new Date(d);
 		date.setMonth(date.getMonth() + months);
 		return date;
@@ -504,7 +509,7 @@ export class TimeUtil {
 	 *
 	 * @returns 
 	 */
-	static addYears(d: Date, years: number) {
+	static addYears(d: Date, years: number): Date {
 		var date = new Date(d);
 		date.setFullYear(date.getFullYear() + years);
 		return date;
@@ -515,7 +520,7 @@ export class TimeUtil {
 	 * @param date 
 	 * @returns 
 	 */
-	static cleanDay(date: Date) {
+	static cleanDay(date: Date): Date {
 		var newDate = new Date();
 		newDate.setTime(date.getTime());
 		newDate.setHours(0, 0, 0, 0);
@@ -529,9 +534,26 @@ export class TimeUtil {
 	 * @param days 
 	 * @returns 
 	 */
-	static getTimeArea(date: Date, days: number) {
+	static getTimeArea(date: Date, days: number): {floor: Date, ceil: Date} {
 		var d1 = TimeUtil.cleanDay(date);
 		var d2 = TimeUtil.cleanDay(TimeUtil.addDays(d1, days));
+		if (d1 < d2) {
+			return { floor: d1, ceil: d2 };
+		} else {
+			return { floor: d2, ceil: d1 };
+		}
+	}
+
+	/**
+	 * 取得两天之间的时间范围
+	 * 
+	 * @param date 
+	 * @param days 
+	 * @returns 
+	 */
+	static getDateArea(date: Date, ms: number): {floor: Date, ceil: Date} {
+		var d1 = date;
+		var d2 = TimeUtil.cleanDay(TimeUtil.addMilliseconds(d1, ms));
 		if (d1 < d2) {
 			return { floor: d1, ceil: d2 };
 		} else {
@@ -544,7 +566,7 @@ export class TimeUtil {
 	 * 
 	 * @returns 
 	 */
-	static getLocalTimeZone() {
+	static getLocalTimeZone(): string {
 		var d = new Date();
 		return ("GMT" + d.getTimezoneOffset() / 60);
 	}
@@ -553,7 +575,7 @@ export class TimeUtil {
 	 * 取得所在的时区名
 	 * @returns 
 	 */
-	static getLocalTimeZoneName() {
+	static getLocalTimeZoneName(): string {
 		var tmSummer = new Date(Date.UTC(2005, 6, 30, 0, 0, 0, 0));
 		var so = -1 * tmSummer.getTimezoneOffset();
 		var tmWinter = new Date(Date.UTC(2005, 12, 30, 0, 0, 0, 0));
@@ -631,7 +653,7 @@ export class TimeUtil {
 	 * @param date 
 	 * @returns 
 	 */
-	static getLocalTimeStr(date: Date) {
+	static getLocalTimeStr(date: Date): string {
 		return this.format(date, "yyyy-MM-dd HH:mm:ss.SSS");
 	}
 

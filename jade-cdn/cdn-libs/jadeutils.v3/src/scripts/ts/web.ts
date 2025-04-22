@@ -1,21 +1,23 @@
 /* jshint esversion: 6 */
-import { StrUtil } from './basic.js';
+import { StrUtil, TimeUtil } from './basic.js';
+
+
+/** 创建自定义标签，用于显示Unicode字符 */
+export class EscapeUnicode extends HTMLElement {
+	constructor() {
+		super();
+		let oldHtml = this.innerHTML;
+		// this.innerHTML = "&#x" + oldHtml + ";";
+		this.innerHTML = oldHtml.replace(/(&amp;#x?[0-9a-fA-F]{1,6};)/m, (e => e.replace('&amp;', '&')));
+	}
+}
 
 export class WebUtil {
 
 	/**
 	 * 创建自定义标签，用于显示Unicode字符
 	 */
-	static initCustomElements() {
-		/** 创建自定义标签，用于显示Unicode字符 */
-		class EscapeUnicode extends HTMLElement {
-			constructor() {
-				super();
-				let oldHtml = this.innerHTML;
-				// this.innerHTML = "&#x" + oldHtml + ";";
-				this.innerHTML = oldHtml.replace(/(&amp;#x?[0-9a-fA-F]{1,6};)/m, (e => e.replace('&amp;', '&')));
-			}
-		}
+	static initCustomElements(): void {
 		/** 创建自定义标签必须要有一个连字符*/
 		customElements.define('esp-unicode', EscapeUnicode);
 	}
@@ -25,7 +27,7 @@ export class WebUtil {
 	 * @param  c 
 	 * @returns 
 	 */
-	static transUnicodeWikiInHex(c: string) {
+	static transUnicodeWikiInHex(c: string): string {
 		// `page.transUnicodeWikiInHex('⛵')`
 		//  `"<esp-unicode>&#x26f5;</esp-unicode>"`
 		return "<esp-unicode>&#x" + c.charCodeAt(0).toString(16) + ";</esp-unicode>";
@@ -36,7 +38,7 @@ export class WebUtil {
 	 * @param  c 
 	 * @returns 
 	 */
-	static transUnicodeWikiInDec(c: string) {
+	static transUnicodeWikiInDec(c: string): string {
 		// `page.transUnicodeWikiInDec('⛵')`
 		//   `"<esp-unicode>&#9973;</esp-unicode>"`
 		return "<esp-unicode>&#" + c.charCodeAt(0) + ";</esp-unicode>";
@@ -47,7 +49,7 @@ export class WebUtil {
 	 * 
 	 * @param  url 
 	 */
-	static goUrl(url: string) {
+	static goUrl(url: string): void {
 		let el = document.createElement("a");
 		document.body.appendChild(el);
 		el.href = url;
@@ -69,7 +71,7 @@ export class WebUtil {
 	 * 
 	 * @param url 
 	 */
-	static openWindow(url: string) {
+	static openWindow(url: string): void {
 		let el = document.createElement("a");
 		document.body.appendChild(el);
 		el.href = url;
@@ -94,7 +96,7 @@ export class WebUtil {
 	 * @param password 
 	 * @returns 
 	 */
-	static webAuthBasic(username: string, password: string) {
+	static webAuthBasic(username: string, password: string): string {
 		let auth = 'Basic ' + StrUtil.base64encode(StrUtil.utf16to8(username + ':' + password));
 		return auth;
 	}
@@ -103,50 +105,62 @@ export class WebUtil {
 	/**
 	 * cookie操作
 	 * 
-	 * @param {string} name 名称
-	 * @param {string} value 值
-	 * @param {*} options 其他选项
-	 * @returns 
 	 */
-	static cookieOperator(name: string, value: string, options: any) {
-		if (typeof value != 'undefined') {
-			options = options || {};
-			if (value === null) {
-				value = '';
-				options.expires = -1;
-			}
-			let expires = '';
-			if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) {
-				let date;
-				if (typeof options.expires == 'number') {
-					date = new Date();
-					date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000));
-				} else {
-					date = options.expires;
-				}
-				expires = ';expires=' + date.toUTCString();
-			}
-			let path     = options.path     ? ';path='   + options.path : '';
-			let domain   = options.domain   ? ';domain=' + options.domain : '';
-			let secure   = options.secure   ? ';secure' : '';
-			let sameSite = options.SameSite ? ';SameSite=' + options.SameSite : '';
-			document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, sameSite, secure].join('');
-		} else {
-			let cookieValue: string = "";
-			if (document.cookie && document.cookie !== '') {
-				let cookies = document.cookie.split(';');
-				for (let i = 0; i < cookies.length; i++) {
-					let cookie = cookies[i].trim();
-					if (cookie.substring(0, name.length + 1) == (name + '=')) {
-						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-						break;
-					}
+	static loadCookieValue(name: string): string {
+		let cookieValue: string = "";
+		if (document.cookie && document.cookie !== '') {
+			let cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++) {
+				let cookie = cookies[i].trim();
+				if (cookie.substring(0, name.length + 1) == (name + '=')) {
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
 				}
 			}
-			return cookieValue;
 		}
+		return cookieValue;
 	}
 
+	/**
+	 * 
+	 * @param name 
+	 */
+	static deleteCooke(name: string): void {
+		let d = new Date();
+		d.setTime(d.getTime() + ((-1 * TimeUtil.UNIT_DAY)));
+	}
+
+	/**
+	 * 
+	 * @param name 
+	 * @param rec 
+	 * @returns 
+	 */
+	static setCookieValue(name: string, rec: { value: string, expireDays: number, 
+		path?: string, domain?: string, secure?: boolean, sameSite?: string}): void 
+	{
+		if (!rec || !rec.value) {
+			return;
+		}
+		rec.expireDays  = rec.expireDays  ? rec.expireDays  : 30;
+		rec.path        = rec.path        ? rec.path        : "";
+		rec.domain      = rec.domain      ? rec.domain      : "";
+		rec.sameSite    = rec.sameSite    ? rec.sameSite    : "Lax";
+		rec.secure      = rec.secure      ? rec.secure      : false;
+
+		if ("None" === rec.sameSite) {
+			rec.secure = true;
+		} else if ("Lax" != rec.sameSite && "Strict" != rec.sameSite) {
+			rec.sameSite = "Lax";
+		}
+		//
+		let expireStr   = (new Date((new Date()).getTime() + (rec.expireDays * TimeUtil.UNIT_DAY))).toUTCString();
+		let pathStr     = rec.path     ? ';path='     + rec.path     : '';
+		let domainStr   = rec.domain   ? ';domain='   + rec.domain   : '';
+		let sameSiteStr = rec.sameSite ? ';SameSite=' + rec.sameSite : '';
+		let secureStr   = rec.secure   ? ';secure'                   : '';
+		document.cookie = [name, '=', encodeURIComponent(rec.value), expireStr, pathStr, domainStr, sameSiteStr, secureStr].join('');
+	}
 
 	/**
 	 * 验证姓名 中文字、英文字母、数字
@@ -154,7 +168,7 @@ export class WebUtil {
 	 * @param username 
 	 * @returns 
 	 */
-	static checkUsername(username: string) {
+	static checkUsername(username: string): boolean {
 		return /^[\u4e00-\u9fa5a-z][\u4e00-\u9fa5a-z0-9 ]+$/i.test(username);
 	}
 
@@ -164,7 +178,7 @@ export class WebUtil {
 	 * @param  phoneno 
 	 * @returns 
 	 */
-	static checkMobile_zh_CN(phoneno: string) {
+	static checkMobile_zh_CN(phoneno: string): boolean {
 		return /^1[3|4|5|8][0-9]\d{8}$/.test(phoneno);
 	}
 
@@ -175,7 +189,7 @@ export class WebUtil {
 	 * @param postfix 
 	 * @returns 
 	 */
-	static checkImageFilePostfix(postfix: string) {
+	static checkImageFilePostfix(postfix: string): boolean {
 		if (!postfix.match(/.jpg|.gif|.png|.bmp/i)) {
 			return false;
 		}
@@ -190,7 +204,7 @@ export class WebUtil {
 	 * @param {Number} imgMaxSize 
 	 * @returns 
 	 */
-	static checkImageFileSize(fileInput: HTMLInputElement, imgMaxSize: number) {
+	static checkImageFileSize(fileInput: HTMLInputElement, imgMaxSize: number): boolean {
 		let filePath = fileInput.value;
 		let fileExt = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
 		if (fileInput.files && fileInput.files[0]) {
@@ -235,7 +249,7 @@ export class WebUtil {
 	 * @param  key 
 	 * @returns 
 	 */
-	static getI18n(msgMap: Map<string, string>, key: string) {
+	static getI18n(msgMap: Map<string, string>, key: string): (string | undefined) {
 		return msgMap.get(key);
 	}
 
