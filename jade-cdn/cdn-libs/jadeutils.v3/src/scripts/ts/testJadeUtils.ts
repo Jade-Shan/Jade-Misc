@@ -183,7 +183,7 @@ class TestWebUtil {
 class TestWebHtmlPage {
 
 	static testJquery($: any) {
-		let page = new WebHtmlPage($, new PageConfig());
+		let page = new WebHtmlPage(new PageConfig());
 		console.log(page.getTitle());
 	}
 }

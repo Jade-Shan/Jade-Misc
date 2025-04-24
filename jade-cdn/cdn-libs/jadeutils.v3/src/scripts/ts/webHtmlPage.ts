@@ -1,6 +1,8 @@
 // import * as $ from "jquery"
 // import * as $ from "http://www.jade-dungeon.cn:8081/3rd/jquery/2.1.4/jquery.min.js";
 
+declare var $: (selector: string) => any;
+
 export class PageConfig {
 	apiRoot: string;
 	pageTitle: string;
@@ -19,17 +21,15 @@ export class PageConfig {
 
 export class WebHtmlPage {
 
-	$: any; 
 	cfg: PageConfig;
 
-	constructor($: any, cfg: PageConfig) {
-		this.$ = $;
+	constructor(cfg: PageConfig) {
 		this.cfg = cfg;
 	}
 
 	getTitle(): string {
 		let result = "";
-		result = this.$("h1").html();
+		result = $("h1").html();
 		console.log(result)
 		return result;
 	}
