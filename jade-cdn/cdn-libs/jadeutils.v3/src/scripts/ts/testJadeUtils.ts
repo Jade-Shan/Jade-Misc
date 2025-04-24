@@ -1,7 +1,7 @@
 import { NumUtil, StrUtil, TimeUtil } from './basic.js';
 import {SimpleMap, SimpleStack, SimpleQueue} from './dataStructure.js'
 import { WebUtil } from './web.js';
-import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
+import { PageConfig, WebHtmlPage, NavTreeNode} from './webHtmlPage.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -182,10 +182,21 @@ class TestWebUtil {
 
 class TestWebHtmlPage {
 
-	static testJquery($: any) {
-		let page = new WebHtmlPage(new PageConfig());
-		console.log(page.getTitle());
-	}
+	static testJquery() {
+		let cfg = new PageConfig("/", "tast-page", "for test");
+		let page = new WebHtmlPage(cfg);
+		console.log(page.getHtml("#test-tag-001"));
+		//
+		let sub01 = new Array<NavTreeNode>();
+		let n = new NavTreeNode("page00", "page00.html", false); sub01.push(n);
+		n = new NavTreeNode("page01", "page01.html", false); sub01.push(n);
+		n = new NavTreeNode("page02", "page01.html", false); sub01.push(n);
+		let nav01 = new Array<NavTreeNode>();
+		n = new NavTreeNode("page_A1", "page_A1.html", false); nav01.push(n);
+		n = new NavTreeNode("page_A2", null, false, "A2", sub01); nav01.push(n);
+		n = new NavTreeNode("page_A3", "page_A3.html", false); nav01.push(n);
+		page.renderTopNav(cfg, nav01);
+		}
 }
 
 
@@ -203,7 +214,7 @@ export class TestJadeUtils {
 		// 
 		TestWebUtil.testHtml();
 		//
-		TestWebHtmlPage.testJquery($);
+		TestWebHtmlPage.testJquery();
 	}
 
 }
