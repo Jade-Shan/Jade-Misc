@@ -32,6 +32,21 @@ export class SimpleMap<K, T> {
 
 	/**
 	 * 
+	 */
+	get(key: K): (T | null) { 
+		if (null == this.recs || this.recs.length < 1) {
+			return null;
+		}
+		for (let r of this.recs) {
+			if (r[0] === key) {
+				return r[1];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
 	 * @param key 
 	 */
 	remove(key: K): void {
@@ -129,7 +144,7 @@ export class SimpleStack<T> {
 	 * @param elems 
 	 * @returns 
 	 */
-	push(elems: Array<T>): void {
+	push(...elems: Array<T>): void {
 		if (!elems || elems.length < 1) {
 			return;
 		}
@@ -176,7 +191,7 @@ export class SimpleStack<T> {
 		if (!this.recs || this.recs.length < 1) {
 			return null;
 		} else {
-			return this.recs[0];
+			return this.recs[this.recs.length - 1];
 		}
 	}
 
@@ -218,7 +233,7 @@ export class SimpleQueue<T> {
 	 * @param elems 
 	 * @returns 
 	 */
-	push(elems: Array<T>): void {
+	push(...elems: Array<T>): void {
 		if (!elems || elems.length < 1) {
 			return;
 		}
@@ -271,6 +286,18 @@ export class SimpleQueue<T> {
 
 	/**
 	 * 
+	 * @returns 
+	 */
+	getTail(): (T | null) {
+		if (!this.recs || this.recs.length < 1) {
+			return null;
+		} else {
+			return this.recs[this.recs.length - 1];
+		}
+	}
+
+	/**
+	 * 
 	 */
 	removeAll(): void {
 		this.recs = new Array();
@@ -283,7 +310,7 @@ export class SimpleQueue<T> {
 	toString(): string {
 		let arr: Array<T> = new Array();
 		if (this.recs && this.recs.length > 0) {
-			for (let i = this.recs.length - 1; i > -1; i--) {
+			for (let i = 0; i < this.recs.length; i++) {
 				let r = this.recs[i]
 				arr.push(r);
 			}
