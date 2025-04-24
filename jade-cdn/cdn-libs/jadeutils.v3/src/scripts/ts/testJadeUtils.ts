@@ -1,6 +1,7 @@
 import { NumUtil, StrUtil, TimeUtil } from './basic.js';
 import {SimpleMap, SimpleStack, SimpleQueue} from './dataStructure.js'
 import { WebUtil } from './web.js';
+import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -179,10 +180,18 @@ class TestWebUtil {
 
 }
 
+class TestWebHtmlPage {
+
+	static testJquery($: any) {
+		let page = new WebHtmlPage($, new PageConfig());
+		console.log(page.getTitle());
+	}
+}
+
 
 export class TestJadeUtils {
 
-	static testAll() {
+	static testAll($: any) {
 		// 
 		TestBasicUtil.testNum();
 		TestBasicUtil.testStr();
@@ -193,6 +202,8 @@ export class TestJadeUtils {
 		TestDataStructure.testSimpleQueue();
 		// 
 		TestWebUtil.testHtml();
+		//
+		TestWebHtmlPage.testJquery($);
 	}
 
 }
