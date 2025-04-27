@@ -1,19 +1,19 @@
-import { WebUtil } from "./web";
+import { WebUtil } from "./web.js";
 
-export class PageConfig {
+export interface PageConfig {
 	apiRoot: string;
 	pageTitle: string;
 	subTitle: string;
 	ajaxTimeout: number;
 
-	constructor(apiRoot: string = "/", pageTitle: string = "New Page", subTitle: string = "new Desc",
-		ajaxTimeout: number = 5000) //
-	{
-		this.apiRoot = apiRoot;
-		this.pageTitle = pageTitle;
-		this.subTitle = subTitle;
-		this.ajaxTimeout = ajaxTimeout;
-	}
+	//constructor(apiRoot: string = "/", pageTitle: string = "New Page", subTitle: string = "new Desc",
+	//	ajaxTimeout: number = 5000) //
+	//{
+	//	this.apiRoot = apiRoot;
+	//	this.pageTitle = pageTitle;
+	//	this.subTitle = subTitle;
+	//	this.ajaxTimeout = ajaxTimeout;
+	//}
 
 }
 
@@ -186,5 +186,205 @@ export class WebHtmlPage {
 		}
 	};
 
+	/**
+	 * 
+	 * @param themes 
+	 */
+	bindChangeTheme(themes: Array<{elemSlt: String, themeName: string}>): void {
+		for(let theme of themes) {
+			$(theme.elemSlt).on("click", (t) => {this.changeTheme(theme.themeName)});
+		}
+	}
 
+	/**
+	 * 
+	 * @param elemSlt 
+	 */
+	bindZoomImage(elemSlt?: string): void {
+		$(elemSlt ? elemSlt : 'img.atc-img').each(function (t, s) {
+			let e = $(s); 
+			let c = e.attr('src') as string;
+			e.on('click', function (t) { WebUtil.openWindow(c); });
+			// net.jadedungeon.viewPic(s);
+		});
+	} 
+
+
+	/**
+	 * 
+	 * @param elemSlt 
+	 */
+	bindInitDataTable(elemSlt?: string): void {
+		$(elemSlt ? elemSlt : 'div.content>table').each((n, t) => { 
+			let table = $(t) as any; 
+			let thead = table.find('thead') as any;
+			if (thead.size() < 1) {
+				thead = $('<thead></thead>');
+				let rows = table.find('tbody>tr') as any;
+				rows.each((ln: any, r: any) => {
+					let row = $(r); let th = row.find("th") as any;
+					if (th.size() > 0) { thead.append(row); }
+				});
+				if (thead.find('th').size() > 0) { // 要有表头才能加上DataTable
+					table.append(thead); 
+					let rowCount = rows.size() as number;
+					if (rowCount > 20) {  // 20行不到的表就不加DataTable了
+						try { 
+							var info = false; var paging = false; var searching = false;
+							if (rowCount > 30) { // 大于30行的表要加上搜索和分页
+								info = true; 
+								paging = true; 
+								searching = true;
+							}
+							table.DataTable({info: info, paging: paging, searching: searching}); 
+						} catch (e) { console.error(e); }
+					}
+				}
+			}
+		});
+	}
+
+	/**
+	 * 
+	 * 调整目录的大小
+	 * @param margin 
+	 * @returns 
+	 */
+	caculateFloatTocBoxHeight(margin?: number): number {
+		margin = margin ? margin : 47;
+		return document.documentElement.clientHeight - margin - margin - 1;
+	};
+
+
+	/**
+	 * 
+	 */
+	changeFloatTocSize(): void {
+		if (($('div.tocIdx').attr('class') as any).indexOf("toc-close") > -1) {
+		} else {
+			var style = 'height: ' + this.caculateFloatTocBoxHeight() + 'px; transition: 1s;';
+			$("div.tocIdx").attr('style', style);
+		}
+	};
+
+
+	/**
+	 * 打开、收起所有目录盒子
+	 */
+	toggleTocWrap() {
+		if (($('div.tocIdx').attr('class') as any).indexOf("toc-close") > -1) {
+			var style2 = 'height: ' + this.caculateFloatTocBoxHeight() + 'px; transition: 1s;';
+			$("div.tocIdx").attr('style', style2);
+			$('div.tocIdx').removeClass('toc-close');
+			$("div.tocWrap").attr('style', "width: 300px; transition: 1s;");
+		} else {
+			var style3 = 'height: 3px; transition: 1s;';
+			$("div.tocIdx").attr('style', style3);
+			$('div.tocIdx').addClass('toc-close');
+			$("div.tocWrap").attr('style', "width: 100px; transition: 1s;");
+		}
+	};
+
+
+	/**
+	 * 打开、收起所有目录
+	 */
+	toggleTocContract(): void {
+		if (($('div.tocIdx').attr('class') as any).indexOf("toc-cont-flg") > -1) {
+			$('div.tocIdx').removeClass('toc-cont-flg');
+			$('div.tocIdx    ul').removeClass('toc-icon-close');
+			$('div.tocIdx    ul').addClass('toc-icon-open');
+			$('div.tocIdx>ul ul').removeClass('toc-sub-close');
+			$('div.tocIdx>ul ul').addClass('toc-sub-open');
+		} else {
+			$('div.tocIdx').addClass('toc-cont-flg');
+			$('div.tocIdx    ul').removeClass('toc-icon-open');
+			$('div.tocIdx    ul').addClass('toc-icon-close');
+			$('div.tocIdx>ul ul').removeClass('toc-sub-open');
+			$('div.tocIdx>ul ul').addClass('toc-sub-close');
+		}
+	};
+
+
+	/**
+	 * 
+	 */
+	prepareSideIndex(): void {
+		$(".sideToc").html('<div class="tocIdx">' + $('.toc').html() + '</div>');
+	};
+
+
+	/**
+	 * 
+	 */
+	prepareFloatIndex(): void {
+		// 目录内容区
+		var idxBody = '<div class="tocIdx">' + $('.toc').html() + '</div>';
+		// 目录标题
+		var idxTitle = '<div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>';
+		// 目录全部
+		var idxAll = '<div class="tocWrap hidden-md hidden-lg">' + idxTitle + idxBody + '</div>';
+
+		/* 添加到内容中 */
+		$('div.ctx-main').append(idxAll);
+		$('div.tocIdx    ul').addClass('toc-icon-close');
+		var toggler = $('.toggler');
+		var tocWrap = $('.tocWrap');
+		this.changeFloatTocSize();         // 调整目录大小
+		let ckdk = this;
+		$(window).resize(function() {
+			ckdk.changeFloatTocSize();
+		});
+		$('#tocBoxBtn').click(this.toggleTocWrap); // 开关目录事件
+		$('#tocLevBtn').click(this.toggleTocContract); // 开关目录事件
+		$('div.tocWrap').show(); // 显示目录
+	};
+
+	/**
+	 * 各语言高亮脚本的路径
+	 * 
+	 * @param hlRootPath 
+	 * @param hlCodePath 
+	 */
+	loadCodeHightlight(hlRootPath?: string,  hlCodePath?: string) {
+		hlRootPath = hlRootPath ? hlRootPath : "";
+		hlCodePath = hlCodePath ? hlCodePath : "../../vimwiki-theme/3rd-libs/hightlight-code/scripts/";
+		let path = (arr: Array<string>): Array<string> => {
+			let  args = arguments, result: Array<string> = [];
+			for(var i = 1; i < args.length; i++) {
+				result.push(args[i].replace('@', hlRootPath + hlCodePath ));
+			}
+			return result;
+		};
+		SyntaxHighlighter.autoloader.apply(null, path([
+			'applescript            @shBrushAppleScript.js',
+			'actionscript3 as3      @shBrushAS3.js',
+			'bash shell             @shBrushBash.js',
+			'coldfusion cf          @shBrushColdFusion.js',
+			'cpp c                  @shBrushCpp.js',
+			'c# c-sharp csharp      @shBrushCSharp.js',
+			'css                    @shBrushCss.js',
+			'delphi pascal          @shBrushDelphi.js',
+			'diff patch pas         @shBrushDiff.js',
+			'erl erlang             @shBrushErlang.js',
+			'groovy                 @shBrushGroovy.js',
+			'java                   @shBrushJava.js',
+			'jfx javafx             @shBrushJavaFX.js',
+			'js jscript javascript  @shBrushJScript.js',
+			'perl pl                @shBrushPerl.js',
+			'php                    @shBrushPhp.js',
+			'text plain             @shBrushPlain.js',
+			'py python              @shBrushPython.js',
+			'ruby rails ror rb      @shBrushRuby.js',
+			'sass scss              @shBrushSass.js',
+			'latex                  @shBrushLatex.js',
+			'less                   @shBrushLess.js',
+			'scala                  @shBrushScala.js',
+			'scheme                 @shBrushScheme.js',
+			'clojure                @shBrushClojure.js',
+			'sql                    @shBrushSql.js',
+			'vb vbnet               @shBrushVb.js',
+			'xml xhtml xslt html    @shBrushXml.js']));
+		SyntaxHighlighter.all();
+	};
 }

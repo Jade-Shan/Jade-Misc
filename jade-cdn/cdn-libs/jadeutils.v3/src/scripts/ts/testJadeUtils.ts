@@ -183,7 +183,7 @@ class TestWebUtil {
 class TestWebHtmlPage {
 
 	static testJquery() {
-		let cfg = new PageConfig("/", "tast-page", "for test");
+		let cfg: PageConfig = { apiRoot: "/", pageTitle: "test-page", subTitle: "for-test", ajaxTimeout: 500 };
 		let page = new WebHtmlPage(cfg);
 		//
 		page.renderTopNav(cfg, [
