@@ -186,16 +186,37 @@ class TestWebHtmlPage {
 		let cfg = new PageConfig("/", "tast-page", "for test");
 		let page = new WebHtmlPage(cfg);
 		//
-		let sub01 = new Array<NavTreeNode>();
-		let n = new NavTreeNode("page00", "page00.html", false); sub01.push(n);
-		n = new NavTreeNode("page01", "page01.html", false); sub01.push(n);
-		n = new NavTreeNode("page02", "page01.html", false); sub01.push(n);
-		let nav01 = new Array<NavTreeNode>();
-		n = new NavTreeNode("page_A1", "page_A1.html", false); nav01.push(n);
-		n = new NavTreeNode("page_A2", null, false, "A2", sub01); nav01.push(n);
-		n = new NavTreeNode("page_A3", "page_A3.html", false); nav01.push(n);
-		page.renderTopNav(cfg, nav01);
-		}
+		page.renderTopNav(cfg, [
+			{ title: "Journal", link: "/" },
+			{ title: "Gallery", link: "/gallery.html" },
+			{ title: "Note", link: "//118.178.197.156/study/study/wiki_html" },
+			{
+				title: "About Me", subs: [
+					{ title: "Github", link: "//github.com/Jade-Shan/", isNewWin: true },
+					{ title: "", link: "" },
+					{ title: "Resume", link: "/resume.html" }]
+			},
+			{
+				title: "Themes", subs: [
+					{ title: "hobbit", id: "switch-theme-hobbit", link: "#" },
+					{ title: "lo-fi", id: "switch-theme-lo-fi", link: "#" },
+					{ title: "paper", id: "switch-theme-paper-print", link: "#" }]
+			}
+		]);
+		//
+		// _1_ 2 3 4 5 6 ... 20
+		$('#pageBar01').html(page.renderPagination( 1, 20, n => `javascript:queryBlog(${n})`));
+		// 1 2 3 4 5 6 _7_ 8 9 10 11 12 ... 20
+		$('#pageBar02').html(page.renderPagination( 7, 20, n => `javascript:queryBlog(${n})`));
+		// 1 ... 3 4 5 6 7 _8_ 9 10 11 12 13 ... 20
+		$('#pageBar03').html(page.renderPagination( 8, 20, n => `javascript:queryBlog(${n})`));
+		// 1 ... 8 9 10 11 12 _13_ 14 15 16 17 18 ... 20
+		$('#pageBar07').html(page.renderPagination(13, 20, n => `javascript:queryBlog(${n})`));
+		// 1 ...  9 10 11 12 13 _14_ 15 16 17 18 19 20
+		$('#pageBar08').html(page.renderPagination(14, 20, n => `javascript:queryBlog(${n})`));
+		// 1 ... 15 16 17 18 19 _20_
+		$('#pageBar09').html(page.renderPagination(20, 20, n => `javascript:queryBlog(${n})`));
+	}
 }
 
 

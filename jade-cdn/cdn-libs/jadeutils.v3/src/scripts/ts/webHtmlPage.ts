@@ -16,20 +16,12 @@ export class PageConfig {
 
 }
 
-export class NavTreeNode {
-	id: (string|null);
+export interface NavTreeNode {
+	id?: string;
 	title: string;
-	link: (string|null);
-	isNewWin: boolean;
-	subs: (Array<NavTreeNode> | null);
-
-	constructor(title: string = "", link: (string|null) = null, isNewWin: boolean = false,id?:string, subs?: Array<NavTreeNode>) {
-		this.title = title;
-		this.link = link;
-		this.isNewWin = isNewWin;
-		this.subs = subs && subs.length > 0 ? subs : null;
-		this.id   = id && id.length > 0 ? id: null;
-	}
+	link?: string
+	isNewWin?: boolean;
+	subs?: Array<NavTreeNode>;
 }
 
 
@@ -78,5 +70,54 @@ export class WebHtmlPage {
 		navhtml = navhtml + '</ul></div>';
 		$("#topnav").html(navhtml);
 	}
+
+
+	renderPagination(pageNo: number, count: number, genPageHref?: (n: number) => string): string {
+		pageNo = pageNo && pageNo > 0 ? pageNo : 1;
+		count  = count  && count  > 0 ? count  : 1;
+		let size = 5;
+		// 1 ... 3 4 5 6 7 _8_ 9 10 11 12 13 ... 20
+		genPageHref = genPageHref ? genPageHref : (num: number) =>`javascript:nextPage(${num});`; 
+		let i = 1;
+		let html = '<ul class="pagination center">';
+		// first page
+		if (pageNo === 1) {
+			html = html + '<li><a class="disable" href="javascript:void(0);">&laquo;</a></li>';
+		} else {
+			html = html + `<li><a href="${genPageHref(pageNo - 1)}">&laquo;</a></li>`;
+			html = html + `<li><a href="${genPageHref(i)}'">${i}</a></li>`;
+		}
+		i = i + 1;
+		// elps
+		if (pageNo > (size + 2)) {
+			i = pageNo - size;
+			html = html + '<li><a class="disable" href="javascript:void(0);">...</a></li>';
+		}
+		// pre no
+		while (pageNo > i) {
+			html = html + `<li><a href="${genPageHref(i)}'">${i}</a></li>`;
+			i = i + 1;
+		}
+		// curr page
+		html = html + `<li class="active"><a href="javascript:void(0);">${pageNo }</a></li>`;
+		// post no
+		i = pageNo + 1;
+		while (i < count && i <= (pageNo + size)) {
+			html = html + `<li><a href="${genPageHref(i)}'">${i}</a></li>`;
+			i = i + 1;
+		}
+		// elps
+		if ((i + 2) < count) {
+			html = html + '<li><a class="disable" href="javascript:void(0);">...</a></li>';
+		}
+		if (pageNo === count) {
+			html = html + '<li><a class="disable" href="javascript:void(0);">&raquo;</a></li>';
+		} else {
+			html = html + `<li><a href="${genPageHref(count)}">${count}</a></li>`;
+			html = html + `<li><a href="${genPageHref(pageNo + 1)}">&raquo;</a></li>`;
+		}
+		html = html + '</ul>';
+		return html;
+	};
 
 }
