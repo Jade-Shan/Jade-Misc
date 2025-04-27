@@ -185,7 +185,6 @@ class TestWebHtmlPage {
 	static testJquery() {
 		let cfg = new PageConfig("/", "tast-page", "for test");
 		let page = new WebHtmlPage(cfg);
-		console.log(page.getHtml("#test-tag-001"));
 		//
 		let sub01 = new Array<NavTreeNode>();
 		let n = new NavTreeNode("page00", "page00.html", false); sub01.push(n);

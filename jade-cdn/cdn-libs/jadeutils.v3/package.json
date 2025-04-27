@@ -11,13 +11,12 @@
 		"gulp-processhtml": "^1.2.0",
 		"gulp-rename": "^2.0.0",
 		"gulp-uglify-es": "^3.0.0",
-		"jshint": "^2.13.6"
-	},
-	"dependencies": {
-		"@types/jquery": "^3.5.32",
 		"gulp-sourcemaps": "^3.0.0",
 		"gulp-typescript": "^6.0.0-alpha.1",
-		"jquery": "^3.7.1",
-		"typescript": "^5.8.3"
+		"jshint": "^2.13.6",
+		"typescript": "^5.8.3",
+		"@types/jquery": "^3.5.32"
+	},
+	"dependencies": {
 	}
 }

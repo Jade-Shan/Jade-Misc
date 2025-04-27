@@ -1,12 +1,3 @@
-// import * as $ from "jquery"
-// import * as $ from "http://www.jade-dungeon.cn:8081/3rd/jquery/2.1.4/jquery.min.js";
-
-declare function $(selector: string): any;
-
-declare namespace $ {
-    function ajax(url: string, settings?: any): void;
-	function each<T>(arr: Array<T>, fun: (i: number, t: T) => void): void;
-}
 
 export class PageConfig {
 	apiRoot: string;
@@ -50,8 +41,11 @@ export class WebHtmlPage {
 		this.cfg = cfg;
 	}
 
-	getHtml(sltStr: string): string { return $(sltStr).html(); }
-
+	/**
+	 * 
+	 * @param cfg 顶部导航栏
+	 * @param items 
+	 */
 	renderTopNav(cfg: PageConfig, items: Array<NavTreeNode>): void {
 		let navhtml = '<div class="navbar-header"> <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse"> <span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> <a class="navbar-brand" href="/">Jade Dungeon</a> </div> <div class="collapse navbar-collapse" id="example-navbar-collapse"> <ul class="nav navbar-nav">';
 		let addLink = (item: NavTreeNode, cfg: PageConfig) =>  {
