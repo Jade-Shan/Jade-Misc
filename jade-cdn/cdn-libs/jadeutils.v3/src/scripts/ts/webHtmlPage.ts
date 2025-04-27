@@ -1,3 +1,4 @@
+import { WebUtil } from "./web";
 
 export class PageConfig {
 	apiRoot: string;
@@ -119,5 +120,71 @@ export class WebHtmlPage {
 		html = html + '</ul>';
 		return html;
 	};
+
+	/**
+	 * 
+	 * @param page 
+	 * @param elemSlt 
+	 */
+	renderSubTitle(cfg: PageConfig, elemSlt?: string): void { $(elemSlt ? elemSlt : "#subTitle").html(cfg.subTitle); };
+
+	/**
+	 * 
+	 * @param elemSlt 
+	 */
+	renderPhotoFrame(elemSlt?: string): void {
+		let html = '<div class="modal-dialog"><div class="modal-content">';
+		html = html + '<div class="modal-header">';
+		html = html + '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+		html = html + '<h4 class="modal-title" id="photo-frame-label"></h4></div>';
+		html = html + '<div class="modal-body row">';
+		html = html + '<img id="photo-frame-img" alt="" src="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >';
+		html = html + '</div></div>';
+		$(elemSlt ? elemSlt : "#photo-frame").html(html);
+	};
+
+	/**
+	 * 
+	 * @param elemSlt 
+	 */
+	viewPic(elemSlt: string) : void {
+		let m: JQuery<HTMLElement> = $(elemSlt);
+		let str1 = m.attr("alt");
+		let str2 = m.attr("src");
+		$("#photo-frame-label").html(str1 ? str1 : "");
+		$("#photo-frame-img").attr(str2 ? str2 : "");
+		$("#photo-frame-img").attr(str1 ? str1 : "");
+		($('#photo-frame') as any).modal('show');
+	};
+
+	/**
+	 * 
+	 * @param themeName 
+	 * @param cookieKey 
+	 * @param elemSlt 
+	 */
+	changeTheme(themeName: string, cookieKey?: string, elemSlt?: string): void {
+		let styles = document.querySelectorAll(elemSlt ? elemSlt : 'link[title]');
+		for (let i=0; i < styles.length; i++) {
+			let lnk = styles[i] as HTMLLinkElement;
+			var ttitle = lnk.title;
+			if (ttitle == themeName) { 
+				WebUtil.setCookieValue(cookieKey ? cookieKey : "ui.theme", themeName, {sameSite:'Lax'});
+				lnk.disabled = false; 
+			} else { lnk.disabled = true; }
+		}
+	};
+
+	/**
+	 * 
+	 * @param cookieKey 
+	 */
+	initUITheme(cookieKey?: string): void {
+		let currUITheme = WebUtil.loadCookieValue(cookieKey ? cookieKey : "ui.theme");
+		if (currUITheme) {
+			this.changeTheme(currUITheme);
+		}
+	};
+
 
 }

@@ -136,10 +136,10 @@ export class WebUtil {
 	 * @param rec 
 	 * @returns 
 	 */
-	static setCookieValue(name: string, rec: { value: string, expireDays: number, 
+	static setCookieValue(name: string,  value: string, rec: {expireDays?: number, 
 		path?: string, domain?: string, secure?: boolean, sameSite?: string}): void 
 	{
-		if (!rec || !rec.value) {
+		if (!value) {
 			return;
 		}
 		rec.expireDays  = rec.expireDays  ? rec.expireDays  : 30;
@@ -159,7 +159,7 @@ export class WebUtil {
 		let domainStr   = rec.domain   ? ';domain='   + rec.domain   : '';
 		let sameSiteStr = rec.sameSite ? ';SameSite=' + rec.sameSite : '';
 		let secureStr   = rec.secure   ? ';secure'                   : '';
-		document.cookie = [name, '=', encodeURIComponent(rec.value), expireStr, pathStr, domainStr, sameSiteStr, secureStr].join('');
+		document.cookie = [name, '=', encodeURIComponent(value), expireStr, pathStr, domainStr, sameSiteStr, secureStr].join('');
 	}
 
 	/**
