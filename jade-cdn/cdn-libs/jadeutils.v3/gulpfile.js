@@ -100,6 +100,7 @@ gulp.task('process-javascript', gulp.series('clean-javascript', () => {
 }));
 themeTasks.push('process-javascript')
 
+const scriptTsRef = 'src/scripts/include/';
 const scriptTsSrc = 'src/scripts/ts/';
 const scriptTsTag = 'webroot/scripts/ts/';
 
@@ -111,6 +112,7 @@ gulp.task('clean-typescript', () => {
 // 合并、压缩、重命名typescript
 gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 	return gulp.src([
+		scriptTsRef + 'refTypes.d.ts',
 		scriptTsSrc + 'basic.ts',
 		scriptTsSrc + 'web.ts',
 		scriptTsSrc + 'dataStructure.ts',
