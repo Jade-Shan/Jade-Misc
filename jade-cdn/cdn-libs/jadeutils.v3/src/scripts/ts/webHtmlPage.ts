@@ -278,6 +278,216 @@ export class WebHtmlPage {
 		SyntaxHighlighter.all();
 	};
 
+//  t.prepareSideIndex = function () {
+//    var n = '<div class="sideTocIdx">' + e('.toc').html() + '</div>';
+//    e('.sideToc').html(n),
+//    e('.sideToc    ul').removeClass('toc-icon-open'),
+//    e('.sideToc    ul').addClass('toc-icon-close'),
+//    e('.sideToc>ul ul').removeClass('toc-sub-open'),
+//    e('.sideToc>ul ul').addClass('toc-sub-close'),
+//    t.changeSideTocSize()
+//  },
+	/**
+	* 
+	*/
+	prepareSideIndex(srcSlt?: string, tagSlt?: string): void {
+		let elem = $(srcSlt ? srcSlt : ".toc");
+		 let html = elem.html();
+		 $(tagSlt ? tagSlt : ".sideToc").html(`<div class="sideTocIdx">${html}</div>`);
+		 $('.sideToc    ul').removeClass('toc-icon-open');
+		 $('.sideToc    ul').   addClass('toc-icon-close');
+		 $('.sideToc>ul ul').removeClass('toc-sub-open');
+		 $('.sideToc>ul ul').   addClass('toc-sub-close');
+		 elem.remove();
+	};
+
+//  t.changeSideTocSize = function () {
+//    if (e('div.sideTocIdx').attr('class').indexOf('toc-close') < 0) {
+//      var n = 'height: ' + t.caculateSideTocBoxHeight() + 'px; transition: 1s;';
+//      e('div.sideTocIdx').attr('style', n)
+//    }
+//  },
+
+
+//  t.caculateSideTocBoxHeight = function () {
+//    return document.documentElement.clientHeight - 160
+//  },
+
+//  t.prepareFloatIndex = function () {
+//    var t = '<div class="tocWrap hidden-md hidden-lg"><div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>' + ('<div class="tocIdx">' + e('.toc').html() + '</div>') + '</div>';
+//    e('div.ctx-main').append(t),
+//    e('div.tocIdx    ul').addClass('toc-icon-close');
+//    e('.toggler'),
+//    e('.tocWrap');
+//    this.toggleTocWrap(),
+//    e('#tocBoxBtn').click(this.toggleTocWrap),
+//    e('#tocBoxBtn2').click(this.toggleSideTocWrap),
+//    e('#tocLevBtn').click(this.toggleTocContract),
+//    e('#tocLevBtn2').click(this.toggleSideTocContract),
+//    e('div.tocWrap').show()
+//  },
+
+//  t.toggleTocWrap = function () {
+//    if (e('div.tocIdx').attr('class').indexOf('toc-close') > - 1) {
+//      var n = 'height: ' + t.caculateFloatTocBoxHeight() + 'px; transition: 1s;';
+//      e('div.tocIdx').attr('style', n),
+//      e('div.tocIdx').removeClass('toc-close'),
+//      e('div.tocWrap').attr('style', 'width: 300px; transition: 1s;')
+//    } else {
+//      e('div.tocIdx').attr('style', 'height: 3px; transition: 1s;'),
+//      e('div.tocIdx').addClass('toc-close'),
+//      e('div.tocWrap').attr('style', 'width: 100px; transition: 1s;')
+//    }
+//  },
+
+
+
+	// prepareFloatIndex(): void {
+    // let t = '<div class="tocWrap hidden-md hidden-lg"><div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>' + ('<div class="tocIdx">' + $('.toc').html() + '</div>') + '</div>';
+    // $('div.ctx-main').append(t),
+    // $('div.tocIdx    ul').addClass('toc-icon-close');
+    // $('.toggler'),
+    // $('.tocWrap');
+    // this.toggleTocWrap(),
+    // $('#tocBoxBtn').click(this.toggleTocWrap),
+    // $('#tocBoxBtn2').click(this.toggleSideTocWrap),
+    // $('#tocLevBtn').click(this.toggleTocContract),
+    // $('#tocLevBtn2').click(this.toggleSideTocContract),
+    // $('div.tocWrap').show()
+  // }
+
+
+// // 	/**
+// // 	 * 
+// // 	 */
+// // 	prepareFloatIndex(): void {
+// // 		// 目录内容区
+// // 		var idxBody = '<div class="tocIdx">' + $('.toc').html() + '</div>';
+// // 		// 目录标题
+// // 		var idxTitle = '<div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>';
+// // 		// 目录全部
+// // 		var idxAll = '<div class="tocWrap hidden-md hidden-lg">' + idxTitle + idxBody + '</div>';
+// // 
+// // 		/* 添加到内容中 */
+// // 		$('div.ctx-main').append(idxAll);
+// // 		$('div.tocIdx    ul').addClass('toc-icon-close');
+// // 		var toggler = $('.toggler');
+// // 		var tocWrap = $('.tocWrap');
+// // 		this.changeFloatTocSize();         // 调整目录大小
+// // 		let page = this;
+// // 		$(window).resize(function() {
+// // 			page.changeFloatTocSize();
+// // 		});
+// // 		$('#tocBoxBtn').click(this.toggleTocWrap); // 开关目录事件
+// // 		$('#tocLevBtn').click(this.toggleTocContract); // 开关目录事件
+// // 		$('div.tocWrap').show(); // 显示目录
+// // 	};
+
+
+
+
+	// /**
+	 // * 
+	 // * 调整目录的大小
+	 // * @param margin 
+	 // * @returns 
+	 // */
+	// caculateFloatTocBoxHeight(margin?: number): number {
+		// margin = margin ? margin : 47;
+		// return document.documentElement.clientHeight - margin - margin - 1;
+	// };
+
+	// /**
+	 // * 
+	 // * @param margin 
+	 // * @returns 
+	 // */
+	// caculateSideTocBoxHeight(margin?: number): number {
+		// margin = margin ? margin : 160;
+		// return document.documentElement.clientHeight - margin;
+	// };
+
+	// /**
+	 // * 
+	 // */
+	// changeSideTocSize(elemSlt?: string): void {
+		// elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
+		// if (($(elemSlt).attr('class') as any).indexOf("toc-close") > -1) {
+			// // do nothing
+		// } else {
+			// $(elemSlt).attr('style', `height: ${this.caculateFloatTocBoxHeight()}px; transition: 1s;`);
+		// }
+	// };
+
+	// /**
+	 // * 打开、收起所有目录盒子
+	 // */
+	// toggleTocWrap() {
+		// if (($('div.tocIdx').attr('class') as any).indexOf("toc-close") > -1) {
+			// var style2 = '';
+			// $("div.tocIdx").attr('style', `height: ${this.caculateFloatTocBoxHeight()}px; transition: 1s;`);
+			// $('div.tocIdx').removeClass('toc-close');
+			// $("div.tocWrap").attr('style', "width: 300px; transition: 1s;");
+		// } else {
+			// $("div.tocIdx").attr('style', 'height: 3px; transition: 1s;');
+			// $('div.tocIdx').addClass('toc-close');
+			// $("div.tocWrap").attr('style', "width: 100px; transition: 1s;");
+		// }
+	// };
+
+
+	// /**
+	 // * 打开、收起所有目录盒子
+	 // */
+	// toggleSideTocWrap() {
+		// if (($('div.sideTocIdx').attr('class') as any).indexOf('toc-close') > - 1) {
+			// $('div.sideToc').attr('style', `padding: 10px 20px; height: ${this.caculateSideTocBoxHeight()}px; transition: 1s;`);
+			// $('div.sideToc').css('overflow', 'hidden');
+			// $('div.sideTocIdx').removeClass('toc-close');
+		// } else {
+			// $('div.sideToc').attr('style', 'padding: 0px 20px; height: 0px; transition: 1s;');
+			// $('div.sideToc').css('overflow', 'auto');
+			// $('div.sideTocIdx').addClass('toc-close');
+		// }
+	// };
+
+
+	// /**
+	 // * 打开、收起所有目录
+	 // */
+	// toggleTocContract(): void {
+		// if (($('div.tocIdx').attr('class') as any).indexOf("toc-cont-flg") > -1) {
+			// $('div.tocIdx').removeClass('toc-cont-flg');
+			// $('div.tocIdx    ul').removeClass('toc-icon-close');
+			// $('div.tocIdx    ul').addClass('toc-icon-open');
+			// $('div.tocIdx>ul ul').removeClass('toc-sub-close');
+			// $('div.tocIdx>ul ul').addClass('toc-sub-open');
+		// } else {
+			// $('div.tocIdx').addClass('toc-cont-flg');
+			// $('div.tocIdx    ul').removeClass('toc-icon-open');
+			// $('div.tocIdx    ul').addClass('toc-icon-close');
+			// $('div.tocIdx>ul ul').removeClass('toc-sub-open');
+			// $('div.tocIdx>ul ul').addClass('toc-sub-close');
+		// }
+	// };
+
+	// toggleSideTocContract(): void {
+		// if (($('div.tocIdx').attr('class') as any).indexOf("toc-cont-flg") > -1) {
+			// $('div.tocIdx').removeClass('toc-cont-flg');
+			// $('div.tocIdx    ul').removeClass('toc-icon-close');
+			// $('div.tocIdx    ul').addClass('toc-icon-open');
+			// $('div.tocIdx>ul ul').removeClass('toc-sub-close');
+			// $('div.tocIdx>ul ul').addClass('toc-sub-open');
+		// } else {
+			// $('div.tocIdx').addClass('toc-cont-flg');
+			// $('div.tocIdx    ul').removeClass('toc-icon-open');
+			// $('div.tocIdx    ul').addClass('toc-icon-close');
+			// $('div.tocIdx>ul ul').removeClass('toc-sub-open');
+			// $('div.tocIdx>ul ul').addClass('toc-sub-close');
+		// }
+	// };
+
+
 	/**
 	 * 
 	 * @param themeName 
@@ -317,101 +527,6 @@ export class WebHtmlPage {
 		}
 	}
 
-	/**
-	 * 
-	 * 调整目录的大小
-	 * @param margin 
-	 * @returns 
-	 */
-	caculateFloatTocBoxHeight(margin?: number): number {
-		margin = margin ? margin : 47;
-		return document.documentElement.clientHeight - margin - margin - 1;
-	};
-
-
-	/**
-	 * 
-	 */
-	changeFloatTocSize(): void {
-		if (($('div.tocIdx').attr('class') as any).indexOf("toc-close") > -1) {
-		} else {
-			var style = 'height: ' + this.caculateFloatTocBoxHeight() + 'px; transition: 1s;';
-			$("div.tocIdx").attr('style', style);
-		}
-	};
-
-
-	/**
-	 * 打开、收起所有目录盒子
-	 */
-	toggleTocWrap() {
-		if (($('div.tocIdx').attr('class') as any).indexOf("toc-close") > -1) {
-			var style2 = 'height: ' + this.caculateFloatTocBoxHeight() + 'px; transition: 1s;';
-			$("div.tocIdx").attr('style', style2);
-			$('div.tocIdx').removeClass('toc-close');
-			$("div.tocWrap").attr('style', "width: 300px; transition: 1s;");
-		} else {
-			var style3 = 'height: 3px; transition: 1s;';
-			$("div.tocIdx").attr('style', style3);
-			$('div.tocIdx').addClass('toc-close');
-			$("div.tocWrap").attr('style', "width: 100px; transition: 1s;");
-		}
-	};
-
-
-	/**
-	 * 打开、收起所有目录
-	 */
-	toggleTocContract(): void {
-		if (($('div.tocIdx').attr('class') as any).indexOf("toc-cont-flg") > -1) {
-			$('div.tocIdx').removeClass('toc-cont-flg');
-			$('div.tocIdx    ul').removeClass('toc-icon-close');
-			$('div.tocIdx    ul').addClass('toc-icon-open');
-			$('div.tocIdx>ul ul').removeClass('toc-sub-close');
-			$('div.tocIdx>ul ul').addClass('toc-sub-open');
-		} else {
-			$('div.tocIdx').addClass('toc-cont-flg');
-			$('div.tocIdx    ul').removeClass('toc-icon-open');
-			$('div.tocIdx    ul').addClass('toc-icon-close');
-			$('div.tocIdx>ul ul').removeClass('toc-sub-open');
-			$('div.tocIdx>ul ul').addClass('toc-sub-close');
-		}
-	};
-
-
-	/**
-	 * 
-	 */
-	prepareSideIndex(): void {
-		$(".sideToc").html('<div class="tocIdx">' + $('.toc').html() + '</div>');
-	};
-
-
-	/**
-	 * 
-	 */
-	prepareFloatIndex(): void {
-		// 目录内容区
-		var idxBody = '<div class="tocIdx">' + $('.toc').html() + '</div>';
-		// 目录标题
-		var idxTitle = '<div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>';
-		// 目录全部
-		var idxAll = '<div class="tocWrap hidden-md hidden-lg">' + idxTitle + idxBody + '</div>';
-
-		/* 添加到内容中 */
-		$('div.ctx-main').append(idxAll);
-		$('div.tocIdx    ul').addClass('toc-icon-close');
-		var toggler = $('.toggler');
-		var tocWrap = $('.tocWrap');
-		this.changeFloatTocSize();         // 调整目录大小
-		let page = this;
-		$(window).resize(function() {
-			page.changeFloatTocSize();
-		});
-		$('#tocBoxBtn').click(this.toggleTocWrap); // 开关目录事件
-		$('#tocLevBtn').click(this.toggleTocContract); // 开关目录事件
-		$('div.tocWrap').show(); // 显示目录
-	};
 }
 
 
