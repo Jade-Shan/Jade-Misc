@@ -291,9 +291,11 @@ export class WebHtmlPage {
 	* 
 	*/
 	prepareSideIndex(srcSlt?: string, tagSlt?: string): void {
-		let elem = $(srcSlt ? srcSlt : ".toc");
-		 let html = elem.html();
-		 $(tagSlt ? tagSlt : ".sideToc").html(`<div class="sideTocIdx">${html}</div>`);
+		srcSlt = srcSlt ? srcSlt : "div.toc";
+		tagSlt = tagSlt ? tagSlt : "div.sideToc";
+		let elem = $();
+		 let html = elem.html(srcSlt);
+		 $(tagSlt).html(`<div class="sideTocIdx">${html}</div>`);
 		 $('.sideToc    ul').removeClass('toc-icon-open');
 		 $('.sideToc    ul').   addClass('toc-icon-close');
 		 $('.sideToc>ul ul').removeClass('toc-sub-open');
