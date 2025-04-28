@@ -235,14 +235,17 @@ export class WebHtmlPage {
 	loadCodeHightlight(hlRootPath?: string,  hlCodePath?: string) {
 		hlRootPath = hlRootPath ? hlRootPath : "";
 		hlCodePath = hlCodePath ? hlCodePath : "../../vimwiki-theme/3rd-libs/hightlight-code/scripts/";
-		let path = (arr: Array<string>): Array<string> => {
-			let  args = arguments, result: Array<string> = [];
-			for(var i = 1; i < args.length; i++) {
-				result.push(args[i].replace('@', hlRootPath + hlCodePath ));
+		let basePath = `${hlRootPath}${hlCodePath}/`;
+		let parsePath = (arr: Array<string>): Array<string> => {
+			let lines: Array<string> = [];
+			for(let i = 0; i < arr.length; i++) {
+				let arg = arr[i];
+				let line = arg.replace('@', basePath);
+				lines.push(line);
 			}
-			return result;
+			return lines;
 		};
-		SyntaxHighlighter.autoloader.apply(null, path([
+		let pathArr = parsePath([
 			'applescript            @shBrushAppleScript.js',
 			'actionscript3 as3      @shBrushAS3.js',
 			'bash shell             @shBrushBash.js',
@@ -270,7 +273,8 @@ export class WebHtmlPage {
 			'clojure                @shBrushClojure.js',
 			'sql                    @shBrushSql.js',
 			'vb vbnet               @shBrushVb.js',
-			'xml xhtml xslt html    @shBrushXml.js']));
+			'xml xhtml xslt html    @shBrushXml.js'])
+		SyntaxHighlighter.autoloader.apply(null, pathArr);
 		SyntaxHighlighter.all();
 	};
 
