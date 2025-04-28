@@ -223,10 +223,10 @@ class TestWebHtmlPage {
 		page.bindInitDataTable();
 
 		//
-		page.bindImageNewTab("img.atc-img");
+		page.bindImageNewTab("img.img-newwin");
 
 		// 
-		page.initPhotoFrame();
+		page.initPhotoFrame("photo-frame");
 		//
 		page.bindImageFrame("img.img-frame");
 		//
