@@ -293,8 +293,8 @@ export class WebHtmlPage {
 	prepareSideIndex(srcSlt?: string, tagSlt?: string): void {
 		srcSlt = srcSlt ? srcSlt : "div.toc";
 		tagSlt = tagSlt ? tagSlt : "div.sideToc";
-		let elem = $();
-		 let html = elem.html(srcSlt);
+		let elem = $(srcSlt);
+		let html = elem.html();
 		 $(tagSlt).html(`<div class="sideTocIdx">${html}</div>`);
 		 $('.sideToc    ul').removeClass('toc-icon-open');
 		 $('.sideToc    ul').   addClass('toc-icon-close');
