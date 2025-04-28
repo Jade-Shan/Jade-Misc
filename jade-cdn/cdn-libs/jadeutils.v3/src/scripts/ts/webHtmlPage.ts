@@ -129,6 +129,41 @@ export class WebHtmlPage {
 	renderSubTitle(cfg: PageConfig, elemSlt?: string): void { $(elemSlt ? elemSlt : "#subTitle").html(cfg.subTitle); };
 
 	/**
+	 * 
+	 * @param elemSlt 
+	 */
+	bindInitDataTable(elemSlt?: string): void {
+		$(elemSlt ? elemSlt : 'div.content>table').each((n, t) => { 
+			let table = $(t) as any; 
+			let thead = table.find('thead') as any;
+			if (thead.size() < 1) {
+				thead = $('<thead></thead>');
+				let rows = table.find('tbody>tr') as any;
+				rows.each((ln: any, r: any) => {
+					let row = $(r); let th = row.find("th") as any;
+					if (th.size() > 0) { thead.append(row); }
+				});
+				if (thead.find('th').size() > 0) { // 要有表头才能加上DataTable
+					table.append(thead); 
+					let rowCount = rows.size() as number;
+					if (rowCount > 20) {  // 20行不到的表就不加DataTable了
+						try { 
+							var info = false; var paging = false; var searching = false;
+							if (rowCount > 30) { // 大于30行的表要加上搜索和分页
+								info = true; 
+								paging = true; 
+								searching = true;
+							}
+							table.DataTable({info: info, paging: paging, searching: searching}); 
+						} catch (e) { console.error(e); }
+					}
+				}
+			}
+		});
+	}
+
+
+	/**
 	 * 必须要在页面上加上：
 	 * `<div id="photo-frame" class="modal fade photo-frame" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>`
 	 * 因为bootstrap的导入在是最前面。如果bootstrap.js已经导入了，再添加`div`就没有用了。
@@ -192,6 +227,54 @@ export class WebHtmlPage {
 	} 
 
 	/**
+	 * 各语言高亮脚本的路径
+	 * 
+	 * @param hlRootPath 
+	 * @param hlCodePath 
+	 */
+	loadCodeHightlight(hlRootPath?: string,  hlCodePath?: string) {
+		hlRootPath = hlRootPath ? hlRootPath : "";
+		hlCodePath = hlCodePath ? hlCodePath : "../../vimwiki-theme/3rd-libs/hightlight-code/scripts/";
+		let path = (arr: Array<string>): Array<string> => {
+			let  args = arguments, result: Array<string> = [];
+			for(var i = 1; i < args.length; i++) {
+				result.push(args[i].replace('@', hlRootPath + hlCodePath ));
+			}
+			return result;
+		};
+		SyntaxHighlighter.autoloader.apply(null, path([
+			'applescript            @shBrushAppleScript.js',
+			'actionscript3 as3      @shBrushAS3.js',
+			'bash shell             @shBrushBash.js',
+			'coldfusion cf          @shBrushColdFusion.js',
+			'cpp c                  @shBrushCpp.js',
+			'c# c-sharp csharp      @shBrushCSharp.js',
+			'css                    @shBrushCss.js',
+			'delphi pascal          @shBrushDelphi.js',
+			'diff patch pas         @shBrushDiff.js',
+			'erl erlang             @shBrushErlang.js',
+			'groovy                 @shBrushGroovy.js',
+			'java                   @shBrushJava.js',
+			'jfx javafx             @shBrushJavaFX.js',
+			'js jscript javascript  @shBrushJScript.js',
+			'perl pl                @shBrushPerl.js',
+			'php                    @shBrushPhp.js',
+			'text plain             @shBrushPlain.js',
+			'py python              @shBrushPython.js',
+			'ruby rails ror rb      @shBrushRuby.js',
+			'sass scss              @shBrushSass.js',
+			'latex                  @shBrushLatex.js',
+			'less                   @shBrushLess.js',
+			'scala                  @shBrushScala.js',
+			'scheme                 @shBrushScheme.js',
+			'clojure                @shBrushClojure.js',
+			'sql                    @shBrushSql.js',
+			'vb vbnet               @shBrushVb.js',
+			'xml xhtml xslt html    @shBrushXml.js']));
+		SyntaxHighlighter.all();
+	};
+
+	/**
 	 * 
 	 * @param themeName 
 	 * @param cookieKey 
@@ -228,41 +311,6 @@ export class WebHtmlPage {
 		for(let theme of themes) {
 			$(theme.elemSlt).on("click", (t) => {this.changeTheme(theme.themeName)});
 		}
-	}
-
-
-	/**
-	 * 
-	 * @param elemSlt 
-	 */
-	bindInitDataTable(elemSlt?: string): void {
-		$(elemSlt ? elemSlt : 'div.content>table').each((n, t) => { 
-			let table = $(t) as any; 
-			let thead = table.find('thead') as any;
-			if (thead.size() < 1) {
-				thead = $('<thead></thead>');
-				let rows = table.find('tbody>tr') as any;
-				rows.each((ln: any, r: any) => {
-					let row = $(r); let th = row.find("th") as any;
-					if (th.size() > 0) { thead.append(row); }
-				});
-				if (thead.find('th').size() > 0) { // 要有表头才能加上DataTable
-					table.append(thead); 
-					let rowCount = rows.size() as number;
-					if (rowCount > 20) {  // 20行不到的表就不加DataTable了
-						try { 
-							var info = false; var paging = false; var searching = false;
-							if (rowCount > 30) { // 大于30行的表要加上搜索和分页
-								info = true; 
-								paging = true; 
-								searching = true;
-							}
-							table.DataTable({info: info, paging: paging, searching: searching}); 
-						} catch (e) { console.error(e); }
-					}
-				}
-			}
-		});
 	}
 
 	/**
@@ -359,53 +407,5 @@ export class WebHtmlPage {
 		$('#tocBoxBtn').click(this.toggleTocWrap); // 开关目录事件
 		$('#tocLevBtn').click(this.toggleTocContract); // 开关目录事件
 		$('div.tocWrap').show(); // 显示目录
-	};
-
-	/**
-	 * 各语言高亮脚本的路径
-	 * 
-	 * @param hlRootPath 
-	 * @param hlCodePath 
-	 */
-	loadCodeHightlight(hlRootPath?: string,  hlCodePath?: string) {
-		hlRootPath = hlRootPath ? hlRootPath : "";
-		hlCodePath = hlCodePath ? hlCodePath : "../../vimwiki-theme/3rd-libs/hightlight-code/scripts/";
-		let path = (arr: Array<string>): Array<string> => {
-			let  args = arguments, result: Array<string> = [];
-			for(var i = 1; i < args.length; i++) {
-				result.push(args[i].replace('@', hlRootPath + hlCodePath ));
-			}
-			return result;
-		};
-		SyntaxHighlighter.autoloader.apply(null, path([
-			'applescript            @shBrushAppleScript.js',
-			'actionscript3 as3      @shBrushAS3.js',
-			'bash shell             @shBrushBash.js',
-			'coldfusion cf          @shBrushColdFusion.js',
-			'cpp c                  @shBrushCpp.js',
-			'c# c-sharp csharp      @shBrushCSharp.js',
-			'css                    @shBrushCss.js',
-			'delphi pascal          @shBrushDelphi.js',
-			'diff patch pas         @shBrushDiff.js',
-			'erl erlang             @shBrushErlang.js',
-			'groovy                 @shBrushGroovy.js',
-			'java                   @shBrushJava.js',
-			'jfx javafx             @shBrushJavaFX.js',
-			'js jscript javascript  @shBrushJScript.js',
-			'perl pl                @shBrushPerl.js',
-			'php                    @shBrushPhp.js',
-			'text plain             @shBrushPlain.js',
-			'py python              @shBrushPython.js',
-			'ruby rails ror rb      @shBrushRuby.js',
-			'sass scss              @shBrushSass.js',
-			'latex                  @shBrushLatex.js',
-			'less                   @shBrushLess.js',
-			'scala                  @shBrushScala.js',
-			'scheme                 @shBrushScheme.js',
-			'clojure                @shBrushClojure.js',
-			'sql                    @shBrushSql.js',
-			'vb vbnet               @shBrushVb.js',
-			'xml xhtml xslt html    @shBrushXml.js']));
-		SyntaxHighlighter.all();
 	};
 }

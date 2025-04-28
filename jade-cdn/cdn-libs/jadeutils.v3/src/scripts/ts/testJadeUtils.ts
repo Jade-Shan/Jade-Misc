@@ -229,6 +229,8 @@ class TestWebHtmlPage {
 		page.initPhotoFrame();
 		//
 		page.bindImageFrame("img.img-frame");
+		//
+		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/hightlight-code/scripts");
 
 	}
 
