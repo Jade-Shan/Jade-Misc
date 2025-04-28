@@ -39,7 +39,7 @@ export class WebHtmlPage {
 	 * @param cfg 顶部导航栏
 	 * @param items 
 	 */
-	renderTopNav(cfg: PageConfig, items: Array<NavTreeNode>): void {
+	renderTopNav(cfg: PageConfig, items: Array<NavTreeNode>, elemSlt?: string): void {
 		let navhtml = '<div class="navbar-header"> <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse"> <span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> <a class="navbar-brand" href="/">Jade Dungeon</a> </div> <div class="collapse navbar-collapse" id="example-navbar-collapse"> <ul class="nav navbar-nav">';
 		let addLink = (item: NavTreeNode, cfg: PageConfig) =>  {
 			if (item.title === "") {
@@ -69,7 +69,7 @@ export class WebHtmlPage {
 				if (item.link) { addLink(item, cfg); } else if (item.subs) { addSub(item); }
 		});
 		navhtml = navhtml + '</ul></div>';
-		$("#topnav").html(navhtml);
+		$(elemSlt ? elemSlt : "#topnav").html(navhtml);
 	}
 
 
@@ -129,33 +129,67 @@ export class WebHtmlPage {
 	renderSubTitle(cfg: PageConfig, elemSlt?: string): void { $(elemSlt ? elemSlt : "#subTitle").html(cfg.subTitle); };
 
 	/**
+	 * 必须要在页面上加上：
+	 * `<div id="photo-frame" class="modal fade photo-frame" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>`
+	 * 因为bootstrap的导入在是最前面。如果bootstrap.js已经导入了，再添加`div`就没有用了。
 	 * 
-	 * @param elemSlt 
+	 * @param photoFrameId 
 	 */
-	renderPhotoFrame(elemSlt?: string): void {
-		let html = '<div class="modal-dialog"><div class="modal-content">';
-		html = html + '<div class="modal-header">';
-		html = html + '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-		html = html + '<h4 class="modal-title" id="photo-frame-label"></h4></div>';
-		html = html + '<div class="modal-body row">';
-		html = html + '<img id="photo-frame-img" alt="" src="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >';
-		html = html + '</div></div>';
-		$(elemSlt ? elemSlt : "#photo-frame").html(html);
+	initPhotoFrame(photoFrameId?: string): void {
+		photoFrameId = photoFrameId ? photoFrameId: "photo-frame";
+		let html = `
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4 class="modal-title" id="${photoFrameId}-label"></h4>
+						</div>
+						<div class="modal-body row">
+							<img id="${photoFrameId}-img" alt="" src="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						</div>
+					</div>
+				</div>`;
+		$(`#${photoFrameId}`).html(html);
 	};
 
 	/**
 	 * 
 	 * @param elemSlt 
 	 */
-	viewPic(elemSlt: string) : void {
-		let m: JQuery<HTMLElement> = $(elemSlt);
-		let str1 = m.attr("alt");
-		let str2 = m.attr("src");
-		$("#photo-frame-label").html(str1 ? str1 : "");
-		$("#photo-frame-img").attr(str2 ? str2 : "");
-		$("#photo-frame-img").attr(str1 ? str1 : "");
-		($('#photo-frame') as any).modal('show');
+	static viewPic(title: string, url: string, photoFrameId?: string) : void {
+		photoFrameId = photoFrameId ? photoFrameId: "photo-frame";
+		$(`#${photoFrameId}-label`).html(title);
+		$(`#${photoFrameId}-img`).attr('src', url);
+		$(`#${photoFrameId}-img`).attr('alt', title);
+		($(`#${photoFrameId}`) as any).modal('show');
 	};
+
+	/**
+	 * 
+	 * @param elemSlt 
+	 */
+	bindImageFrame(elemSlt?: string, photoFrameId?: string): void {
+		elemSlt = elemSlt ? elemSlt : 'img.atc-img';
+		$(elemSlt ).each(function (t, s) {
+			let e = $(s); 
+			let title = e.attr('alt') as string;
+			let url   = e.attr('src') as string;
+			e.on('click', function (t) { WebHtmlPage.viewPic(title, url, photoFrameId); });
+		});
+	} 
+
+
+	/**
+	 * 
+	 * @param elemSlt 
+	 */
+	bindImageNewTab(elemSlt?: string): void {
+		$(elemSlt ? elemSlt : 'img.atc-img').each(function (t, s) {
+			let e = $(s); 
+			let c = e.attr('src') as string;
+			e.on('click', function (t) { WebUtil.openWindow(c); });
+			// net.jadedungeon.viewPic(s);
+		});
+	} 
 
 	/**
 	 * 
@@ -195,19 +229,6 @@ export class WebHtmlPage {
 			$(theme.elemSlt).on("click", (t) => {this.changeTheme(theme.themeName)});
 		}
 	}
-
-	/**
-	 * 
-	 * @param elemSlt 
-	 */
-	bindZoomImage(elemSlt?: string): void {
-		$(elemSlt ? elemSlt : 'img.atc-img').each(function (t, s) {
-			let e = $(s); 
-			let c = e.attr('src') as string;
-			e.on('click', function (t) { WebUtil.openWindow(c); });
-			// net.jadedungeon.viewPic(s);
-		});
-	} 
 
 
 	/**
@@ -331,9 +352,9 @@ export class WebHtmlPage {
 		var toggler = $('.toggler');
 		var tocWrap = $('.tocWrap');
 		this.changeFloatTocSize();         // 调整目录大小
-		let ckdk = this;
+		let page = this;
 		$(window).resize(function() {
-			ckdk.changeFloatTocSize();
+			page.changeFloatTocSize();
 		});
 		$('#tocBoxBtn').click(this.toggleTocWrap); // 开关目录事件
 		$('#tocLevBtn').click(this.toggleTocContract); // 开关目录事件

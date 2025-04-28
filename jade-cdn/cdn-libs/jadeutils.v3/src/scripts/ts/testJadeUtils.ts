@@ -185,6 +185,7 @@ class TestWebHtmlPage {
 	static testJquery() {
 		let cfg: PageConfig = { apiRoot: "/", pageTitle: "test-page", subTitle: "for-test", ajaxTimeout: 500 };
 		let page = new WebHtmlPage(cfg);
+
 		//
 		page.renderTopNav(cfg, [
 			{ title: "Journal", link: "/" },
@@ -203,6 +204,7 @@ class TestWebHtmlPage {
 					{ title: "paper", id: "switch-theme-paper-print", link: "#" }]
 			}
 		]);
+
 		//
 		// _1_ 2 3 4 5 6 ... 20
 		$('#pageBar01').html(page.renderPagination( 1, 20, n => `javascript:queryBlog(${n})`));
@@ -216,7 +218,20 @@ class TestWebHtmlPage {
 		$('#pageBar08').html(page.renderPagination(14, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ... 15 16 17 18 19 _20_
 		$('#pageBar09').html(page.renderPagination(20, 20, n => `javascript:queryBlog(${n})`));
+
+		//
+		page.bindInitDataTable();
+
+		//
+		page.bindImageNewTab("img.atc-img");
+
+		// 
+		page.initPhotoFrame();
+		//
+		page.bindImageFrame("img.img-frame");
+
 	}
+
 }
 
 
