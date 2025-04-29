@@ -232,12 +232,18 @@ class TestWebHtmlPage {
 		//
 		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/hightlight-code/scripts");
 		//
-		page.prepareSideIndex();
+		let tocIdxHtml = $("div.toc").html();
+		page.prepareTocIndex(tocIdxHtml, "div#sideTocIdxTree" );
+		page.prepareTocIndex(tocIdxHtml, "div#floatTocIdxTree");
+		$("div.toc").remove();
+		//
+		page.changeTocPanelSize("div#sideTocIdxTree" , 80);
+		page.changeTocPanelSize("div#floatTocIdxTree", 90);
 		$('#tocLevBtn2').click(page.toggleSideTocContract);
-		$('#tocBoxBtn2').click(page.toggleSideTocWrap);
-		page.changeSideTocSize();
+		$('#tocBoxBtn2').click(page.toggleSideTocWrap    );
 		$(window).resize(() => {
-     		page.changeSideTocSize();
+			page.changeTocPanelSize("div#sideTocIdxTree" , 80);
+			page.changeTocPanelSize("div#floatTocIdxTree", 90);
 		});
 
 	}

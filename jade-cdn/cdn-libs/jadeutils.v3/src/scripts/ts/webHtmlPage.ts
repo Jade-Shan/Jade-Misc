@@ -283,18 +283,16 @@ export class WebHtmlPage {
 	 * @param srcSlt 
 	 * @param tagSlt 
 	 */
-	prepareSideIndex(srcSlt?: string, tagSlt?: string): void {
-		srcSlt = srcSlt ? srcSlt : "div.toc";
-		tagSlt = tagSlt ? tagSlt : "div.sideToc";
-		let elem = $(srcSlt);
-		let html = elem.html();
-		$(tagSlt).html(`<div class="sideTocIdx">${html}</div>`);
-		$('.sideToc    ul').removeClass('toc-icon-open');
-		$('.sideToc    ul').addClass('toc-icon-close');
-		$('.sideToc>ul ul').removeClass('toc-sub-open');
-		$('.sideToc>ul ul').addClass('toc-sub-close');
-		elem.remove();
+	prepareTocIndex(html: string, tagSlt?: string): void {
+		//srcSlt = srcSlt ? srcSlt : "div.toc";
+		tagSlt = tagSlt ? tagSlt : "div#sideTocIdxTree";
+		$(tagSlt).html(html);
+		$(`${tagSlt}    ul`).removeClass('toc-icon-close');
+		$(`${tagSlt}    ul`).addClass('toc-icon-open');
+		$(`${tagSlt}>ul ul`).removeClass('toc-sub-close');
+		$(`${tagSlt}>ul ul`).addClass('toc-sub-open');
 	};
+
 
 	/**
 	 * 计算边栏目录的高度
@@ -302,28 +300,32 @@ export class WebHtmlPage {
 	 * @param margin 
 	 * @returns 
 	 */
-	static caculateSideTocBoxHeight(margin?: number): number {
-		margin = margin ? margin : 160;
-		return document.documentElement.clientHeight - margin;
+	static caculateSideTocBoxHeight(margin: number): number {
+		return document.documentElement.clientHeight - margin - margin -1;
 	};
+
 
 	/**
 	 * 大窗口时用的固定调整边栏目录的高度
 	 * 
 	 * @param elemSlt 
 	 */
-	changeSideTocSize(elemSlt?: string): void {
-		let h = WebHtmlPage.caculateSideTocBoxHeight();
-		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
+	changeTocPanelSize(elemSlt?: string, margin?: number): void {
+		elemSlt = elemSlt ? elemSlt : "div#floatTocIdxTree";
+		margin = margin ? margin : 80;
 		if (($(elemSlt).attr('class') as any).indexOf("toc-close") > -1) {
 			// do nothing
 		} else {
-			$(elemSlt).attr('style', `height: ${ h }px; transition: 1s;`);
+			$(elemSlt).attr('style', `height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`);
 		}
 	};
 
+
+	/**
+	 * 展开与折叠目录树
+	 */
 	toggleSideTocWrap(): void {
-		let h = WebHtmlPage.caculateSideTocBoxHeight();
+		let h = WebHtmlPage.caculateSideTocBoxHeight(80);
 		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-close') > - 1) {
 			let n = '';
 			$('div.sideToc').attr('style', `padding: 10px 20px; height: ${ h }px; transition: 1s;`);
@@ -336,6 +338,9 @@ export class WebHtmlPage {
 		}
 	};
 
+	/**
+	 * 展开与折叠目录面板
+	 */
 	toggleSideTocContract(): void {
 		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-cont-flg') > - 1) {
 			$('div.sideTocIdx').removeClass('toc-cont-flg');
@@ -354,19 +359,8 @@ export class WebHtmlPage {
 
 
 
-//  t.prepareFloatIndex = function () {
-//    var t = '<div class="tocWrap hidden-md hidden-lg"><div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>' + ('<div class="tocIdx">' + e('.toc').html() + '</div>') + '</div>';
-//    e('div.ctx-main').append(t),
-//    e('div.tocIdx    ul').addClass('toc-icon-close');
-//    e('.toggler'),
-//    e('.tocWrap');
-//    this.toggleTocWrap(),
-//    e('#tocBoxBtn').click(this.toggleTocWrap),
-//    e('#tocBoxBtn2').click(this.toggleSideTocWrap),
-//    e('#tocLevBtn').click(this.toggleTocContract),
-//    e('#tocLevBtn2').click(this.toggleSideTocContract),
-//    e('div.tocWrap').show()
-//  },
+
+
 
 //  t.toggleTocWrap = function () {
 //    if (e('div.tocIdx').attr('class').indexOf('toc-close') > - 1) {
@@ -383,70 +377,7 @@ export class WebHtmlPage {
 
 
 
-	// prepareFloatIndex(): void {
-    // let t = '<div class="tocWrap hidden-md hidden-lg"><div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>' + ('<div class="tocIdx">' + $('.toc').html() + '</div>') + '</div>';
-    // $('div.ctx-main').append(t),
-    // $('div.tocIdx    ul').addClass('toc-icon-close');
-    // $('.toggler'),
-    // $('.tocWrap');
-    // this.toggleTocWrap(),
-    // $('#tocBoxBtn').click(this.toggleTocWrap),
-    // $('#tocBoxBtn2').click(this.toggleSideTocWrap),
-    // $('#tocLevBtn').click(this.toggleTocContract),
-    // $('#tocLevBtn2').click(this.toggleSideTocContract),
-    // $('div.tocWrap').show()
-  // }
 
-
-// // 	/**
-// // 	 * 
-// // 	 */
-// // 	prepareFloatIndex(): void {
-// // 		// 目录内容区
-// // 		var idxBody = '<div class="tocIdx">' + $('.toc').html() + '</div>';
-// // 		// 目录标题
-// // 		var idxTitle = '<div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>';
-// // 		// 目录全部
-// // 		var idxAll = '<div class="tocWrap hidden-md hidden-lg">' + idxTitle + idxBody + '</div>';
-// // 
-// // 		/* 添加到内容中 */
-// // 		$('div.ctx-main').append(idxAll);
-// // 		$('div.tocIdx    ul').addClass('toc-icon-close');
-// // 		var toggler = $('.toggler');
-// // 		var tocWrap = $('.tocWrap');
-// // 		this.changeFloatTocSize();         // 调整目录大小
-// // 		let page = this;
-// // 		$(window).resize(function() {
-// // 			page.changeFloatTocSize();
-// // 		});
-// // 		$('#tocBoxBtn').click(this.toggleTocWrap); // 开关目录事件
-// // 		$('#tocLevBtn').click(this.toggleTocContract); // 开关目录事件
-// // 		$('div.tocWrap').show(); // 显示目录
-// // 	};
-
-
-
-
-	// /**
-	 // * 
-	 // * 调整目录的大小
-	 // * @param margin 
-	 // * @returns 
-	 // */
-	// caculateFloatTocBoxHeight(margin?: number): number {
-		// margin = margin ? margin : 47;
-		// return document.documentElement.clientHeight - margin - margin - 1;
-	// };
-
-	// /**
-	 // * 
-	 // * @param margin 
-	 // * @returns 
-	 // */
-
-	// /**
-	 // * 
-	 // */
 
 	// /**
 	 // * 打开、收起所有目录盒子
