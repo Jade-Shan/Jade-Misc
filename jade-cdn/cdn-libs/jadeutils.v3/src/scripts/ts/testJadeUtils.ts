@@ -233,11 +233,10 @@ class TestWebHtmlPage {
 		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/hightlight-code/scripts");
 		//
 		page.prepareSideIndex();
-		//page.changeSideTocSize();
-		//$(window).resize(() => {
-    	//	page.changeSideTocSize("div.tocIdx");
-     	//	page.changeSideTocSize();
-		//});
+		page.changeSideTocSize();
+		$(window).resize(() => {
+     		page.changeSideTocSize();
+		});
 
 	}
 

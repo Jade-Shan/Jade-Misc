@@ -278,42 +278,47 @@ export class WebHtmlPage {
 		SyntaxHighlighter.all();
 	};
 
-//  t.prepareSideIndex = function () {
-//    var n = '<div class="sideTocIdx">' + e('.toc').html() + '</div>';
-//    e('.sideToc').html(n),
-//    e('.sideToc    ul').removeClass('toc-icon-open'),
-//    e('.sideToc    ul').addClass('toc-icon-close'),
-//    e('.sideToc>ul ul').removeClass('toc-sub-open'),
-//    e('.sideToc>ul ul').addClass('toc-sub-close'),
-//    t.changeSideTocSize()
-//  },
 	/**
-	* 
-	*/
+	 * 
+	 * @param srcSlt 
+	 * @param tagSlt 
+	 */
 	prepareSideIndex(srcSlt?: string, tagSlt?: string): void {
 		srcSlt = srcSlt ? srcSlt : "div.toc";
 		tagSlt = tagSlt ? tagSlt : "div.sideToc";
 		let elem = $(srcSlt);
 		let html = elem.html();
-		 $(tagSlt).html(`<div class="sideTocIdx">${html}</div>`);
-		 $('.sideToc    ul').removeClass('toc-icon-open');
-		 $('.sideToc    ul').   addClass('toc-icon-close');
-		 $('.sideToc>ul ul').removeClass('toc-sub-open');
-		 $('.sideToc>ul ul').   addClass('toc-sub-close');
-		 elem.remove();
+		$(tagSlt).html(`<div class="sideTocIdx">${html}</div>`);
+		$('.sideToc    ul').removeClass('toc-icon-open');
+		$('.sideToc    ul').addClass('toc-icon-close');
+		$('.sideToc>ul ul').removeClass('toc-sub-open');
+		$('.sideToc>ul ul').addClass('toc-sub-close');
+		elem.remove();
 	};
 
-//  t.changeSideTocSize = function () {
-//    if (e('div.sideTocIdx').attr('class').indexOf('toc-close') < 0) {
-//      var n = 'height: ' + t.caculateSideTocBoxHeight() + 'px; transition: 1s;';
-//      e('div.sideTocIdx').attr('style', n)
-//    }
-//  },
+	/**
+	 * 
+	 * @param margin 
+	 * @returns 
+	 */
+	caculateSideTocBoxHeight(margin?: number): number {
+		margin = margin ? margin : 160;
+		return document.documentElement.clientHeight - margin;
+	};
 
+	/**
+	 * 
+	 * @param elemSlt 
+	 */
+	changeSideTocSize(elemSlt?: string): void {
+		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
+		if (($(elemSlt).attr('class') as any).indexOf("toc-close") > -1) {
+			// do nothing
+		} else {
+			$(elemSlt).attr('style', `height: ${this.caculateSideTocBoxHeight()}px; transition: 1s;`);
+		}
+	};
 
-//  t.caculateSideTocBoxHeight = function () {
-//    return document.documentElement.clientHeight - 160
-//  },
 
 //  t.prepareFloatIndex = function () {
 //    var t = '<div class="tocWrap hidden-md hidden-lg"><div class="toggler"><em id="tocBoxBtn">目录</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em id="tocLevBtn">层级</em></div>' + ('<div class="tocIdx">' + e('.toc').html() + '</div>') + '</div>';
@@ -404,22 +409,10 @@ export class WebHtmlPage {
 	 // * @param margin 
 	 // * @returns 
 	 // */
-	// caculateSideTocBoxHeight(margin?: number): number {
-		// margin = margin ? margin : 160;
-		// return document.documentElement.clientHeight - margin;
-	// };
 
 	// /**
 	 // * 
 	 // */
-	// changeSideTocSize(elemSlt?: string): void {
-		// elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
-		// if (($(elemSlt).attr('class') as any).indexOf("toc-close") > -1) {
-			// // do nothing
-		// } else {
-			// $(elemSlt).attr('style', `height: ${this.caculateFloatTocBoxHeight()}px; transition: 1s;`);
-		// }
-	// };
 
 	// /**
 	 // * 打开、收起所有目录盒子
