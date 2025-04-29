@@ -240,7 +240,7 @@ class TestWebHtmlPage {
 		page.changeTocPanelSize("div#sideTocIdxTree" , 80);
 		page.changeTocPanelSize("div#floatTocIdxTree", 90);
 		$('#tocLevBtn2').click(page.toggleSideTocContract);
-		$('#tocBoxBtn2').click(() => {page.toggleSideTocWrap(80)}    );
+		$('#tocBoxBtn2').click(() => {page.toggleSideTocWrap(80)});
 		$(window).resize(() => {
 			page.changeTocPanelSize("div#sideTocIdxTree" , 80);
 			page.changeTocPanelSize("div#floatTocIdxTree", 90);
