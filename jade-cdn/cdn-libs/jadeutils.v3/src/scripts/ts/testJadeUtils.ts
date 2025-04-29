@@ -239,10 +239,10 @@ class TestWebHtmlPage {
 		//
 		page.changeTocPanelSize("div#sideTocIdxTree" , 80);
 		page.changeTocPanelSize("div#floatTocIdxTree", 90);
-		$('#tocLevBtn2').click(() => {page.toggleSideTocContract("div#sideTocIdxTree")});
-		$('#tocBoxBtn2').click(() => {page.toggleSideTocWrap    ("div#sideTocIdxTree", 80)});
-		$('#tocLevBtn' ).click(() => {page.toggleSideTocContract("div#floatTocIdxTree")});
-		$('#tocBoxBtn' ).click(() => {page.toggleSideTocWrap    ("div#floatTocIdxTree", 90)});
+		$('#tocLevBtn' ).click(() => {page.toggleSideTocContract("div.sideTocIdx")});
+		$('#tocLevBtn2').click(() => {page.toggleSideTocContract("div.sideTocIdx")});
+		$('#tocBoxBtn' ).click(() => {page.toggleSideTocWrap    ("div.sideTocIdx", 90)});
+		$('#tocBoxBtn2').click(() => {page.toggleSideTocWrap    ("div.sideTocIdx", 80)});
 		$(window).resize(() => {
 			page.changeTocPanelSize("div#sideTocIdxTree" , 80);
 			page.changeTocPanelSize("div#floatTocIdxTree", 90);

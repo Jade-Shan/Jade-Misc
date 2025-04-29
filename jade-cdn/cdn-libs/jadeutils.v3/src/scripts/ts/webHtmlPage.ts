@@ -322,11 +322,11 @@ export class WebHtmlPage {
 
 
 	/**
-	 * 展开与折叠目录树
+	 * 展开与折叠目录面板
 	 */
 	toggleSideTocWrap(elemSlt?: string, margin?: number): void {
 		margin = margin ? margin : 80;
-		elemSlt = elemSlt ? elemSlt : "div#sideTocIdxTree";
+		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
 		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-close') > - 1) {
 			$('div.sideToc').attr('style', `padding: 10px 20px; height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`);
 			$('div.sideToc').css('overflow', 'hidden');
@@ -339,22 +339,28 @@ export class WebHtmlPage {
 	};
 
 	/**
-	 * 展开与折叠目录面板
+	 * 展开与折叠目录树
 	 */
 	toggleSideTocContract(elemSlt?: string): void {
-		elemSlt = elemSlt ? elemSlt : "div#sideTocIdxTree";
-		if (($(elemSlt) as any).attr('class').indexOf('toc-cont-flg') > - 1) {
-			$(elemSlt).removeClass('toc-cont-flg');
-			$(`${elemSlt}    ul`).removeClass('toc-icon-close');
-			$(`${elemSlt}    ul`).   addClass('toc-icon-open' );
-			$(`${elemSlt}>ul ul`).removeClass('toc-sub-close' );
-			$(`${elemSlt}>ul ul`).   addClass('toc-sub-open'  );
-		} else {
-			$(elemSlt).addClass('toc-cont-flg');
-			$(`${elemSlt}    ul`).removeClass('toc-icon-open' );
-			$(`${elemSlt}    ul`).   addClass('toc-icon-close');
-			$(`${elemSlt}>ul ul`).removeClass('toc-sub-open'  );
-			$(`${elemSlt}>ul ul`).   addClass('toc-sub-close' );
+		let effect = (elem: any) => {
+			if (elem.attr('class').indexOf('toc-cont-flg') > - 1) {
+				elem.removeClass('toc-cont-flg');
+				$(`${elemSlt}    ul`).removeClass('toc-icon-close');
+				$(`${elemSlt}    ul`).   addClass('toc-icon-open' );
+				$(`${elemSlt}>ul ul`).removeClass('toc-sub-close' );
+				$(`${elemSlt}>ul ul`).   addClass('toc-sub-open'  );
+			} else {
+				elem.addClass('toc-cont-flg');
+				$(`${elemSlt}    ul`).removeClass('toc-icon-open' );
+				$(`${elemSlt}    ul`).   addClass('toc-icon-close');
+				$(`${elemSlt}>ul ul`).removeClass('toc-sub-open'  );
+				$(`${elemSlt}>ul ul`).   addClass('toc-sub-close' );
+			}
+		};
+
+		let elemArr = $(elemSlt = elemSlt ? elemSlt : "div.sideTocIdx") as any;
+		for (let i = 0; i < elemArr.length; i++) {
+			effect($(elemArr.get(i)));
 		}
 	};
 
