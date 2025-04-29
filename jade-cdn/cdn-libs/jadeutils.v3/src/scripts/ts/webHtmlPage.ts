@@ -465,42 +465,12 @@ export class WebHtmlPage {
 	// };
 
 
-	// /**
-	 // * 打开、收起所有目录盒子
-	 // */
-	// toggleSideTocWrap() {
-		// if (($('div.sideTocIdx').attr('class') as any).indexOf('toc-close') > - 1) {
-			// $('div.sideToc').attr('style', `padding: 10px 20px; height: ${this.caculateSideTocBoxHeight()}px; transition: 1s;`);
-			// $('div.sideToc').css('overflow', 'hidden');
-			// $('div.sideTocIdx').removeClass('toc-close');
-		// } else {
-			// $('div.sideToc').attr('style', 'padding: 0px 20px; height: 0px; transition: 1s;');
-			// $('div.sideToc').css('overflow', 'auto');
-			// $('div.sideTocIdx').addClass('toc-close');
-		// }
-	// };
 
 
 	// /**
 	 // * 打开、收起所有目录
 	 // */
 	// toggleTocContract(): void {
-		// if (($('div.tocIdx').attr('class') as any).indexOf("toc-cont-flg") > -1) {
-			// $('div.tocIdx').removeClass('toc-cont-flg');
-			// $('div.tocIdx    ul').removeClass('toc-icon-close');
-			// $('div.tocIdx    ul').addClass('toc-icon-open');
-			// $('div.tocIdx>ul ul').removeClass('toc-sub-close');
-			// $('div.tocIdx>ul ul').addClass('toc-sub-open');
-		// } else {
-			// $('div.tocIdx').addClass('toc-cont-flg');
-			// $('div.tocIdx    ul').removeClass('toc-icon-open');
-			// $('div.tocIdx    ul').addClass('toc-icon-close');
-			// $('div.tocIdx>ul ul').removeClass('toc-sub-open');
-			// $('div.tocIdx>ul ul').addClass('toc-sub-close');
-		// }
-	// };
-
-	// toggleSideTocContract(): void {
 		// if (($('div.tocIdx').attr('class') as any).indexOf("toc-cont-flg") > -1) {
 			// $('div.tocIdx').removeClass('toc-cont-flg');
 			// $('div.tocIdx    ul').removeClass('toc-icon-close');
