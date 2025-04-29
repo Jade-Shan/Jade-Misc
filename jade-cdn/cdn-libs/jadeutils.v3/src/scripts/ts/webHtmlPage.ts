@@ -324,12 +324,11 @@ export class WebHtmlPage {
 	/**
 	 * 展开与折叠目录树
 	 */
-	toggleSideTocWrap(margin?: number): void {
+	toggleSideTocWrap(elemSlt?: string, margin?: number): void {
 		margin = margin ? margin : 80;
-		let h = WebHtmlPage.caculateSideTocBoxHeight(margin);
+		elemSlt = elemSlt ? elemSlt : "div#sideTocIdxTree";
 		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-close') > - 1) {
-			let n = '';
-			$('div.sideToc').attr('style', `padding: 10px 20px; height: ${ h }px; transition: 1s;`);
+			$('div.sideToc').attr('style', `padding: 10px 20px; height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`);
 			$('div.sideToc').css('overflow', 'hidden');
 			$('div.sideTocIdx').removeClass('toc-close');
 		} else {
@@ -342,19 +341,20 @@ export class WebHtmlPage {
 	/**
 	 * 展开与折叠目录面板
 	 */
-	toggleSideTocContract(): void {
-		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-cont-flg') > - 1) {
-			$('div.sideTocIdx').removeClass('toc-cont-flg');
-			$('div.sideTocIdx    ul').removeClass('toc-icon-close');
-			$('div.sideTocIdx    ul').   addClass('toc-icon-open' );
-			$('div.sideTocIdx>ul ul').removeClass('toc-sub-close' );
-			$('div.sideTocIdx>ul ul').   addClass('toc-sub-open'  );
+	toggleSideTocContract(elemSlt?: string): void {
+		elemSlt = elemSlt ? elemSlt : "div#sideTocIdxTree";
+		if (($(elemSlt) as any).attr('class').indexOf('toc-cont-flg') > - 1) {
+			$(elemSlt).removeClass('toc-cont-flg');
+			$(`${elemSlt}    ul`).removeClass('toc-icon-close');
+			$(`${elemSlt}    ul`).   addClass('toc-icon-open' );
+			$(`${elemSlt}>ul ul`).removeClass('toc-sub-close' );
+			$(`${elemSlt}>ul ul`).   addClass('toc-sub-open'  );
 		} else {
-			$('div.sideTocIdx').addClass('toc-cont-flg');
-			$('div.sideTocIdx    ul').removeClass('toc-icon-open' );
-			$('div.sideTocIdx    ul').   addClass('toc-icon-close');
-			$('div.sideTocIdx>ul ul').removeClass('toc-sub-open'  );
-			$('div.sideTocIdx>ul ul').   addClass('toc-sub-close' );
+			$(elemSlt).addClass('toc-cont-flg');
+			$(`${elemSlt}    ul`).removeClass('toc-icon-open' );
+			$(`${elemSlt}    ul`).   addClass('toc-icon-close');
+			$(`${elemSlt}>ul ul`).removeClass('toc-sub-open'  );
+			$(`${elemSlt}>ul ul`).   addClass('toc-sub-close' );
 		}
 	};
 
