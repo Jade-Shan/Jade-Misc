@@ -324,8 +324,9 @@ export class WebHtmlPage {
 	/**
 	 * 展开与折叠目录树
 	 */
-	toggleSideTocWrap(): void {
-		let h = WebHtmlPage.caculateSideTocBoxHeight(80);
+	toggleSideTocWrap(margin?: number): void {
+		margin = margin ? margin : 80;
+		let h = WebHtmlPage.caculateSideTocBoxHeight(margin);
 		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-close') > - 1) {
 			let n = '';
 			$('div.sideToc').attr('style', `padding: 10px 20px; height: ${ h }px; transition: 1s;`);
