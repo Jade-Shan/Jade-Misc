@@ -284,13 +284,16 @@ export class WebHtmlPage {
 	 * @param tagSlt 
 	 */
 	prepareTocIndex(html: string, tagSlt?: string): void {
-		//srcSlt = srcSlt ? srcSlt : "div.toc";
-		tagSlt = tagSlt ? tagSlt : "div#sideTocIdxTree";
-		$(tagSlt).html(html);
-		$(`${tagSlt}    ul`).removeClass('toc-icon-close');
-		$(`${tagSlt}    ul`).addClass('toc-icon-open');
-		$(`${tagSlt}>ul ul`).removeClass('toc-sub-close');
-		$(`${tagSlt}>ul ul`).addClass('toc-sub-open');
+		tagSlt = tagSlt ? tagSlt : "div.sideTocIdx";
+		let elemArr = $(tagSlt) as any;
+		for (let i = 0; i < elemArr.length; i++) {
+			let elem = $(elemArr.get(i));
+			elem.html(html);
+			$(`${tagSlt}    ul`).removeClass('toc-icon-close');
+			$(`${tagSlt}    ul`).addClass('toc-icon-open');
+			$(`${tagSlt}>ul ul`).removeClass('toc-sub-close');
+			$(`${tagSlt}>ul ul`).addClass('toc-sub-open');
+		}
 	};
 
 
@@ -313,8 +316,6 @@ export class WebHtmlPage {
 	changeTocPanelSize(elemSlt?: string, margin?: number): void {
 		elemSlt = elemSlt ? elemSlt : "div#floatTocIdxTree";
 		margin = margin ? margin : 80;
-		let cn = ($(elemSlt).attr('class') as any).indexOf("toc-close");
-		console.log(cn);
 		if (($(elemSlt).attr('class') as any).indexOf("toc-close") < 0) {
 			$(elemSlt).attr('style', `height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`);
 		}

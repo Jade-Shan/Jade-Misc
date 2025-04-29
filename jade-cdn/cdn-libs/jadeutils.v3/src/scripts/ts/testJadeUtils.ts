@@ -233,20 +233,22 @@ class TestWebHtmlPage {
 		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/hightlight-code/scripts");
 		//
 		let tocIdxHtml = $("div.toc").html();
-		page.prepareTocIndex(tocIdxHtml, "div#sideTocIdxTree" );
-		page.prepareTocIndex(tocIdxHtml, "div#floatTocIdxTree");
+		page.prepareTocIndex(tocIdxHtml, "div.sideTocIdx" );
 		$("div.toc").remove();
 		//
-		page.changeTocPanelSize("div#sideTocIdxTree" , 80);
-		page.changeTocPanelSize("div#floatTocIdxTree", 90);
 		$('#tocLevBtn' ).click(() => {page.toggleSideTocContract("div.sideTocIdx")});
 		$('#tocLevBtn2').click(() => {page.toggleSideTocContract("div.sideTocIdx")});
 		$('#tocBoxBtn' ).click(() => {page.toggleSideTocWrap    ("div.sideTocIdx", 90)});
 		$('#tocBoxBtn2').click(() => {page.toggleSideTocWrap    ("div.sideTocIdx", 80)});
-		$(window).resize(() => {
+
+		let changeTocWithWindow = () => {
 			page.changeTocPanelSize("div#sideTocIdxTree" , 80);
 			page.changeTocPanelSize("div#floatTocIdxTree", 90);
-		});
+		};
+
+		changeTocWithWindow();
+
+		$(window).resize(changeTocWithWindow);
 
 	}
 
