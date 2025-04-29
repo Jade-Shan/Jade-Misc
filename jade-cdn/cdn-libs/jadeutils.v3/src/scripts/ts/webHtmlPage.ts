@@ -313,9 +313,9 @@ export class WebHtmlPage {
 	changeTocPanelSize(elemSlt?: string, margin?: number): void {
 		elemSlt = elemSlt ? elemSlt : "div#floatTocIdxTree";
 		margin = margin ? margin : 80;
-		if (($(elemSlt).attr('class') as any).indexOf("toc-close") > -1) {
-			// do nothing
-		} else {
+		let cn = ($(elemSlt).attr('class') as any).indexOf("toc-close");
+		console.log(cn);
+		if (($(elemSlt).attr('class') as any).indexOf("toc-close") < 0) {
 			$(elemSlt).attr('style', `height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`);
 		}
 	};
