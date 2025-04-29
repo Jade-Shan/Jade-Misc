@@ -233,6 +233,8 @@ class TestWebHtmlPage {
 		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/hightlight-code/scripts");
 		//
 		page.prepareSideIndex();
+		$('#tocLevBtn2').click(page.toggleSideTocContract);
+		$('#tocBoxBtn2').click(page.toggleSideTocWrap);
 		page.changeSideTocSize();
 		$(window).resize(() => {
      		page.changeSideTocSize();

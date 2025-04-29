@@ -279,7 +279,7 @@ export class WebHtmlPage {
 	};
 
 	/**
-	 * 
+	 * 大窗口时用的固定边栏目录
 	 * @param srcSlt 
 	 * @param tagSlt 
 	 */
@@ -297,27 +297,61 @@ export class WebHtmlPage {
 	};
 
 	/**
+	 * 计算边栏目录的高度
 	 * 
 	 * @param margin 
 	 * @returns 
 	 */
-	caculateSideTocBoxHeight(margin?: number): number {
+	static caculateSideTocBoxHeight(margin?: number): number {
 		margin = margin ? margin : 160;
 		return document.documentElement.clientHeight - margin;
 	};
 
 	/**
+	 * 大窗口时用的固定调整边栏目录的高度
 	 * 
 	 * @param elemSlt 
 	 */
 	changeSideTocSize(elemSlt?: string): void {
+		let h = WebHtmlPage.caculateSideTocBoxHeight();
 		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
 		if (($(elemSlt).attr('class') as any).indexOf("toc-close") > -1) {
 			// do nothing
 		} else {
-			$(elemSlt).attr('style', `height: ${this.caculateSideTocBoxHeight()}px; transition: 1s;`);
+			$(elemSlt).attr('style', `height: ${ h }px; transition: 1s;`);
 		}
 	};
+
+	toggleSideTocWrap(): void {
+		let h = WebHtmlPage.caculateSideTocBoxHeight();
+		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-close') > - 1) {
+			let n = '';
+			$('div.sideToc').attr('style', `padding: 10px 20px; height: ${ h }px; transition: 1s;`);
+			$('div.sideToc').css('overflow', 'hidden');
+			$('div.sideTocIdx').removeClass('toc-close');
+		} else {
+			$('div.sideToc').attr('style', 'padding: 0px 20px; height: 0px; transition: 1s;');
+			$('div.sideToc').css('overflow', 'auto');
+			$('div.sideTocIdx').addClass('toc-close');
+		}
+	};
+
+	toggleSideTocContract(): void {
+		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-cont-flg') > - 1) {
+			$('div.sideTocIdx').removeClass('toc-cont-flg');
+			$('div.sideTocIdx    ul').removeClass('toc-icon-close');
+			$('div.sideTocIdx    ul').   addClass('toc-icon-open' );
+			$('div.sideTocIdx>ul ul').removeClass('toc-sub-close' );
+			$('div.sideTocIdx>ul ul').   addClass('toc-sub-open'  );
+		} else {
+			$('div.sideTocIdx').addClass('toc-cont-flg');
+			$('div.sideTocIdx    ul').removeClass('toc-icon-open' );
+			$('div.sideTocIdx    ul').   addClass('toc-icon-close');
+			$('div.sideTocIdx>ul ul').removeClass('toc-sub-open'  );
+			$('div.sideTocIdx>ul ul').   addClass('toc-sub-close' );
+		}
+	};
+
 
 
 //  t.prepareFloatIndex = function () {

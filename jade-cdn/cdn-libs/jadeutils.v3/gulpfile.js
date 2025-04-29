@@ -69,36 +69,36 @@ themes.forEach((theme) => {
 // javascript
 // =======================
 
-const scriptJsSrc = 'src/scripts/js/';
-const scriptJsTag = 'webroot/scripts/js/';
-gulp.task('clean-javascript', () => {
-	return gulp.src([scriptJsTag + '*'], 
-		{read: false, allowEmpty: true}).pipe(clean());
-});
+//const scriptJsSrc = 'src/scripts/js/';
+//const scriptJsTag = 'webroot/scripts/js/';
+//gulp.task('clean-javascript', () => {
+//	return gulp.src([scriptJsTag + '*'], 
+//		{read: false, allowEmpty: true}).pipe(clean());
+//});
 
-// 检查javascript
-gulp.task('check-javascript', () => {
-	return gulp.src(scriptJsSrc + '**/*.js').pipe(jshint())
-		.pipe(jshint.reporter('default'));
-});
+//// 检查javascript
+//gulp.task('check-javascript', () => {
+//	return gulp.src(scriptJsSrc + '**/*.js').pipe(jshint())
+//		.pipe(jshint.reporter('default'));
+//});
 
 
-// 合并、压缩、重命名javascript
-gulp.task('process-javascript', gulp.series('clean-javascript', () => {
-	return gulp.src([
-		scriptJsSrc + 'basic.js',
-		scriptJsSrc + 'jqueryTools.js',
-		scriptJsSrc + 'web.js',
-		scriptJsSrc + 'dataStructure.js',
-		scriptJsSrc + 'wiki.js'
-	]).pipe(jshint()).pipe(jshint.reporter('default'))
-		.pipe(gulp.dest(scriptJsTag))
-		//.pipe(concat('all.js'))
-		//.pipe(gulp.dest(scriptJsTag))
-		.pipe(rename({suffix: '.min'})).pipe(uglify())
-		.pipe(gulp.dest(scriptJsTag))
-}));
-themeTasks.push('process-javascript')
+//// 合并、压缩、重命名javascript
+//gulp.task('process-javascript', gulp.series('clean-javascript', () => {
+//	return gulp.src([
+//		scriptJsSrc + 'basic.js',
+//		scriptJsSrc + 'jqueryTools.js',
+//		scriptJsSrc + 'web.js',
+//		scriptJsSrc + 'dataStructure.js',
+//		scriptJsSrc + 'wiki.js'
+//	]).pipe(jshint()).pipe(jshint.reporter('default'))
+//		.pipe(gulp.dest(scriptJsTag))
+//		//.pipe(concat('all.js'))
+//		//.pipe(gulp.dest(scriptJsTag))
+//		.pipe(rename({suffix: '.min'})).pipe(uglify())
+//		.pipe(gulp.dest(scriptJsTag))
+//}));
+//themeTasks.push('process-javascript')
 
 const scriptTsRef = 'src/scripts/include/';
 const scriptTsSrc = 'src/scripts/ts/';
