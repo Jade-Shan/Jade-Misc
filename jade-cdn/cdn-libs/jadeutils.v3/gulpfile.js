@@ -123,16 +123,31 @@ gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 		module: "es6",
 		noImplicitAny: true,
 		strict: true,
-		// sourcemap: true
+		declaration: true,
+		// sourcemap: true,
 		// lib: ["ES2021.String"]
     })).pipe(gulp.dest(scriptTsTag))
 		//.pipe(concat('all.js'))
 		//.pipe(gulp.dest(scriptTsTag))
-		.pipe(rename({suffix: '.min'})).pipe(uglify())
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(scriptTsTag))
 }));
 themeTasks.push('process-typescript');
+
+gulp.task('compress-typescript', gulp.series('process-typescript', () => {
+	return gulp.src([
+		scriptTsTag + 'basic.js',
+		scriptTsTag + 'web.js',
+		scriptTsTag + 'dataStructure.js',
+		scriptTsTag + 'webHtmlPage.js',
+		scriptTsTag + 'testJadeUtils.js',
+	]).pipe(rename({ suffix: '.min' }))
+		.pipe(uglify())
+		.pipe(gulp.dest(scriptTsTag))
+}));
+themeTasks.push('compress-typescript');
+
+
 
 gulp.task('default', gulp.parallel(themeTasks))
 
