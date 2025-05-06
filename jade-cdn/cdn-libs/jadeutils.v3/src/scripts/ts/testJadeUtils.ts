@@ -230,7 +230,7 @@ class TestWebHtmlPage {
 		//
 		page.bindImageFrame("img.img-frame");
 		//
-		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/hightlight-code/scripts");
+		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/SyntaxHighlighter/2.1.364/scripts");
 		//
 		let tocIdxHtml = $("div.toc").html();
 		page.prepareTocIndex(tocIdxHtml, "div.sideTocIdx" );

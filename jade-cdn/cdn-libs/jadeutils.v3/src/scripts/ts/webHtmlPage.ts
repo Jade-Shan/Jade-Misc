@@ -234,7 +234,7 @@ export class WebHtmlPage {
 	 */
 	loadCodeHightlight(hlRootPath?: string,  hlCodePath?: string) {
 		hlRootPath = hlRootPath ? hlRootPath : "";
-		hlCodePath = hlCodePath ? hlCodePath : "../../vimwiki-theme/3rd-libs/hightlight-code/scripts/";
+		hlCodePath = hlCodePath ? hlCodePath : "../../vimwiki-theme/3rd/SyntaxHighlighter/2.1.364/scripts/";
 		let basePath = `${hlRootPath}${hlCodePath}/`;
 		let parsePath = (arr: Array<string>): Array<string> => {
 			let lines: Array<string> = [];
