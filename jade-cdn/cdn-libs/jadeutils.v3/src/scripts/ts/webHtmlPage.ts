@@ -163,7 +163,7 @@ export class WebHtmlPage {
 					let rowCount = rows.size() as number;
 					if (rowCount > 20) {  // 20行不到的表就不加DataTable了
 						try { 
-							var info = false; var paging = false; var searching = false;
+							let info = false; let paging = false; let searching = false;
 							if (rowCount > 30) { // 大于30行的表要加上搜索和分页
 								info = true; 
 								paging = true; 
@@ -456,14 +456,19 @@ export class WebHtmlPage {
 	 * @param elemSlt 
 	 */
 	changeTheme(themeName: string, cookieKey?: string, elemSlt?: string): void {
-		let styles = document.querySelectorAll(elemSlt ? elemSlt : 'link[title]');
+		let styles = document.querySelectorAll<HTMLLinkElement>(elemSlt ? elemSlt : 'link[title]');
+		let activeLink: HTMLLinkElement|null = null;
 		for (let i=0; i < styles.length; i++) {
-			let lnk = styles[i] as HTMLLinkElement;
-			var ttitle = lnk.title;
+			let lnk = styles[i];
+			let ttitle = lnk.title;
 			if (ttitle == themeName) { 
+				activeLink = lnk;
+			} 
+			lnk.disabled = true;
+		}
+		if (activeLink) {
 				WebUtil.setCookieValue(cookieKey ? cookieKey : "ui.theme", themeName, {sameSite:'Lax'});
-				lnk.disabled = false; 
-			} else { lnk.disabled = true; }
+				activeLink.disabled = false; 
 		}
 	};
 

@@ -154,12 +154,14 @@ export class WebUtil {
 			rec.sameSite = "Lax";
 		}
 		//
-		let expireStr   = (new Date((new Date()).getTime() + (rec.expireDays * TimeUtil.UNIT_DAY))).toUTCString();
-		let pathStr     = rec.path     ? ';path='     + rec.path     : '';
-		let domainStr   = rec.domain   ? ';domain='   + rec.domain   : '';
-		let sameSiteStr = rec.sameSite ? ';SameSite=' + rec.sameSite : '';
-		let secureStr   = rec.secure   ? ';secure'                   : '';
-		document.cookie = [name, '=', encodeURIComponent(value), expireStr, pathStr, domainStr, sameSiteStr, secureStr].join('');
+		let expireStr   = `;expires=${(new Date((new Date()).getTime() + (rec.expireDays * TimeUtil.UNIT_DAY))).toUTCString()}`;
+		let pathStr     = rec.path     ? `;path=${    rec.path    }` : '';
+		let domainStr   = rec.domain   ? `;domain=${  rec.domain  }` : '';
+		let sameSiteStr = rec.sameSite ? `;SameSite=${rec.sameSite}` : '';
+		let secureStr   = rec.secure   ? `;secure`                   : '';
+		document.cookie = `${name}=${encodeURIComponent(value)}${expireStr}${pathStr}${domainStr}${sameSiteStr}${secureStr}`;
+
+
 	}
 
 	/**
