@@ -303,6 +303,26 @@ export class WebHtmlPage {
 		SyntaxHighlighter.all();
 	};
 
+	removeElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, className: string): void {
+		if (null != elemList && elemList.length > 0) {
+			if (null != className) {
+				elemList.forEach((elem, idx, parent) => {
+					elem.classList.remove(className, "");
+				});
+			}
+		}
+	}
+
+	addElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, className: string): void {
+		if (null != elemList && elemList.length > 0) {
+			if (null != className) {
+				elemList.forEach((elem, idx, parent) => {
+					elem.classList.add(className);
+				});
+			}
+		}
+	}
+
 	/**
 	 * 大窗口时用的固定边栏目录
 	 * @param srcSlt 
