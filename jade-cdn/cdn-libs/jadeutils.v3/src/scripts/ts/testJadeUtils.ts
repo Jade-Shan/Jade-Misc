@@ -185,7 +185,7 @@ class TestWebHtmlPage {
 	static testJquery() {
 		let cfg: PageConfig = { apiRoot: "/", pageTitle: "test-page", subTitle: "for-test", ajaxTimeout: 500 };
 		let page = new WebHtmlPage(cfg);
-
+		page.renderSubTitle(cfg);
 		//
 		page.renderTopNav(cfg, [
 			{ title: "Journal", link: "/" },

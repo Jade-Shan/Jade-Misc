@@ -26,6 +26,13 @@ export interface NavTreeNode {
 }
 
 
+declare namespace SyntaxHighlighter {
+	function all(): void;
+	namespace autoloader {
+		function apply(arg1: any, arg2: any): any;
+	}
+}
+
 export class WebHtmlPage {
 
 	cfg: PageConfig;
@@ -69,7 +76,10 @@ export class WebHtmlPage {
 				if (item.link) { addLink(item, cfg); } else if (item.subs) { addSub(item); }
 		});
 		navhtml = navhtml + '</ul></div>';
-		$(elemSlt ? elemSlt : "#topnav").html(navhtml);
+		let navElem = document.querySelector(elemSlt ? elemSlt : "#topnav");
+		if (navElem) {
+			navElem.innerHTML = navhtml;
+		}
 	}
 
 
@@ -126,7 +136,12 @@ export class WebHtmlPage {
 	 * @param page 
 	 * @param elemSlt 
 	 */
-	renderSubTitle(cfg: PageConfig, elemSlt?: string): void { $(elemSlt ? elemSlt : "#subTitle").html(cfg.subTitle); };
+	renderSubTitle(cfg: PageConfig, elemSlt?: string): void {
+		let elem = document.querySelector(elemSlt ? elemSlt : "#subTitle");
+		if (elem) {
+			elem.innerHTML = cfg.subTitle;
+		}
+	};
 
 	/**
 	 * 
@@ -171,8 +186,9 @@ export class WebHtmlPage {
 	 * @param photoFrameId 
 	 */
 	initPhotoFrame(photoFrameId?: string): void {
-		photoFrameId = photoFrameId ? photoFrameId: "photo-frame";
-		let html = `
+		let photoElem = document.querySelector(`#${photoFrameId ? photoFrameId: "photo-frame"}`);
+		if (photoElem) {
+			photoElem.innerHTML = `
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -183,7 +199,7 @@ export class WebHtmlPage {
 						</div>
 					</div>
 				</div>`;
-		$(`#${photoFrameId}`).html(html);
+		}
 	};
 
 	/**
@@ -192,9 +208,15 @@ export class WebHtmlPage {
 	 */
 	static viewPic(title: string, url: string, photoFrameId?: string) : void {
 		photoFrameId = photoFrameId ? photoFrameId: "photo-frame";
-		$(`#${photoFrameId}-label`).html(title);
-		$(`#${photoFrameId}-img`).attr('src', url);
-		$(`#${photoFrameId}-img`).attr('alt', title);
+		let photoLabel = document.querySelector(`#${photoFrameId}-label`);
+		if (photoLabel) {
+			photoLabel.innerHTML = title;
+		}
+		let photoImg: HTMLImageElement| null = document.querySelector(`#${photoFrameId}-img`);
+		if (photoImg) {
+			photoImg.src = url;
+			photoImg.alt = title;
+		}
 		($(`#${photoFrameId}`) as any).modal('show');
 	};
 
@@ -203,12 +225,13 @@ export class WebHtmlPage {
 	 * @param elemSlt 
 	 */
 	bindImageFrame(elemSlt?: string, photoFrameId?: string): void {
-		elemSlt = elemSlt ? elemSlt : 'img.atc-img';
-		$(elemSlt ).each(function (t, s) {
-			let e = $(s); 
-			let title = e.attr('alt') as string;
-			let url   = e.attr('src') as string;
-			e.on('click', function (t) { WebHtmlPage.viewPic(title, url, photoFrameId); });
+		let elemArr = document.querySelectorAll<HTMLImageElement>(elemSlt = elemSlt ? elemSlt : 'img.atc-img');
+		elemArr.forEach((photoImg: HTMLImageElement, key: number, parent: NodeListOf<HTMLImageElement>) => {
+			if (photoImg) {
+				photoImg.onclick = (ev: MouseEvent): any => {
+					WebHtmlPage.viewPic(photoImg.alt, photoImg.src, photoFrameId);
+				};
+			}
 		});
 	} 
 
@@ -218,11 +241,11 @@ export class WebHtmlPage {
 	 * @param elemSlt 
 	 */
 	bindImageNewTab(elemSlt?: string): void {
-		$(elemSlt ? elemSlt : 'img.atc-img').each(function (t, s) {
-			let e = $(s); 
-			let c = e.attr('src') as string;
-			e.on('click', function (t) { WebUtil.openWindow(c); });
-			// net.jadedungeon.viewPic(s);
+		let elemArr = document.querySelectorAll<HTMLImageElement>(elemSlt = elemSlt ? elemSlt : 'img.atc-img');
+		elemArr.forEach((photoImg: HTMLImageElement, key: number, parent: NodeListOf<HTMLImageElement>) => {
+			if (photoImg) {
+				photoImg.onclick = (ev: MouseEvent): any => { WebUtil.openWindow(photoImg.src); };
+			}
 		});
 	} 
 
