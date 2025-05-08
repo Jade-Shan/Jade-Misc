@@ -199,9 +199,9 @@ class TestWebHtmlPage {
 			},
 			{
 				title: "Themes", subs: [
-					{ title: "hobbit", id: "switch-theme-hobbit", link: "#" },
-					{ title: "lo-fi", id: "switch-theme-lo-fi", link: "#" },
-					{ title: "paper", id: "switch-theme-paper-print", link: "#" }]
+					{ title: "hobbit", id: "switch-theme-hobbit"     , link: "#" },
+					{ title: "lo-fi" , id: "switch-theme-lo-fi"      , link: "#" },
+					{ title: "paper" , id: "switch-theme-paper-print", link: "#" }]
 			}
 		]);
 
