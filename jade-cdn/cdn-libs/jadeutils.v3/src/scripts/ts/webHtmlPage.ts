@@ -67,14 +67,16 @@ export class WebHtmlPage {
 			navhtml = navhtml + item.title;
 			navhtml = navhtml + '<b class="caret"></b></a><ul class="dropdown-menu">';
 			if (item.subs && item.subs.length > 0) {
-				$.each(item.subs, function (i, item) { addLink(item, cfg); });
+				item.subs.forEach((value, idx, arrys) => { addLink(value, cfg); });
 			}
 			navhtml = navhtml + '</ul></li>';
 		};
 
-		$.each(items, (i, item) => {
+		if (items && items.length > 0) {
+			items.forEach((item, idx, arrys) => {
 				if (item.link) { addLink(item, cfg); } else if (item.subs) { addSub(item); }
-		});
+			})
+		}
 		navhtml = navhtml + '</ul></div>';
 		let navElem = document.querySelector(elemSlt ? elemSlt : "#topnav");
 		if (navElem) {
@@ -487,9 +489,15 @@ export class WebHtmlPage {
 	 * 
 	 * @param themes 
 	 */
-	bindChangeTheme(themes: Array<{elemSlt: String, themeName: string}>): void {
+	bindChangeTheme(themes: Array<{elemSlt: string, themeName: string}>): void {
+		let self = this;
 		for(let theme of themes) {
-			$(theme.elemSlt).on("click", (t) => {this.changeTheme(theme.themeName)});
+			let elem = document.querySelector<HTMLElement>(theme.elemSlt);
+			if (elem) {
+				elem.onclick = (ev: MouseEvent): any => {
+					self.changeTheme(theme.themeName);
+				}
+			}
 		}
 	}
 
