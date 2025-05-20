@@ -303,7 +303,7 @@ export class WebHtmlPage {
 		SyntaxHighlighter.all();
 	};
 
-	removeElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, ...className: string[]): void {
+	static removeElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, ...className: string[]): void {
 		if (null != elemList && elemList.length > 0) {
 			if (null != className) {
 				elemList.forEach((elem, idx, parent) => {
@@ -313,13 +313,13 @@ export class WebHtmlPage {
 		}
 	}
 
-	removeElemClassBySelectorAll(selectorAll: string, ...className: string[]): void {
+	static removeElemClassBySelectorAll(selectorAll: string, ...className: string[]): void {
 		let elemArr = document.querySelectorAll<HTMLElement>(selectorAll);
-		this.removeElemClass(elemArr, ...className);		
+		WebHtmlPage.removeElemClass(elemArr, ...className);		
 
 	}
 
-	addElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, ...className: string[]): void {
+	static addElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, ...className: string[]): void {
 		if (null != elemList && elemList.length > 0) {
 			if (null != className) {
 				elemList.forEach((elem, idx, parent) => {
@@ -329,9 +329,35 @@ export class WebHtmlPage {
 		}
 	}
 
-	addElemClassBySelectorAll(selectorAll: string, ...className: string[]): void {
+	static addElemClassBySelectorAll(selectorAll: string, ...className: string[]): void {
 		let elemArr = document.querySelectorAll<HTMLElement>(selectorAll);
-		this.addElemClass(elemArr, ...className);		
+		WebHtmlPage.addElemClass(elemArr, ...className);		
+	}
+
+	static setElemHtml<T extends HTMLElement>(elemList: NodeListOf<T>, html: string): void {
+		if (null != elemList && elemList.length > 0) {
+				elemList.forEach((elem, idx, parent) => {
+					elem.innerHTML = html;
+				});
+		}
+	}
+
+	static setElemHtmlBySelectorAll(selectorAll: string, html: string): void {
+		let elemArr = document.querySelectorAll<HTMLElement>(selectorAll);
+		WebHtmlPage.setElemHtml(elemArr, html);		
+	}
+
+	static bindOnClick<T extends HTMLElement>(elemList: NodeListOf<T>, func: () => void): void {
+		if (null != elemList && elemList.length > 0) {
+			elemList.forEach((elem, idx, parent) => {
+				elem.onclick = func;
+			});
+		}
+	}
+
+	static bindOnClickBySelectorAll(selectorAll: string, func: () => void): void {
+		let elemArr = document.querySelectorAll<HTMLElement>(selectorAll);
+		WebHtmlPage.bindOnClick(elemArr, func);		
 	}
 
 	/**
@@ -339,7 +365,7 @@ export class WebHtmlPage {
 	 * @param srcSlt 
 	 * @param tagSlt 
 	 */
-	prepareTocIndex(html: string, tagSlt?: string): void {
+	static prepareTocIndex(html: string, tagSlt?: string): void {
 		tagSlt = tagSlt ? tagSlt : "div.sideTocIdx";
 		// document.querySelectorAll
 		let elemList = document.querySelectorAll<HTMLElement>(tagSlt);
@@ -389,20 +415,6 @@ export class WebHtmlPage {
 	/**
 	 * 展开与折叠目录面板
 	 */
-	toggleSideTocWrapV2(elemSlt?: string, margin?: number, innerSlt?: string): void {
-		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
-		margin = margin ? margin : 80;
-		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-close') > - 1) {
-			$('div.sideToc').attr('style', `padding: 10px 20px; height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`);
-			$('div.sideToc').css('overflow', 'hidden'); //  elem.style.overflow = "hidden";
-			$('div.sideTocIdx').removeClass('toc-close');
-		} else {
-			$('div.sideToc').attr('style', 'padding: 0px 20px; height: 0px; transition: 1s;');
-			$('div.sideToc').css('overflow', 'auto');
-			$('div.sideTocIdx').addClass('toc-close');
-		}
-	};
-
 	toggleSideTocWrap(elemSlt?: string, margin?: number, innerSlt?: string): void {
 		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
 		margin = margin ? margin : 80;
@@ -435,16 +447,16 @@ export class WebHtmlPage {
 		let effect = (elem: HTMLElement, elemSlt: string) => {
 			if (elem.classList.contains('toc-cont-flg')) {
 				elem.classList.remove('toc-cont-flg');
-				this.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
-				this.   addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open' );
-				this.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close' );
-				this.   addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open'  );
+				WebHtmlPage.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
+				WebHtmlPage.   addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open' );
+				WebHtmlPage.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close' );
+				WebHtmlPage.   addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open'  );
 			} else {
 				elem.classList.add('toc-cont-flg');
-				this.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open' );
-				this.   addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
-				this.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open'  );
-				this.   addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close' );
+				WebHtmlPage.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open' );
+				WebHtmlPage.   addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
+				WebHtmlPage.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open'  );
+				WebHtmlPage.   addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close' );
 			}
 		};
 		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";

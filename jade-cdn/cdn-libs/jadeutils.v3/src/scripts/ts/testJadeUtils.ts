@@ -207,17 +207,17 @@ class TestWebHtmlPage {
 
 		//
 		// _1_ 2 3 4 5 6 ... 20
-		$('#pageBar01').html(page.renderPagination( 1, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar01', page.renderPagination( 1, 20, n => `javascript:queryBlog(${n})`));
 		// 1 2 3 4 5 6 _7_ 8 9 10 11 12 ... 20
-		$('#pageBar02').html(page.renderPagination( 7, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar02', page.renderPagination( 7, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ... 3 4 5 6 7 _8_ 9 10 11 12 13 ... 20
-		$('#pageBar03').html(page.renderPagination( 8, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar03', page.renderPagination( 8, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ... 8 9 10 11 12 _13_ 14 15 16 17 18 ... 20
-		$('#pageBar07').html(page.renderPagination(13, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar07', page.renderPagination(13, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ...  9 10 11 12 13 _14_ 15 16 17 18 19 20
-		$('#pageBar08').html(page.renderPagination(14, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar08', page.renderPagination(14, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ... 15 16 17 18 19 _20_
-		$('#pageBar09').html(page.renderPagination(20, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar09', page.renderPagination(20, 20, n => `javascript:queryBlog(${n})`));
 
 		//
 		page.bindInitDataTable();
@@ -232,23 +232,25 @@ class TestWebHtmlPage {
 		//
 		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/SyntaxHighlighter/2.1.364/scripts");
 		//
-		let tocIdxHtml = $("div.toc").html();
-		page.prepareTocIndex(tocIdxHtml, "div.sideTocIdx" );
-		$("div.toc").remove();
+		let tocOri = document.querySelector<HTMLElement>("div.toc");
+		if (null != tocOri) {
+			WebHtmlPage.prepareTocIndex(tocOri.innerHTML, "div.sideTocIdx" );
+			tocOri.remove();
+		}
 		//
-		$('#tocLevBtn' ).click(() => {page.toggleSideTocContract("div.sideTocIdx")});
-		$('#tocLevBtn2').click(() => {page.toggleSideTocContract("div.sideTocIdx")});
-		$('#tocBoxBtn' ).click(() => {page.toggleSideTocWrap    ("div.sideTocIdx", 90)});
-		$('#tocBoxBtn2').click(() => {page.toggleSideTocWrap    ("div.sideTocIdx", 80)});
+		WebHtmlPage.bindOnClickBySelectorAll('#tocLevBtn' ,  () => {page.toggleSideTocContract("div.sideTocIdx")});
+		WebHtmlPage.bindOnClickBySelectorAll('#tocLevBtn2',  () => {page.toggleSideTocContract("div.sideTocIdx")});
+		WebHtmlPage.bindOnClickBySelectorAll('#tocBoxBtn' ,  () => {page.toggleSideTocWrap    ("div.sideTocIdx", 90, "div.sideToc")});
+		WebHtmlPage.bindOnClickBySelectorAll('#tocBoxBtn2',  () => {page.toggleSideTocWrap    ("div.sideTocIdx", 80, "div.sideToc")});
 
 		let changeTocWithWindow = () => {
 			page.changeTocPanelSize("div#sideTocIdxTree" , 80);
 			page.changeTocPanelSize("div#floatTocIdxTree", 90);
 		};
 
-		changeTocWithWindow();
+		// $(window).resize(changeTocWithWindow);
 
-		$(window).resize(changeTocWithWindow);
+		window.onresize = changeTocWithWindow;
 
 		page.initUITheme();
 		let themes = [
