@@ -303,24 +303,35 @@ export class WebHtmlPage {
 		SyntaxHighlighter.all();
 	};
 
-	removeElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, className: string): void {
+	removeElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, ...className: string[]): void {
 		if (null != elemList && elemList.length > 0) {
 			if (null != className) {
 				elemList.forEach((elem, idx, parent) => {
-					elem.classList.remove(className, "");
+					elem.classList.remove(...className);
 				});
 			}
 		}
 	}
 
-	addElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, className: string): void {
+	removeElemClassBySelectorAll(selectorAll: string, ...className: string[]): void {
+		let elemArr = document.querySelectorAll<HTMLElement>(selectorAll);
+		this.removeElemClass(elemArr, ...className);		
+
+	}
+
+	addElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, ...className: string[]): void {
 		if (null != elemList && elemList.length > 0) {
 			if (null != className) {
 				elemList.forEach((elem, idx, parent) => {
-					elem.classList.add(className);
+					elem.classList.add(...className);
 				});
 			}
 		}
+	}
+
+	addElemClassBySelectorAll(selectorAll: string, ...className: string[]): void {
+		let elemArr = document.querySelectorAll<HTMLElement>(selectorAll);
+		this.addElemClass(elemArr, ...className);		
 	}
 
 	/**
@@ -330,17 +341,18 @@ export class WebHtmlPage {
 	 */
 	prepareTocIndex(html: string, tagSlt?: string): void {
 		tagSlt = tagSlt ? tagSlt : "div.sideTocIdx";
-		let elemArr = $(tagSlt) as any;
-		for (let i = 0; i < elemArr.length; i++) {
-			let elem = $(elemArr.get(i));
-			elem.html(html);
-			$(`${tagSlt}    ul`).removeClass('toc-icon-close');
-			$(`${tagSlt}    ul`).addClass('toc-icon-open');
-			$(`${tagSlt}>ul ul`).removeClass('toc-sub-close');
-			$(`${tagSlt}>ul ul`).addClass('toc-sub-open');
+		// document.querySelectorAll
+		let elemList = document.querySelectorAll<HTMLElement>(tagSlt);
+		if (null != elemList && elemList.length > 0) {
+			elemList.forEach((elem, idx, parent) => {
+				elem.innerHTML = html;
+			});
 		}
+		this.removeElemClassBySelectorAll(`${tagSlt}    ul`, 'toc-icon-close');
+		this.   addElemClassBySelectorAll(`${tagSlt}    ul`, 'toc-icon-open' );
+		this.removeElemClassBySelectorAll(`${tagSlt}>ul ul`, 'toc-sub-close' );
+		this.   addElemClassBySelectorAll(`${tagSlt}>ul ul`, 'toc-sub-open'  );
 	};
-
 
 	/**
 	 * 计算边栏目录的高度
