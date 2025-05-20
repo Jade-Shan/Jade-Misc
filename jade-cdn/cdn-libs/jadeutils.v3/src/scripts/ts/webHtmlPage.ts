@@ -400,32 +400,27 @@ export class WebHtmlPage {
 	 * 展开与折叠目录树
 	 */
 	toggleSideTocContract(elemSlt?: string): void {
-		let effect = (elem: any) => {
-			if (elem.attr('class').indexOf('toc-cont-flg') > - 1) {
-				elem.removeClass('toc-cont-flg');
-				$(`${elemSlt}    ul`).removeClass('toc-icon-close');
-				$(`${elemSlt}    ul`).   addClass('toc-icon-open' );
-				$(`${elemSlt}>ul ul`).removeClass('toc-sub-close' );
-				$(`${elemSlt}>ul ul`).   addClass('toc-sub-open'  );
+		let effect = (elem: HTMLElement, elemSlt: string) => {
+			if (elem.classList.contains('toc-cont-flg')) {
+				elem.classList.remove('toc-cont-flg');
+				this.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
+				this.addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open');
+				this.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close');
+				this.addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open');
 			} else {
-				elem.addClass('toc-cont-flg');
-				$(`${elemSlt}    ul`).removeClass('toc-icon-open' );
-				$(`${elemSlt}    ul`).   addClass('toc-icon-close');
-				$(`${elemSlt}>ul ul`).removeClass('toc-sub-open'  );
-				$(`${elemSlt}>ul ul`).   addClass('toc-sub-close' );
+				elem.classList.add('toc-cont-flg');
+				this.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open');
+				this.addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
+				this.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open');
+				this.addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close');
 			}
 		};
-
-		let elemArr = $(elemSlt = elemSlt ? elemSlt : "div.sideTocIdx") as any;
-		for (let i = 0; i < elemArr.length; i++) {
-			effect($(elemArr.get(i)));
+		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
+		let elemList = document.querySelectorAll<HTMLElement>(elemSlt);
+		if (null != elemList && elemList.length > 0) {
+			elemList.forEach((elem, idx, parent) => { effect(elem, elemSlt) });
 		}
 	};
-
-
-
-
-
 
 //  t.toggleTocWrap = function () {
 //    if (e('div.tocIdx').attr('class').indexOf('toc-close') > - 1) {
