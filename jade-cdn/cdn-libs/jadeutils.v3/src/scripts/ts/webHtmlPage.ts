@@ -373,8 +373,15 @@ export class WebHtmlPage {
 	changeTocPanelSize(elemSlt?: string, margin?: number): void {
 		elemSlt = elemSlt ? elemSlt : "div#floatTocIdxTree";
 		margin = margin ? margin : 80;
-		if (($(elemSlt).attr('class') as any).indexOf("toc-close") < 0) {
-			$(elemSlt).attr('style', `height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`);
+		let elemList = document.querySelectorAll<HTMLElement>(elemSlt);
+		if (null != elemList && elemList.length > 0) {
+			elemList.forEach((elem, idx, parent) => {
+				if (elem.classList.contains("toc-close")) {
+					// do nothing
+				} else {
+					elem.style  =  `height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`;
+				}
+			});
 		}
 	};
 
@@ -382,17 +389,42 @@ export class WebHtmlPage {
 	/**
 	 * 展开与折叠目录面板
 	 */
-	toggleSideTocWrap(elemSlt?: string, margin?: number): void {
-		margin = margin ? margin : 80;
+	toggleSideTocWrapV2(elemSlt?: string, margin?: number, innerSlt?: string): void {
 		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
+		margin = margin ? margin : 80;
 		if (($('div.sideTocIdx') as any).attr('class').indexOf('toc-close') > - 1) {
 			$('div.sideToc').attr('style', `padding: 10px 20px; height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`);
-			$('div.sideToc').css('overflow', 'hidden');
+			$('div.sideToc').css('overflow', 'hidden'); //  elem.style.overflow = "hidden";
 			$('div.sideTocIdx').removeClass('toc-close');
 		} else {
 			$('div.sideToc').attr('style', 'padding: 0px 20px; height: 0px; transition: 1s;');
 			$('div.sideToc').css('overflow', 'auto');
 			$('div.sideTocIdx').addClass('toc-close');
+		}
+	};
+
+	toggleSideTocWrap(elemSlt?: string, margin?: number, innerSlt?: string): void {
+		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
+		margin = margin ? margin : 80;
+		let elemList = document.querySelectorAll<HTMLElement>(elemSlt);
+		if (null != elemList && elemList.length > 0) {
+			innerSlt = innerSlt ? innerSlt : "div.sideToc";
+			let innerList = document.querySelectorAll<HTMLElement>(innerSlt);
+			elemList.forEach((elem, idx, parent) => {
+				if (elem.classList.contains("toc-close")) {
+					elem.classList.remove("toc-close");
+					if (null != innerList && innerList.length > 0) {
+						innerList.forEach((elemInn, idx, parent) => {
+							elemInn.style = `overflow: hidden; padding: 10px 20px; height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`;
+						});
+					}
+				} else {
+					elem.classList.add("toc-close");
+					innerList.forEach((elemInn, idx, parent) => {
+						elemInn.style = `overflow: auto; padding: 0px 20px; height: 0px; transition: 1s;`;
+					});
+				}
+			});
 		}
 	};
 
@@ -404,15 +436,15 @@ export class WebHtmlPage {
 			if (elem.classList.contains('toc-cont-flg')) {
 				elem.classList.remove('toc-cont-flg');
 				this.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
-				this.addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open');
-				this.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close');
-				this.addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open');
+				this.   addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open' );
+				this.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close' );
+				this.   addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open'  );
 			} else {
 				elem.classList.add('toc-cont-flg');
-				this.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open');
-				this.addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
-				this.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open');
-				this.addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close');
+				this.removeElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-open' );
+				this.   addElemClassBySelectorAll(`${elemSlt}    ul`, 'toc-icon-close');
+				this.removeElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-open'  );
+				this.   addElemClassBySelectorAll(`${elemSlt}>ul ul`, 'toc-sub-close' );
 			}
 		};
 		elemSlt = elemSlt ? elemSlt : "div.sideTocIdx";
