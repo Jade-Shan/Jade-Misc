@@ -1,4 +1,9 @@
+// import jQuery from '@types/jquery'
+// import $ from 'jquery';
 import { WebUtil } from "./web.js";
+
+// declare type $ = any;
+declare function $ (cc: any): any;
 
 export interface PageConfig {
 	apiRoot: string;
@@ -156,14 +161,14 @@ export class WebHtmlPage {
 	 * @param elemSlt 
 	 */
 	bindInitDataTable(elemSlt?: string): void {
-		$(elemSlt ? elemSlt : 'div.content>table').each((n, t) => { 
-			let table = $(t) as any; 
-			let thead = table.find('thead') as any;
+		$(elemSlt ? elemSlt : 'div.content>table').each((n: any, t: any) => { 
+			let table = $(t); 
+			let thead = table.find('thead');
 			if (thead.size() < 1) {
 				thead = $('<thead></thead>');
-				let rows = table.find('tbody>tr') as any;
+				let rows = table.find('tbody>tr');
 				rows.each((ln: any, r: any) => {
-					let row = $(r); let th = row.find("th") as any;
+					let row = $(r); let th = row.find("th");
 					if (th.size() > 0) { thead.append(row); }
 				});
 				if (thead.find('th').size() > 0) { // 要有表头才能加上DataTable
