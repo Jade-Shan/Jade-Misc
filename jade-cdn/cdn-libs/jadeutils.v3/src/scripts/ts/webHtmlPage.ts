@@ -33,6 +33,12 @@ declare namespace SyntaxHighlighter {
 	}
 }
 
+
+interface BootstrapModalDialog {
+	modal(type: string): void;
+}
+
+
 export class WebHtmlPage {
 
 	cfg: PageConfig;
@@ -205,6 +211,7 @@ export class WebHtmlPage {
 	};
 
 	/**
+	 * 依赖bootstrap与JQuery 
 	 * 
 	 * @param elemSlt 
 	 */
