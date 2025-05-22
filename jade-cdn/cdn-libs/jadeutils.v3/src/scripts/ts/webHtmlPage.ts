@@ -1,9 +1,9 @@
-// import jQuery from '@types/jquery'
-// import $ from 'jquery';
 import { WebUtil } from "./web.js";
 
-// declare type $ = any;
-declare function $ (cc: any): any;
+
+declare interface BootstrapModalDialog {
+	modal(type: string): void;
+}
 
 export interface PageConfig {
 	apiRoot: string;
@@ -28,19 +28,6 @@ export interface NavTreeNode {
 	link?: string
 	isNewWin?: boolean;
 	subs?: Array<NavTreeNode>;
-}
-
-
-declare namespace SyntaxHighlighter {
-	function all(): void;
-	namespace autoloader {
-		function apply(arg1: any, arg2: any): any;
-	}
-}
-
-
-interface BootstrapModalDialog {
-	modal(type: string): void;
 }
 
 
@@ -160,100 +147,6 @@ export class WebHtmlPage {
 	 * 
 	 * @param elemSlt 
 	 */
-	bindInitDataTable(elemSlt?: string): void {
-		$(elemSlt ? elemSlt : 'div.content>table').each((n: any, t: any) => { 
-			let table = $(t); 
-			let thead = table.find('thead');
-			if (thead.size() < 1) {
-				thead = $('<thead></thead>');
-				let rows = table.find('tbody>tr');
-				rows.each((ln: any, r: any) => {
-					let row = $(r); let th = row.find("th");
-					if (th.size() > 0) { thead.append(row); }
-				});
-				if (thead.find('th').size() > 0) { // 要有表头才能加上DataTable
-					table.append(thead); 
-					let rowCount = rows.size() as number;
-					if (rowCount > 20) {  // 20行不到的表就不加DataTable了
-						try { 
-							let info = false; let paging = false; let searching = false;
-							if (rowCount > 30) { // 大于30行的表要加上搜索和分页
-								info = true; 
-								paging = true; 
-								searching = true;
-							}
-							table.DataTable({info: info, paging: paging, searching: searching}); 
-						} catch (e) { console.error(e); }
-					}
-				}
-			}
-		});
-	}
-
-
-	/**
-	 * 必须要在页面上加上：
-	 * `<div id="photo-frame" class="modal fade photo-frame" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>`
-	 * 因为bootstrap的导入在是最前面。如果bootstrap.js已经导入了，再添加`div`就没有用了。
-	 * 
-	 * @param photoFrameId 
-	 */
-	initPhotoFrame(photoFrameId?: string): void {
-		let photoElem = document.querySelector(`#${photoFrameId ? photoFrameId: "photo-frame"}`);
-		if (photoElem) {
-			photoElem.innerHTML = `
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4 class="modal-title" id="${photoFrameId}-label"></h4>
-						</div>
-						<div class="modal-body row">
-							<img id="${photoFrameId}-img" alt="" src="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						</div>
-					</div>
-				</div>`;
-		}
-	};
-
-	/**
-	 * 依赖bootstrap与JQuery 
-	 * 
-	 * @param elemSlt 
-	 */
-	static viewPic(title: string, url: string, photoFrameId?: string) : void {
-		photoFrameId = photoFrameId ? photoFrameId: "photo-frame";
-		let photoLabel = document.querySelector(`#${photoFrameId}-label`);
-		if (photoLabel) {
-			photoLabel.innerHTML = title;
-		}
-		let photoImg: HTMLImageElement| null = document.querySelector(`#${photoFrameId}-img`);
-		if (photoImg) {
-			photoImg.src = url;
-			photoImg.alt = title;
-		}
-		($(`#${photoFrameId}`) as any).modal('show');
-	};
-
-	/**
-	 * 
-	 * @param elemSlt 
-	 */
-	bindImageFrame(elemSlt?: string, photoFrameId?: string): void {
-		let elemArr = document.querySelectorAll<HTMLImageElement>(elemSlt = elemSlt ? elemSlt : 'img.atc-img');
-		elemArr.forEach((photoImg: HTMLImageElement, key: number, parent: NodeListOf<HTMLImageElement>) => {
-			if (photoImg) {
-				photoImg.onclick = (ev: MouseEvent): any => {
-					WebHtmlPage.viewPic(photoImg.alt, photoImg.src, photoFrameId);
-				};
-			}
-		});
-	} 
-
-
-	/**
-	 * 
-	 * @param elemSlt 
-	 */
 	bindImageNewTab(elemSlt?: string): void {
 		let elemArr = document.querySelectorAll<HTMLImageElement>(elemSlt = elemSlt ? elemSlt : 'img.atc-img');
 		elemArr.forEach((photoImg: HTMLImageElement, key: number, parent: NodeListOf<HTMLImageElement>) => {
@@ -262,58 +155,6 @@ export class WebHtmlPage {
 			}
 		});
 	} 
-
-	/**
-	 * 各语言高亮脚本的路径
-	 * 
-	 * @param hlRootPath 
-	 * @param hlCodePath 
-	 */
-	loadCodeHightlight(hlRootPath?: string,  hlCodePath?: string) {
-		hlRootPath = hlRootPath ? hlRootPath : "";
-		hlCodePath = hlCodePath ? hlCodePath : "../../vimwiki-theme/3rd/SyntaxHighlighter/2.1.364/scripts/";
-		let basePath = `${hlRootPath}${hlCodePath}/`;
-		let parsePath = (arr: Array<string>): Array<string> => {
-			let lines: Array<string> = [];
-			for(let i = 0; i < arr.length; i++) {
-				let arg = arr[i];
-				let line = arg.replace('@', basePath);
-				lines.push(line);
-			}
-			return lines;
-		};
-		let pathArr = parsePath([
-			'applescript            @shBrushAppleScript.js',
-			'actionscript3 as3      @shBrushAS3.js',
-			'bash shell             @shBrushBash.js',
-			'coldfusion cf          @shBrushColdFusion.js',
-			'cpp c                  @shBrushCpp.js',
-			'c# c-sharp csharp      @shBrushCSharp.js',
-			'css                    @shBrushCss.js',
-			'delphi pascal          @shBrushDelphi.js',
-			'diff patch pas         @shBrushDiff.js',
-			'erl erlang             @shBrushErlang.js',
-			'groovy                 @shBrushGroovy.js',
-			'java                   @shBrushJava.js',
-			'jfx javafx             @shBrushJavaFX.js',
-			'js jscript javascript  @shBrushJScript.js',
-			'perl pl                @shBrushPerl.js',
-			'php                    @shBrushPhp.js',
-			'text plain             @shBrushPlain.js',
-			'py python              @shBrushPython.js',
-			'ruby rails ror rb      @shBrushRuby.js',
-			'sass scss              @shBrushSass.js',
-			'latex                  @shBrushLatex.js',
-			'less                   @shBrushLess.js',
-			'scala                  @shBrushScala.js',
-			'scheme                 @shBrushScheme.js',
-			'clojure                @shBrushClojure.js',
-			'sql                    @shBrushSql.js',
-			'vb vbnet               @shBrushVb.js',
-			'xml xhtml xslt html    @shBrushXml.js'])
-		SyntaxHighlighter.autoloader.apply(null, pathArr);
-		SyntaxHighlighter.all();
-	};
 
 	static removeElemClass<T extends HTMLElement>(elemList: NodeListOf<T>, ...className: string[]): void {
 		if (null != elemList && elemList.length > 0) {

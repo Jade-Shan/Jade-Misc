@@ -1,7 +1,8 @@
 import { NumUtil, StrUtil, TimeUtil } from './basic.js';
-import {SimpleMap, SimpleStack, SimpleQueue} from './dataStructure.js'
+import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
 import { WebUtil } from './web.js';
-import { PageConfig, WebHtmlPage, NavTreeNode} from './webHtmlPage.js';
+import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
+import { SyntaxHighlighterHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -220,17 +221,17 @@ class TestWebHtmlPage {
 		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar09', page.renderPagination(20, 20, n => `javascript:queryBlog(${n})`));
 
 		//
-		page.bindInitDataTable();
+		DataTableHelper.bindInitDataTable();
 
 		//
 		page.bindImageNewTab("img.img-newwin");
 
 		// 
-		page.initPhotoFrame("photo-frame");
+		BootStrapHelper.initPhotoFrame("photo-frame");
 		//
-		page.bindImageFrame("img.img-frame");
+		BootStrapHelper.bindImageFrame("img.img-frame");
 		//
-		page.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/SyntaxHighlighter/2.1.364/scripts");
+		SyntaxHighlighterHelper.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/SyntaxHighlighter/2.1.364/scripts");
 		//
 		let tocOri = document.querySelector<HTMLElement>("div.toc");
 		if (null != tocOri) {
