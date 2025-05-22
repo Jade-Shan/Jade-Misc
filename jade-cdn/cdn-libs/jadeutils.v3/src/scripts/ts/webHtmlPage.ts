@@ -321,60 +321,6 @@ export class WebHtmlPage {
 		}
 	};
 
-//  t.toggleTocWrap = function () {
-//    if (e('div.tocIdx').attr('class').indexOf('toc-close') > - 1) {
-//      var n = 'height: ' + t.caculateFloatTocBoxHeight() + 'px; transition: 1s;';
-//      e('div.tocIdx').attr('style', n),
-//      e('div.tocIdx').removeClass('toc-close'),
-//      e('div.tocWrap').attr('style', 'width: 300px; transition: 1s;')
-//    } else {
-//      e('div.tocIdx').attr('style', 'height: 3px; transition: 1s;'),
-//      e('div.tocIdx').addClass('toc-close'),
-//      e('div.tocWrap').attr('style', 'width: 100px; transition: 1s;')
-//    }
-//  },
-
-
-
-
-
-	// /**
-	 // * 打开、收起所有目录盒子
-	 // */
-	// toggleTocWrap() {
-		// if (($('div.tocIdx').attr('class') as any).indexOf("toc-close") > -1) {
-			// var style2 = '';
-			// $("div.tocIdx").attr('style', `height: ${this.caculateFloatTocBoxHeight()}px; transition: 1s;`);
-			// $('div.tocIdx').removeClass('toc-close');
-			// $("div.tocWrap").attr('style', "width: 300px; transition: 1s;");
-		// } else {
-			// $("div.tocIdx").attr('style', 'height: 3px; transition: 1s;');
-			// $('div.tocIdx').addClass('toc-close');
-			// $("div.tocWrap").attr('style', "width: 100px; transition: 1s;");
-		// }
-	// };
-
-
-
-
-	// /**
-	 // * 打开、收起所有目录
-	 // */
-	// toggleTocContract(): void {
-		// if (($('div.tocIdx').attr('class') as any).indexOf("toc-cont-flg") > -1) {
-			// $('div.tocIdx').removeClass('toc-cont-flg');
-			// $('div.tocIdx    ul').removeClass('toc-icon-close');
-			// $('div.tocIdx    ul').addClass('toc-icon-open');
-			// $('div.tocIdx>ul ul').removeClass('toc-sub-close');
-			// $('div.tocIdx>ul ul').addClass('toc-sub-open');
-		// } else {
-			// $('div.tocIdx').addClass('toc-cont-flg');
-			// $('div.tocIdx    ul').removeClass('toc-icon-open');
-			// $('div.tocIdx    ul').addClass('toc-icon-close');
-			// $('div.tocIdx>ul ul').removeClass('toc-sub-open');
-			// $('div.tocIdx>ul ul').addClass('toc-sub-close');
-		// }
-	// };
 
 
 	/**
