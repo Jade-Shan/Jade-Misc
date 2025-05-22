@@ -62,8 +62,57 @@ export class SyntaxHighlighterHelper {
 	};
 
 }
+declare class MathJaxNode {
+	parentNode: MathJaxNode;
+	className: string;
+}
+declare class MathJaxRec {
+	SourceElement(): MathJaxNode;
+}
 
+declare namespace MathJax {
+	namespace Hub {
+		function Config(cofig: any): void;
+		function Queue(func: () => void): void;
+		function getAllJax(): Array<MathJaxRec>;
+	}
+}
 
+export class MathJaxHelper {
+
+	private static defalutMathJaxCfg = {
+		TeX: { equationNumbers: { autoNumber: ["AMS"], useLabelIds: true }, extensions: ["color.js", "enclose.js"] },
+		extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+		tex2jax: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], skipTags: ['script', 'noscript', 'style', 'textarea', 'code', 'pre'] },
+		"HTML-CSS": {
+			// fonts: ["Latin-Modern"],
+			availableFonts: ["TeX"],
+			linebreaks: { automatic: false }
+		},
+		SVG: { linebreaks: { automatic: false } }
+	};
+
+	// Fix <code> tags after MathJax finishes running. This is a
+	// hack to overcome a shortcoming of Markdown. Discussion at
+	// https://github.com/mojombo/jekyll/issues/199
+	private static defaultQueue() {
+		let all = MathJax.Hub.getAllJax();
+		for (let i = 0; i < all.length; i += 1) {
+			if (all[i].SourceElement().parentNode.className.indexOf('has-jax') == -1) {
+				all[i].SourceElement().parentNode.className += ' has-jax';
+			}
+			if (all[i].SourceElement().parentNode.className.indexOf('no-highlight') == -1) {
+				all[i].SourceElement().parentNode.className += ' no-highlight';
+			}
+		}
+	}
+
+	static initMathJax(config?: any, queueFunc?: () => void) {
+		MathJax.Hub.Config(config ? config : MathJaxHelper.defalutMathJaxCfg);
+		MathJax.Hub.Queue(queueFunc ? queueFunc : MathJaxHelper.defaultQueue);
+	}
+
+}
 
 // import jQuery from '@types/jquery'
 // import $ from 'jquery';

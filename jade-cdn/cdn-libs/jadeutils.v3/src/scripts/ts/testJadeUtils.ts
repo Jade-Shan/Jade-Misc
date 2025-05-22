@@ -2,7 +2,7 @@ import { NumUtil, StrUtil, TimeUtil } from './basic.js';
 import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
 import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
-import { SyntaxHighlighterHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
+import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -232,6 +232,8 @@ class TestWebHtmlPage {
 		BootStrapHelper.bindImageFrame("img.img-frame");
 		//
 		SyntaxHighlighterHelper.loadCodeHightlight("http://www.jade-dungeon.cn:8081","/3rd/SyntaxHighlighter/2.1.364/scripts");
+		//
+		MathJaxHelper.initMathJax();
 		//
 		let tocOri = document.querySelector<HTMLElement>("div.toc");
 		if (null != tocOri) {
