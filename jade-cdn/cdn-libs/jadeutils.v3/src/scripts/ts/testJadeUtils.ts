@@ -270,7 +270,7 @@ class TestWebHtmlPage {
 
 export class TestJadeUtils {
 
-	static testAll($: any) {
+	static testAll() {
 		// 
 		TestBasicUtil.testNum();
 		TestBasicUtil.testStr();
@@ -282,6 +282,10 @@ export class TestJadeUtils {
 		// 
 		TestWebUtil.testHtml();
 		//
+		TestWebHtmlPage.testJquery();
+	}
+
+	static testWiki() {
 		TestWebHtmlPage.testJquery();
 	}
 
