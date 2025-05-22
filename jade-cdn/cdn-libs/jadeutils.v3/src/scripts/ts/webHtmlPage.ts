@@ -249,10 +249,11 @@ export class WebHtmlPage {
 	 * 
 	 * @param elemSlt 
 	 */
-	changeTocPanelSize(elemSlt?: string, margin?: number): void {
-		elemSlt = elemSlt ? elemSlt : "div#floatTocIdxTree";
+	changeTocPanelSize(innElemSlt?: string, margin?: number, elemSlt?: string): void {
 		margin = margin ? margin : 80;
-		let elemList = document.querySelectorAll<HTMLElement>(elemSlt);
+
+		innElemSlt = innElemSlt? innElemSlt: "div.sideTocIdx";
+		let elemList = document.querySelectorAll<HTMLElement>(innElemSlt);
 		if (null != elemList && elemList.length > 0) {
 			elemList.forEach((elem, idx, parent) => {
 				if (elem.classList.contains("toc-close")) {
@@ -280,7 +281,8 @@ export class WebHtmlPage {
 					elem.classList.remove("toc-close");
 					if (null != innerList && innerList.length > 0) {
 						innerList.forEach((elemInn, idx, parent) => {
-							elemInn.style = `overflow: hidden; padding: 10px 20px; height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`;
+							// elemInn.style = `overflow: hidden; padding: 10px 20px; height: ${WebHtmlPage.caculateSideTocBoxHeight(margin)}px; transition: 1s;`;
+							elemInn.style = ``;
 						});
 					}
 				} else {
