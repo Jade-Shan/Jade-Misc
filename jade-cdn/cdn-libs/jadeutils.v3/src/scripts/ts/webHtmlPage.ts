@@ -249,11 +249,11 @@ export class WebHtmlPage {
 	 * 
 	 * @param elemSlt 
 	 */
-	changeTocPanelSize(innElemSlt?: string, margin?: number, elemSlt?: string): void {
+	changeTocPanelSize(elemSlt?: string, margin?: number): void {
 		margin = margin ? margin : 80;
 
-		innElemSlt = innElemSlt? innElemSlt: "div.sideTocIdx";
-		let elemList = document.querySelectorAll<HTMLElement>(innElemSlt);
+		elemSlt = elemSlt? elemSlt: "div.sideTocIdx";
+		let elemList = document.querySelectorAll<HTMLElement>(elemSlt);
 		if (null != elemList && elemList.length > 0) {
 			elemList.forEach((elem, idx, parent) => {
 				if (elem.classList.contains("toc-close")) {
