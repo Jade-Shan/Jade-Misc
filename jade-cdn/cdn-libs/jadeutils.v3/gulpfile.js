@@ -114,8 +114,9 @@ gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 	return gulp.src([
 		scriptTsRef + 'refTypes.d.ts',
 		scriptTsSrc + 'basic.ts',
-		scriptTsSrc + 'web.ts',
 		scriptTsSrc + 'dataStructure.ts',
+		scriptTsSrc + 'geo2d.ts',
+		scriptTsSrc + 'web.ts',
 		scriptTsSrc + 'webHtmlPage.ts',
 		scriptTsSrc + '3rdLibTool.ts',
 		scriptTsSrc + 'testJadeUtils.ts',
@@ -138,8 +139,9 @@ themeTasks.push('process-typescript');
 gulp.task('compress-typescript', gulp.series('process-typescript', () => {
 	return gulp.src([
 		scriptTsTag + 'basic.js',
-		scriptTsTag + 'web.js',
 		scriptTsTag + 'dataStructure.js',
+		scriptTsTag + 'geo2d.js',
+		scriptTsTag + 'web.js',
 		scriptTsTag + 'webHtmlPage.js',
 		scriptTsTag + '3rdLibTool.js',
 		scriptTsTag + 'testJadeUtils.js',
