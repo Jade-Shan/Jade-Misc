@@ -38,7 +38,7 @@ export class WikiPage {
 		//
 		BootStrapHelper.bindImageFrame("img.img-frame");
 		//
-		SyntaxHighlighterHelper.loadCodeHightlight(basePath + "../..","/3rd/SyntaxHighlighter/2.1.364/scripts");
+		SyntaxHighlighterHelper.loadCodeHightlight(basePath, "../../vimwiki-theme/3rd/SyntaxHighlighter/2.1.364/scripts");
 		//
 		MathJaxHelper.initMathJax();
 		//
