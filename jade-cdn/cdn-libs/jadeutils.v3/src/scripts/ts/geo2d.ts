@@ -27,6 +27,31 @@ export class Line2D implements Geo2D {
 	}
 }
 
+export class Ray implements Geo2D {
+	start: Point2D = { x: 0, y: 0 };
+	end  : Point2D = { x: 0, y: 0 };
+	angle : number = 0;
+	cAngel: number = 0;
+	range : number = 0;
+
+	/**
+	 * 
+	 * @param start start
+	 * @param end end  
+	 * @param angl  angel [0 ~ Pi]
+	 * @param cAngle formated angel [0 ~ 2*Pi]
+	 * @param range range
+	 */
+	constructor(start: Point2D, end: Point2D, angle: number, cAngle: number, range: number) {
+		this.start = start;
+		this.end   = end  ;
+		this.angle = angle;
+		this.cAngel = cAngle;
+		this.range = range;
+	}
+
+}
+
 /**
  * Quadrant position
  * 代表点在直角坐标系中的位置，四个bit代表四个象限。

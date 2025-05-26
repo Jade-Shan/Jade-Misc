@@ -119,6 +119,7 @@ gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 		scriptTsSrc + 'web.ts',
 		scriptTsSrc + 'webHtmlPage.ts',
 		scriptTsSrc + '3rdLibTool.ts',
+		scriptTsSrc + 'wiki.ts',
 		scriptTsSrc + 'testJadeUtils.ts',
 	]).pipe(ts({
 		target: "es6",
@@ -144,6 +145,7 @@ gulp.task('compress-typescript', gulp.series('process-typescript', () => {
 		scriptTsTag + 'web.js',
 		scriptTsTag + 'webHtmlPage.js',
 		scriptTsTag + '3rdLibTool.js',
+		scriptTsTag + 'wiki.js',
 		scriptTsTag + 'testJadeUtils.js',
 	]).pipe(rename({ suffix: '.min' }))
 		.pipe(uglify())
