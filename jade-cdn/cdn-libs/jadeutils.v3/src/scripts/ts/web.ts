@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-import { StrUtil, TimeUtil } from './basic.js';
+import { StrUtil, TimeUtil } from './basic';
 
 
 /** 创建自定义标签，用于显示Unicode字符 */

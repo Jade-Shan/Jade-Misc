@@ -1,8 +1,8 @@
-import { NumUtil, StrUtil, TimeUtil } from './basic.js';
-import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
-import { WebUtil } from './web.js';
-import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
-import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
+import { NumUtil, StrUtil, TimeUtil } from './basic';
+import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure'
+import { WebUtil } from './web';
+import { PageConfig, WebHtmlPage } from './webHtmlPage';
+import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?

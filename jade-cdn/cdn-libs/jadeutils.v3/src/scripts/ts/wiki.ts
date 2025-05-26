@@ -1,5 +1,5 @@
-import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
-import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
+import { PageConfig, WebHtmlPage } from './webHtmlPage';
+import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool';
 
 export class WikiPage {
 

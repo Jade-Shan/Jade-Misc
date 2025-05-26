@@ -1,4 +1,4 @@
-import { WebUtil } from './web.js';
+import { WebUtil } from './web';
 
 
 declare interface BootstrapModalDialog {
