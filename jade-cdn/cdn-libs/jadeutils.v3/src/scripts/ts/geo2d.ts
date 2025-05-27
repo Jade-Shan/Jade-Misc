@@ -59,7 +59,7 @@ export class Ray implements Geo2D {
  * 所以为了计算方便坐标轴上的点并入顺时钟方向的象限中。
  * 比如X轴正方向上的点，都同时属于第一与第四象限。
  */
-enum QuadPos {
+export enum QuadPos {
 	/** 第一象限 */ QUAD_1ST = 0b0001,
 	/** 第二象限 */ QUAD_2ND = 0b0010,
 	/** 第三象限 */ QUAD_3RD = 0b0100,
