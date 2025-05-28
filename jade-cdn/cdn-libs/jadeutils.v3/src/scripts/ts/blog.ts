@@ -1,7 +1,7 @@
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 
-export class WikiPage {
+export class BlogPage {
 
 	static initWikiPage(basePath: string, title: string) {
 
@@ -38,7 +38,7 @@ export class WikiPage {
 		//
 		BootStrapHelper.bindImageFrame("img.img-frame");
 		//
-		SyntaxHighlighterHelper.loadCodeHightlight(basePath, "../../vimwiki-theme/3rd/SyntaxHighlighter/2.1.364/scripts");
+		SyntaxHighlighterHelper.loadCodeHightlight(basePath, "../../3rd/SyntaxHighlighter/2.1.364/scripts");
 		//
 		MathJaxHelper.initMathJax();
 		//

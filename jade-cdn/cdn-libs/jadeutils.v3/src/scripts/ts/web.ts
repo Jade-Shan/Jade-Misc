@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
-import { StrUtil, TimeUtil } from './basic';
-import { SimpleMap } from './dataStructure';
+import { StrUtil, TimeUtil } from './basic.js';
+import { SimpleMap } from './dataStructure.js';
 
 
 /** 创建自定义标签，用于显示Unicode字符 */
