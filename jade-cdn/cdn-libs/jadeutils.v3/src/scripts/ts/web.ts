@@ -13,102 +13,6 @@ export class EscapeUnicode extends HTMLElement {
 	}
 }
 
-
-class HttpRequestOptionImpl {
-	ingoreCache: boolean;
-	headers: SimpleMap<string, string>;
-	timeout: number;
-	withCredentials: boolean;
-
-	constructor(ingoreCache: boolean, headers: SimpleMap<string, string> | null, timeout: number, withCredentials: boolean) {
-		this.ingoreCache = ingoreCache;
-		this.withCredentials = withCredentials;
-		this.headers = headers ? headers : new SimpleMap([
-			["Accept", "application/json, text/javascript, text/plain; charset=UTF-8"],
-			["Content-Type", "application/json; charset=UTF-8"]]);
-		this.timeout = timeout ? timeout : 10_000;
-	}
-}
-
-class HttpRequestImpl<T extends any> {
-	method: ("GET" | "POST");
-	url: string;
-	opt: HttpRequestOptionImpl;
-	body: T | null;
-
-	constructor(method: "GET" | "POST", url: string, opt: HttpRequestOptionImpl, body: T | null) {
-		this.method = method;
-		this.url = url;
-		this.body = body;
-		this.opt = opt ? opt : new HttpRequestOptionImpl(false, null, 10_000, true);
-	}
-}
-
-class HttpResponseImpl<T extends any> {
-	statusCode: number;
-	statusMsg: string;
-	headers: SimpleMap<string, string>;
-	body: T | null;
-
-	constructor(statusCode: number, statusMsg: string, headers: SimpleMap<string, string> | null, body: T | null) {
-		this.statusCode = statusCode;
-		this.statusMsg = statusMsg;
-		this.headers = headers ? headers : new SimpleMap();
-		this.body = body;
-	}
-}
-
-class HttpRequestHandlerImpl<T extends any, R extends any> {
-		onLoad    : (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-		onProgress: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-		onTimeout : (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-		onAbort   : (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-		onError   : (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-
-		constructor(
-			onLoad    : (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>,
-			onProgress: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>,
-			onError   : (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>,
-			onTimeout : (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>,
-			onAbort   : (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>)  //
-		{
-			this.onLoad     = onLoad    ;
-			this.onProgress = onProgress;
-			this.onError    = onError   ;
-			this.onTimeout  = onTimeout ;
-			this.onAbort    = onAbort   ;
-		}
-}
-
-function requestHttp<T extends any, R extends any>(req: HttpRequestImpl<T>, //
-	hdl: HttpRequestHandlerImpl<T, R>): Promise<HttpResponseImpl<R>> // 
-{
-	return new Promise<HttpResponseImpl<R>>((resolve, reject) => {
-		let xhr = new XMLHttpRequest();
-		xhr.open(req.method, req.url);
-		xhr.withCredentials = req.opt.withCredentials;
-		if (req.opt.ingoreCache) {
-			xhr.setRequestHeader('Cache-Control', 'no-cache');
-		}
-		if (req.opt.headers) {
-			for (let i = 0; i < req.opt.headers.size(); i++) {
-				let hh = req.opt.headers.getElementByIndex(i);
-				if (hh) {
-					xhr.setRequestHeader(hh[0], hh[1]);
-				}
-			}
-		}
-		xhr.timeout = req.opt.timeout;
-		//
-		xhr.onload     = (evt: ProgressEvent) => { hdl.onLoad    (evt, xhr, req); };
-		xhr.onprogress = (evt: ProgressEvent) => { hdl.onProgress(evt, xhr, req); };
-		xhr.onerror    = (evt: ProgressEvent) => { hdl.onError   (evt, xhr, req); };
-		xhr.ontimeout  = (evt: ProgressEvent) => { hdl.onTimeout (evt, xhr, req); };
-		xhr.onabort    = (evt: ProgressEvent) => { hdl.onAbort   (evt, xhr, req); };
-	});
-}
-
-
 export interface HttpRequestOption {
 	ingoreCache?: boolean;
 	headers?: SimpleMap<string, string>;
@@ -119,42 +23,62 @@ export interface HttpRequestOption {
 export interface HttpRequest<T extends any> {
 	method?: ("GET" | "POST");
 	url: string;
-	opt?: HttpRequestOptionImpl;
+	opt?: HttpRequestOption;
 	body?: T ;
 }
 
 export interface HttpResponse<T extends any> {
 	statusCode: number;
 	statusMsg: string;
-	headers: SimpleMap<string, string>;
+	headers?: SimpleMap<string, string>;
 	body: T | null;
 }
 
 export interface HttpRequestHandler<T extends any, R extends any> {
-		onLoad    ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-		onProgress?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-		onTimeout ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-		onAbort   ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
-		onError   ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequestImpl<T>) => HttpResponseImpl<R>;
+		onLoad    ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+		onProgress?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+		onTimeout ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+		onAbort   ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+		onError   ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
 }
+
 
 
 export class WebUtil {
 
-	static doHttpRequest<T extends any, R extends any>(request: HttpRequest<T>, handler?: HttpRequestHandler<T,R>): Promise<HttpResponseImpl<R>> {
-		let method = request.method ? request.method : "GET";
-		let reqOpt = request.opt ? request.opt : new HttpRequestOptionImpl(false, null, 10_000, true);
-		let reqBody = request.body ? request.body : null;
-		let req: HttpRequestImpl<T> = new HttpRequestImpl<T>(method, request.url, reqOpt, reqBody);
+	static requestHttp<T extends any, R extends any>(req: HttpRequest<T>, //
+		hdl?: HttpRequestHandler<T, R>): Promise<HttpResponse<R>> // 
+	{
+		return new Promise<HttpResponse<R>>((resolve, reject) => {
+			let xhr = new XMLHttpRequest();
+			let method = req.method ? req.method : "GET";
+			xhr.open(method, req.url);
+			xhr.withCredentials = req.opt?.withCredentials ? req.opt?.withCredentials : false;
+			if (req.opt?.ingoreCache) {
+				xhr.setRequestHeader('Cache-Control', 'no-cache');
+			}
+			if (req.opt?.headers) {
+				for (let i = 0; i < req.opt.headers.size(); i++) {
+					let hh = req.opt.headers.getElementByIndex(i);
+					if (hh) {
+						xhr.setRequestHeader(hh[0], hh[1]);
+					}
+				}
+			}
+			xhr.timeout = req.opt?.timeout ? req.opt.timeout : 1_000;
+			//
+			let onload     = hdl?.onLoad    ;
+			let onprogress = hdl?.onProgress;
+			let onerror    = hdl?.onError   ;
+			let ontimeout  = hdl?.onTimeout ;
+			let onabort    = hdl?.onAbort   ;
 
-		let hdl: HttpRequestHandlerImpl<T, R> = new HttpRequestHandlerImpl( //
-			handler && handler.onLoad      ? handler.onLoad      : (evt, xhr, req) => new HttpResponseImpl<R>(-1, "unknow err" , null, null),  //
-			handler && handler.onProgress  ? handler.onProgress  : (evt, xhr, req) => new HttpResponseImpl<R>(-1, "on progress", null, null),  //
-			handler && handler.onTimeout   ? handler.onTimeout   : (evt, xhr, req) => new HttpResponseImpl<R>(-1, "time-out"   , null, null),  //
-			handler && handler.onAbort     ? handler.onAbort     : (evt, xhr, req) => new HttpResponseImpl<R>(-1, "abort"      , null, null),  //
-			handler && handler.onError     ? handler.onError     : (evt, xhr, req) => new HttpResponseImpl<R>(-1, "unknow err" , null, null));
-
-		return requestHttp(req, hdl);
+			if (onload    ) { xhr.onload     = (evt: ProgressEvent) => { resolve(onload    (evt, xhr, req)); }; }
+			if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => {         onprogress(evt, xhr, req) ; }; }
+			if (onerror   ) { xhr.onerror    = (evt: ProgressEvent) => { reject (onerror   (evt, xhr, req)); }; }
+			if (ontimeout ) { xhr.ontimeout  = (evt: ProgressEvent) => { reject (ontimeout (evt, xhr, req)); }; }
+			if (onabort   ) { xhr.onabort    = (evt: ProgressEvent) => { reject (onabort   (evt, xhr, req)); }; }
+		});
 	}
 
 	/**

@@ -254,7 +254,10 @@ page.transUnicodeWikiInHex('⛵');
 <script type="text/javascript" src="../scripts/ts/wiki.js" ></script>
 -->
 <script type="module">
-	import {BlogPage} from "../scripts/ts/blog.js"
-BlogPage.initWikiPage('', 'Vim-Wiki中使用Unicode字符');
+		import { BlogPage } from "../scripts/ts/blog.js"
+
+
+		await BlogPage.initWikiPage('', 'Vim-Wiki中使用Unicode字符');
+
 </script> 
 </html>

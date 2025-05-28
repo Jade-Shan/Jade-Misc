@@ -1,9 +1,10 @@
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
+
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 
 export class WikiPage {
 
-	static initWikiPage(basePath: string, title: string) {
+	static async initWikiPage(basePath: string, title: string) {
 
 		let cfg: PageConfig = { apiRoot: "/", pageTitle: "Study Notes", subTitle: title, ajaxTimeout: 500 };
 		let page = new WebHtmlPage(cfg);
@@ -69,7 +70,6 @@ export class WikiPage {
 			{ elemSlt: "#switch-theme-paper-print", themeName: "paper-print" },
 		]
 		page.bindChangeTheme(themes);
-
 	}
 
 }

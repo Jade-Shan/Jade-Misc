@@ -1,9 +1,12 @@
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 
+import { WebUtil, HttpRequest, HttpRequestHandler, HttpResponse } from "./web.js"
+
 export class BlogPage {
 
-	static initWikiPage(basePath: string, title: string) {
+	static async initWikiPage(basePath: string, title: string) {
+
 
 		let cfg: PageConfig = { apiRoot: "/", pageTitle: "Study Notes", subTitle: title, ajaxTimeout: 500 };
 		let page = new WebHtmlPage(cfg);
@@ -69,6 +72,23 @@ export class BlogPage {
 			{ elemSlt: "#switch-theme-paper-print", themeName: "paper-print" },
 		]
 		page.bindChangeTheme(themes);
+
+		let data = await WebUtil.requestHttp<string, string>({
+			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=teo"
+		}, {
+			onLoad: (evt, xhr, req) => {
+				console.log(xhr.response);
+				return {statusCode: 200, statusMsg: "", body: null};
+			},	
+		});
+
+		console.log(data);
+
+
+// let xhr = new XMLHttpRequest();
+// xhr.addEventListener("load", () => {console.log(xhr.response)});
+// xhr.open("GET", "http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=teo");
+// xhr.send();
 
 	}
 
