@@ -78,13 +78,9 @@ export class BlogPage {
 		}, {
 			onLoad: (evt, xhr, req) => {
 				// console.log(xhr.response);
-				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: null};
+				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: xhr.responseText};
 			},	
-		}).then(resp => {
-			return resp;
-		}).catch(resp => {
-			return resp;
-		});
+		}).then(resp => resp).catch(resp => resp);
 
 		console.log(resp);
 
