@@ -78,6 +78,8 @@ export class WebUtil {
 			if (onerror   ) { xhr.onerror    = (evt: ProgressEvent) => { reject (onerror   (evt, xhr, req)); }; }
 			if (ontimeout ) { xhr.ontimeout  = (evt: ProgressEvent) => { reject (ontimeout (evt, xhr, req)); }; }
 			if (onabort   ) { xhr.onabort    = (evt: ProgressEvent) => { reject (onabort   (evt, xhr, req)); }; }
+
+			xhr.send();
 		});
 	}
 
