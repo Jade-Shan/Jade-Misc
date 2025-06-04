@@ -43,45 +43,57 @@ export interface HttpRequestHandler<T extends any, R extends any> {
 }
 
 
-
-export class WebUtil {
-
-	static requestHttp<T extends any, R extends any>(req: HttpRequest<T>, //
-		hdl?: HttpRequestHandler<T, R>): Promise<HttpResponse<R>> // 
-	{
-		return new Promise<HttpResponse<R>>((resolve, reject) => {
-			let xhr = new XMLHttpRequest();
-			let method = req.method ? req.method : "GET";
-			xhr.open(method, req.url);
-			xhr.withCredentials = req.opt?.withCredentials ? req.opt?.withCredentials : false;
-			if (req.opt?.ingoreCache) {
-				xhr.setRequestHeader('Cache-Control', 'no-cache');
-			}
-			if (req.opt?.headers) {
-				for (let i = 0; i < req.opt.headers.size(); i++) {
-					let hh = req.opt.headers.getElementByIndex(i);
-					if (hh) {
-						xhr.setRequestHeader(hh[0], hh[1]);
-					}
+async function doHttp<T extends any, R extends any>(req: HttpRequest<T>, //
+	hdl?: HttpRequestHandler<T, R>): Promise<HttpResponse<R>> // 
+{
+	return new Promise<HttpResponse<R>>((resolve, reject) => {
+		let xhr = new XMLHttpRequest();
+		let method = req.method ? req.method : "GET";
+		xhr.open(method, req.url);
+		xhr.withCredentials = req.opt?.withCredentials ? req.opt?.withCredentials : false;
+		if (req.opt?.ingoreCache) {
+			xhr.setRequestHeader('Cache-Control', 'no-cache');
+		}
+		if (req.opt?.headers) {
+			for (let i = 0; i < req.opt.headers.size(); i++) {
+				let hh = req.opt.headers.getElementByIndex(i);
+				if (hh) {
+					xhr.setRequestHeader(hh[0], hh[1]);
 				}
 			}
-			xhr.timeout = req.opt?.timeout ? req.opt.timeout : 1_000;
-			//
-			let onload     = hdl?.onLoad    ;
-			let onprogress = hdl?.onProgress;
-			let onerror    = hdl?.onError   ;
-			let ontimeout  = hdl?.onTimeout ;
-			let onabort    = hdl?.onAbort   ;
+		}
+		xhr.timeout = req.opt?.timeout ? req.opt.timeout : 1_000;
+		//
+		let onload = hdl?.onLoad;
+		let onprogress = hdl?.onProgress;
+		let onerror = hdl?.onError;
+		let ontimeout = hdl?.onTimeout;
+		let onabort = hdl?.onAbort;
 
-			if (onload    ) { xhr.onload     = (evt: ProgressEvent) => { resolve(onload    (evt, xhr, req)); }; }
-			if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => {         onprogress(evt, xhr, req) ; }; }
-			if (onerror   ) { xhr.onerror    = (evt: ProgressEvent) => { reject (onerror   (evt, xhr, req)); }; }
-			if (ontimeout ) { xhr.ontimeout  = (evt: ProgressEvent) => { reject (ontimeout (evt, xhr, req)); }; }
-			if (onabort   ) { xhr.onabort    = (evt: ProgressEvent) => { reject (onabort   (evt, xhr, req)); }; }
+		if (onload) { xhr.onload = (evt: ProgressEvent) => { resolve(onload(evt, xhr, req)); }; }
+		if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => { onprogress(evt, xhr, req); }; }
+		if (onerror) { xhr.onerror = (evt: ProgressEvent) => { reject(onerror(evt, xhr, req)); }; }
+		if (ontimeout) { xhr.ontimeout = (evt: ProgressEvent) => { reject(ontimeout(evt, xhr, req)); }; }
+		if (onabort) { xhr.onabort = (evt: ProgressEvent) => { reject(onabort(evt, xhr, req)); }; }
 
-			xhr.send();
-		});
-	}
+		xhr.send();
+	});
+}
+
+/**
+ * 
+ * @param req 
+ * @param hdl 
+ * @returns 
+ */
+export async function requestHttp<T extends any, R extends any>(req: HttpRequest<T>, //
+		hdl?: HttpRequestHandler<T, R>): Promise<HttpResponse<R>> // 
+{
+	return await doHttp<T,R>(req, hdl).then(resp => resp).catch(resp => resp);
+}
+
+
+export class WebUtil {
 
 	/**
 	 * 创建自定义标签，用于显示Unicode字符

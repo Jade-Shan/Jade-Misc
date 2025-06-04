@@ -1,7 +1,7 @@
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 
-import { WebUtil, HttpRequest, HttpRequestHandler, HttpResponse } from "./web.js"
+import { WebUtil, HttpRequest, HttpRequestHandler, HttpResponse, requestHttp } from "./web.js"
 
 export class BlogPage {
 
@@ -73,14 +73,14 @@ export class BlogPage {
 		]
 		page.bindChangeTheme(themes);
 
-		let resp = await WebUtil.requestHttp<string, string>({
+		let resp: HttpResponse<string> = await requestHttp<string, string>({
 			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=teo"
 		}, {
 			onLoad: (evt, xhr, req) => {
 				// console.log(xhr.response);
 				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: xhr.responseText};
 			},	
-		}).then(resp => resp).catch(resp => resp);
+		});
 
 		console.log(resp);
 
