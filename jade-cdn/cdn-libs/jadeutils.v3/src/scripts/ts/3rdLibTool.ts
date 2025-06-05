@@ -1,5 +1,4 @@
 
-
 declare namespace SyntaxHighlighter {
 	function all(): void;
 	namespace autoloader {
@@ -218,4 +217,21 @@ export class DataTableHelper {
 		});
 	}
 
+}
+
+// showdown.js
+declare namespace showdown {
+
+	class Converter {
+		makeHtml(markdownStr: string): string;
+	}
+
+}
+
+export class ShowdownUtils {
+	static conveter = new showdown.Converter();
+
+	static makeHtml(markdown: string): string {
+		return this.conveter.makeHtml(markdown);
+	}
 }

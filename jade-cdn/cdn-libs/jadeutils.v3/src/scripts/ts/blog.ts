@@ -1,5 +1,5 @@
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
-import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
+import { ShowdownUtils, SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 
 import { WebUtil, HttpRequest, HttpRequestHandler, HttpResponse } from "./web.js"
 
@@ -16,8 +16,138 @@ interface UserInfoResp {
 	}
 };
 
+interface RecommandArticle {
+	title: string;
+	thumbnail: string;
+	link: string;
+};
+
+interface RecommandArticlesResp {
+	status: string;
+	recommands: Array<RecommandArticle>;
+};
+
+interface UserArticle {
+	time: number;
+	auth: string;
+	title: string;
+	text: string;
+};
+
+interface UserArticlesResp {
+	status: string;
+	page: number;
+	pageCount: number;
+	articles: Array<UserArticle>;
+};
 
 export class BlogPage {
+
+	static async loadUserInfo() {
+		let userInfoResp: HttpResponse<UserInfoResp> = await WebUtil.requestHttp<string, UserInfoResp>({
+			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=teo"
+		}, {
+			onLoad: (evt, xhr, req) => {
+				// console.log(xhr.response);
+				let userInfo = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: userInfo};
+			},	
+		});
+		console.log(userInfoResp);
+		let userInfo: UserInfoResp = userInfoResp.body ? userInfoResp.body : {
+			status: "success",
+			user: {
+				userName: "Guest",
+				avatar: "http://47.102.120.187:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
+				desc: "Demo post with formatted elements and comments.",
+				joinTime: "2021-03-21",
+				group: "Guest",
+				homePageUrl: "#"
+			}
+		};
+		let t1 = document.querySelector('#widget-username'   );
+		let t2 = document.querySelector<HTMLImageElement>('#widget-avatar'     );
+		let t3 = document.querySelector('#widget-user-desc'  );
+		let t4 = document.querySelector('#widget-user-joined');
+		let t5 = document.querySelector('#widget-user-group' );
+		let t6 = document.querySelector<HTMLLinkElement>('#widget-avatar-lnk' );
+
+		if (t1) t1.innerHTML = userInfo.user.userName   ;
+		if (t2) t2.alt       = userInfo.user.userName   ;
+		if (t2) t2.src       = userInfo.user.avatar     ;
+		if (t3) t3.innerHTML = userInfo.user.desc       ;
+		if (t4) t4.innerHTML = userInfo.user.joinTime   ;
+		if (t5) t5.innerHTML = userInfo.user.group      ;
+		if (t6) t6.href      = userInfo.user.homePageUrl;
+	}
+
+	static async loadRecommandArticles () {
+		let recoms: HttpResponse<RecommandArticlesResp> = await WebUtil.requestHttp<string, RecommandArticlesResp>({
+			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadRecommandArticles"
+		}, {
+			onLoad: (evt, xhr, req) => {
+				// console.log(xhr.response);
+				let recommands = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+				return { statusCode: xhr.status, statusMsg: xhr.statusText, body: recommands };
+			},
+		});
+		console.log(recoms);
+		let recommands: RecommandArticlesResp = recoms.body ? recoms.body : {
+			status: "success", recommands: []
+		};
+		let html = "";
+		for (let i = 0; i < recommands.recommands.length; i++) {
+			let t = recommands.recommands[i];
+			html = html + `
+				<li><div class="img-text-itm"><div class="item-thumbnail">
+					<a href="${t.link}" target="_blank"><img class="img-hov" alt="" src="${t.thumbnail}" border="0"></a></div><div class="item-title">
+					<a href="${t.link}">${t.title}</a></div></div><div style="clear: both;">
+				</div></li>`;
+		}
+		let tk = document.querySelector("#widget-recommends-articles");
+		if (tk) tk.innerHTML = html;
+	}
+
+	static renderArticle(atc: UserArticle) {
+		let date = new Date();
+		date.setTime(atc.time);
+		let st = ShowdownUtils.makeHtml(atc.text);
+		let html = `
+			<div class="item">
+				<div class="title">${atc.title}</div>
+      			<div class="metadata metadata-time">${date.toLocaleString()}</div>
+				<div class="metadata metadata-auth"> by ${atc.auth}</div>
+     			<div class="body">${st}</div>
+    		</div>
+			<div class="divider"><span></span></div>`;
+		return html;
+	}
+
+	static async loadUserArticles () {
+		let list: HttpResponse<UserArticlesResp> = await WebUtil.requestHttp<string, UserArticlesResp>({
+			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadByUser?userId=teo&page=1"
+		}, {
+			onLoad: (evt, xhr, req) => {
+				// console.log(xhr.response);
+				let articles = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: articles};
+			},	
+		});
+		console.log(list);
+
+		let articles: UserArticlesResp = list.body ? list.body : {
+			status: "success", page: 1, pageCount: 1, articles: []
+		};
+
+		let html = `
+			<div class="spacer"></div>`;
+		for (let i = 0; i < articles.articles.length; i++) {
+			let t = articles.articles[i];
+			html = html + this.renderArticle(t);
+		}
+		let tk = document.querySelector("#articles");
+		if (tk) tk.innerHTML = html;
+	}
 
 	static async initWikiPage(basePath: string, title: string) {
 
@@ -87,64 +217,16 @@ export class BlogPage {
 		]
 		page.bindChangeTheme(themes);
 
-		//
-		let userInfoResp: HttpResponse<UserInfoResp> = await WebUtil.requestHttp<string, UserInfoResp>({
-			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=teo"
-		}, {
-			onLoad: (evt, xhr, req) => {
-				// console.log(xhr.response);
-				let userInfo = xhr.responseText ? JSON.parse(xhr.responseText) : null;
-				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: userInfo};
-			},	
-		});
-		console.log(userInfoResp);
-		let userInfo: UserInfoResp = userInfoResp.body ? userInfoResp.body : {
-			status: "success",
-			user: {
-				userName: "Guest",
-				avatar: "http://47.102.120.187:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
-				desc: "Demo post with formatted elements and comments.",
-				joinTime: "2021-03-21",
-				group: "Guest",
-				homePageUrl: "#"
-			}
-		};
-		let t1 = document.querySelector('#widget-username'   );
-		let t2 = document.querySelector<HTMLImageElement>('#widget-avatar'     );
-		let t4 = document.querySelector('#widget-user-desc'  );
-		let t5 = document.querySelector('#widget-user-joined');
-		let t6 = document.querySelector('#widget-user-group' );
-		let t7 = document.querySelector<HTMLLinkElement>('#widget-avatar-lnk' );
-
-		if (t1) t1.innerHTML = userInfo.user.userName;
-		if (t2) t2.alt       = userInfo.user.userName;
-		if (t2) t2.src       = userInfo.user.avatar;
-		if (t4) t4.innerHTML = userInfo.user.desc;
-		if (t5) t5.innerHTML = userInfo.user.joinTime;
-		if (t6) t6.innerHTML = userInfo.user.group;
-		if (t7) t7.href      = userInfo.user.homePageUrl;
+		// 
+		await BlogPage.loadUserInfo();
 
 		//
-		let recoms: HttpResponse<string> = await WebUtil.requestHttp<string, string>({
-			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadRecommandArticles"
-		}, {
-			onLoad: (evt, xhr, req) => {
-				// console.log(xhr.response);
-				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: xhr.responseText};
-			},	
-		});
-		console.log(recoms);
+		await BlogPage.loadRecommandArticles();
 
 		//
-		let articles: HttpResponse<string> = await WebUtil.requestHttp<string, string>({
-			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadByUser?userId=teo&page=1"
-		}, {
-			onLoad: (evt, xhr, req) => {
-				// console.log(xhr.response);
-				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: xhr.responseText};
-			},	
-		});
-		console.log(articles);
+
+		//
+		await BlogPage.loadUserArticles();
 
 	}
 
