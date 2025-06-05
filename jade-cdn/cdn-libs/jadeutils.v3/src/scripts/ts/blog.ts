@@ -123,6 +123,11 @@ export class BlogPage {
 		return html;
 	}
 
+	static renderPagination(currPage: number, pageCount: number, funcName: string) {
+		let html = ` `;
+		return html;
+	}
+
 	static async loadUserArticles () {
 		let list: HttpResponse<UserArticlesResp> = await WebUtil.requestHttp<string, UserArticlesResp>({
 			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadByUser?userId=teo&page=1"
@@ -145,6 +150,7 @@ export class BlogPage {
 			let t = articles.articles[i];
 			html = html + this.renderArticle(t);
 		}
+		html = html + this.renderPagination(articles.page, articles.pageCount, 'BlogPage.loadPage');
 		let tk = document.querySelector("#articles");
 		if (tk) tk.innerHTML = html;
 	}
