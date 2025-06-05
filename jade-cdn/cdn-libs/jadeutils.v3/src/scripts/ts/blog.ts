@@ -3,6 +3,20 @@ import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelpe
 
 import { WebUtil, HttpRequest, HttpRequestHandler, HttpResponse } from "./web.js"
 
+
+interface UserInfoResp {
+	status: string;
+	user: {
+		userName: string;
+		avatar: string;
+		desc: string;
+		joinTime: string;
+		group: string;
+		homePageUrl: string;
+	}
+};
+
+
 export class BlogPage {
 
 	static async initWikiPage(basePath: string, title: string) {
@@ -74,23 +88,27 @@ export class BlogPage {
 		page.bindChangeTheme(themes);
 
 		//
-		let userInfoResp: HttpResponse<string> = await WebUtil.requestHttp<string, string>({
+		let userInfoResp: HttpResponse<UserInfoResp> = await WebUtil.requestHttp<string, UserInfoResp>({
 			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=teo"
 		}, {
 			onLoad: (evt, xhr, req) => {
 				// console.log(xhr.response);
-				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: xhr.responseText};
+				let userInfo = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+				return {statusCode: xhr.status, statusMsg: xhr.statusText, body: userInfo};
 			},	
 		});
 		console.log(userInfoResp);
-		let userInfo: any = JSON.parse(userInfoResp.body ? userInfoResp.body : "");
-		console.log(userInfo.user.userName   );
-		console.log(userInfo.user.userName   );
-		console.log(userInfo.user.avatar     );
-		console.log(userInfo.user.desc       );
-		console.log(userInfo.user.joinTime   );
-		console.log(userInfo.user.group      );
-		console.log(userInfo.user.homePageUrl);
+		let userInfo: UserInfoResp = userInfoResp.body ? userInfoResp.body : {
+			status: "success",
+			user: {
+				userName: "Guest",
+				avatar: "http://47.102.120.187:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
+				desc: "Demo post with formatted elements and comments.",
+				joinTime: "2021-03-21",
+				group: "Guest",
+				homePageUrl: "#"
+			}
+		};
 		let t1 = document.querySelector('#widget-username'   );
 		let t2 = document.querySelector<HTMLImageElement>('#widget-avatar'     );
 		let t4 = document.querySelector('#widget-user-desc'  );
