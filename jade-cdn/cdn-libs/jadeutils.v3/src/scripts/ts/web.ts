@@ -80,20 +80,20 @@ async function doHttp<T extends any, R extends any>(req: HttpRequest<T>, //
 	});
 }
 
-/**
- * 
- * @param req 
- * @param hdl 
- * @returns 
- */
-export async function requestHttp<T extends any, R extends any>(req: HttpRequest<T>, //
-		hdl?: HttpRequestHandler<T, R>): Promise<HttpResponse<R>> // 
-{
-	return await doHttp<T,R>(req, hdl).then(resp => resp).catch(resp => resp);
-}
-
-
 export class WebUtil {
+
+	/**
+	 * 
+	 * @param req 
+	 * @param hdl 
+	 * @returns 
+	 */
+	static async requestHttp<T extends any, R extends any>(req: HttpRequest<T>, //
+			hdl?: HttpRequestHandler<T, R>): Promise<HttpResponse<R>> // 
+	{
+		return await doHttp<T,R>(req, hdl).then(resp => resp).catch(resp => resp);
+	}
+
 
 	/**
 	 * 创建自定义标签，用于显示Unicode字符
