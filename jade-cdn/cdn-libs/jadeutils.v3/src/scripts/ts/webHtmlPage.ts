@@ -89,20 +89,15 @@ export class WebHtmlPage {
 	}
 
 	static renderPaging(pageNo: number, count: number, genHref?: (n: number) => string, 
-		genFunc?: (n: number) => void): HTMLUListElement //
+		goPageFunc?: (n: number) => void): HTMLUListElement //
 	{
 		pageNo = pageNo && pageNo > 0 ? pageNo : 1;
 		count  = count  && count  > 0 ? count  : 1;
 
-		let funCk = //
-		/*
-		 (n0: number) => {
-			let cc = n0;
-			return genFunc ? () => { genFunc(cc) } :
-			() => {console.log(`go-page(${cc})`)}; 
+		let genGoPage = (n0: number) => {
+			return goPageFunc ? (ev: MouseEvent) => { goPageFunc(n0) } :
+			(ev: MouseEvent) => {console.log(`go-page(${n0})`)}; 
 		}
-			*/
-		genFunc ? genFunc : (n: number) => { console.log(`go-page(${n})`)};
 
 		let size = 5;
 		// 1 ... 3 4 5 6 7 _8_ 9 10 11 12 13 ... 20
@@ -121,8 +116,8 @@ export class WebHtmlPage {
 		} else {
 			{
 				let a: HTMLAnchorElement = document.createElement("a");
-				a.innerHTML = "&laquo;";let kk = pageNo - i; 
-				a.onclick = ev => { funCk(kk) };
+				a.innerHTML = "&laquo;";
+				a.onclick = genGoPage(pageNo - i);
 				if (genHref) { a.href = genHref(pageNo - 1); }
 				let li = document.createElement("li");
 				li.appendChild(a);
@@ -131,8 +126,8 @@ export class WebHtmlPage {
 			//
 			{
 				let a: HTMLAnchorElement = document.createElement("a");
-				a.innerHTML = `${i}`;let kk = i; 
-				a.onclick = ev => { funCk(kk); };
+				a.innerHTML = `${i}`;
+				a.onclick = genGoPage(i);
 				if (genHref) { a.href = genHref(i) }
 				let li = document.createElement("li");
 				li.appendChild(a);
@@ -155,8 +150,8 @@ export class WebHtmlPage {
 		// pre no
 		while (pageNo > i) {
 			let a: HTMLAnchorElement = document.createElement("a");
-			a.innerHTML = `${i}`;let kk = i; 
-			a.onclick = ev => { funCk(kk); };
+			a.innerHTML = `${i}`;
+			a.onclick = genGoPage(i);
 			if (genHref) { a.href = genHref(i); }
 			let li = document.createElement("li");
 			li.appendChild(a);
@@ -179,8 +174,8 @@ export class WebHtmlPage {
 		i = pageNo + 1;
 		while (i < count && i <= (pageNo + size)) {
 			let a: HTMLAnchorElement = document.createElement("a");
-			a.innerHTML = `${i}`;let kk = i; 
-			a.onclick = ev => { funCk(kk); };
+			a.innerHTML = `${i}`;
+			a.onclick = genGoPage(i);
 			if (genHref) { a.href = genHref(i); }
 			let li = document.createElement("li");
 			li.appendChild(a);
@@ -210,8 +205,8 @@ export class WebHtmlPage {
 		} else {
 			{
 				let a: HTMLAnchorElement = document.createElement("a");
-				a.innerHTML = `${count}`;let kk = count; 
-				a.onclick = ev => { funCk(kk); };
+				a.innerHTML = `${count}`;
+				a.onclick = genGoPage(count);
 				if (genHref) { a.href = genHref(count); }
 				let li = document.createElement("li");
 				li.appendChild(a);
@@ -219,8 +214,8 @@ export class WebHtmlPage {
 			}
 			{
 				let a: HTMLAnchorElement = document.createElement("a");
-				a.innerHTML = "&raquo;";let kk = pageNo + 1;
-				a.onclick = ev => {  funCk(kk) };
+				a.innerHTML = "&raquo;";
+				a.onclick = genGoPage(pageNo + 1);
 				if (genHref) { a.href = genHref(pageNo + 1); }
 				let li = document.createElement("li");
 				li.appendChild(a);
