@@ -183,7 +183,7 @@ export class WebHtmlPage {
 			i = i + 1;
 		}
 		// elps
-		if ((i + 1) < count) {
+		if (i < count) {
 			let a: HTMLAnchorElement = document.createElement("a");
 			a.innerHTML = "...";
 			a.classList.add("disable");
