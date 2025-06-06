@@ -82,8 +82,136 @@ export class WebHtmlPage {
 		}
 	}
 
+	static parseHTML(html: string) {
+		let t = document.createElement('template');
+		t.innerHTML = html;
+		return t.content;
+	}
 
-	renderPagination(pageNo: number, count: number, genPageHref?: (n: number) => string): string {
+	static renderPaging(pageNo: number, count: number, genHref?: (n: number) => string, 
+		genFunc?: (n: number) => void): HTMLUListElement //
+	{
+		pageNo = pageNo && pageNo > 0 ? pageNo : 1;
+		count  = count  && count  > 0 ? count  : 1;
+		let size = 5;
+		// 1 ... 3 4 5 6 7 _8_ 9 10 11 12 13 ... 20
+		let ulNode = document.createElement('ul');
+		ulNode.classList.add("pagination", "center");
+		let i = 1;
+		// first page
+		if (pageNo === 1) {
+			let a: HTMLAnchorElement = document.createElement("a");
+			if (genHref) { a.href = "javascript:void(0);"; }
+			a.innerHTML = "&laquo;";
+			let li = document.createElement("li");
+			li.appendChild(a);
+			ulNode.appendChild(li);
+		} else {
+			{
+				let a: HTMLAnchorElement = document.createElement("a");
+				if (genHref) {
+					a.href = genHref(pageNo - 1);
+				}
+				a.innerHTML = "&laquo;";
+				let li = document.createElement("li");
+				li.appendChild(a);
+				ulNode.appendChild(li);
+			}
+			//
+			{
+				let a: HTMLAnchorElement = document.createElement("a");
+				if (genHref) { a.href = genHref(i); }
+				a.innerHTML = `${i}`;
+				let li = document.createElement("li");
+				li.appendChild(a);
+				ulNode.appendChild(li);
+			}
+		}
+		i = i + 1;
+		// elps
+		if (pageNo > (size + 2)) {
+			i = pageNo - size;
+			let a: HTMLAnchorElement = document.createElement("a");
+			if (genHref) { a.href = "javascript:void(0);"; }
+			a.classList.add("disable");
+			a.innerHTML = "...";
+			let li = document.createElement("li");
+			li.appendChild(a);
+			ulNode.appendChild(li);
+		}
+		// pre no
+		while (pageNo > i) {
+			let a: HTMLAnchorElement = document.createElement("a");
+			if (genHref) { a.href = genHref(i); }
+			a.innerHTML = `${i}`;
+			let li = document.createElement("li");
+			li.appendChild(a);
+			ulNode.appendChild(li);
+			i = i + 1;
+		}
+		// curr page
+		{
+			let a: HTMLAnchorElement = document.createElement("a");
+			if (genHref) { a.href = "javascript:void(0);"; }
+			a.innerHTML = `${pageNo}`;
+			let li = document.createElement("li");
+			li.classList.add("active")
+			li.appendChild(a);
+			ulNode.appendChild(li);
+			i = i + 1;
+		}
+		// post no
+		i = pageNo + 1;
+		while (i < count && i <= (pageNo + size)) {
+			let a: HTMLAnchorElement = document.createElement("a");
+			if (genHref) { a.href = genHref(i); }
+			a.innerHTML = `${i}`;
+			let li = document.createElement("li");
+			li.appendChild(a);
+			ulNode.appendChild(li);
+			i = i + 1;
+		}
+		// elps
+		if ((i + 2) < count) {
+			let a: HTMLAnchorElement = document.createElement("a");
+			if (genHref) { a.href = "javascript:void(0);"; }
+			a.classList.add("disable");
+			a.innerHTML = "...";
+			let li = document.createElement("li");
+			li.appendChild(a);
+			ulNode.appendChild(li);
+		}
+		if (pageNo === count) {
+			let a: HTMLAnchorElement = document.createElement("a");
+			if (genHref) { a.href = "javascript:void(0);"; }
+			a.classList.add("disable");
+			a.innerHTML = "&raquo;";
+			let li = document.createElement("li");
+			li.appendChild(a);
+			ulNode.appendChild(li);
+		} else {
+			{
+				let a: HTMLAnchorElement = document.createElement("a");
+				if (genHref) { a.href = genHref(count); }
+				a.innerHTML = `${count}`;
+				let li = document.createElement("li");
+				li.appendChild(a);
+				ulNode.appendChild(li);
+			}
+			{
+				let a: HTMLAnchorElement = document.createElement("a");
+				if (genHref) { a.href = genHref(pageNo + 1); }
+				a.innerHTML = "&raquo;";
+				let li = document.createElement("li");
+				li.appendChild(a);
+				ulNode.appendChild(li);
+			}
+		}
+		return ulNode;
+	};
+
+
+	static renderPagination(pageNo: number, count: number, genPageHref?: (n: number) => string): string {
 		pageNo = pageNo && pageNo > 0 ? pageNo : 1;
 		count  = count  && count  > 0 ? count  : 1;
 		let size = 5;

@@ -70,11 +70,11 @@ async function doHttp<T extends any, R extends any>(req: HttpRequest<T>, //
 		let ontimeout = hdl?.onTimeout;
 		let onabort = hdl?.onAbort;
 
-		if (onload) { xhr.onload = (evt: ProgressEvent) => { resolve(onload(evt, xhr, req)); }; }
-		if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => { onprogress(evt, xhr, req); }; }
-		if (onerror) { xhr.onerror = (evt: ProgressEvent) => { reject(onerror(evt, xhr, req)); }; }
-		if (ontimeout) { xhr.ontimeout = (evt: ProgressEvent) => { reject(ontimeout(evt, xhr, req)); }; }
-		if (onabort) { xhr.onabort = (evt: ProgressEvent) => { reject(onabort(evt, xhr, req)); }; }
+		if (onload    ) { xhr.onload     = (evt: ProgressEvent) => { resolve(  onload(evt, xhr, req)); }; }
+		if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => {       onprogress(evt, xhr, req) ; }; }
+		if (onerror   ) { xhr.onerror    = (evt: ProgressEvent) => { reject(  onerror(evt, xhr, req)); }; }
+		if (ontimeout ) { xhr.ontimeout  = (evt: ProgressEvent) => { reject(ontimeout(evt, xhr, req)); }; }
+		if (onabort   ) { xhr.onabort    = (evt: ProgressEvent) => { reject(  onabort(evt, xhr, req)); }; }
 
 		xhr.send();
 	});

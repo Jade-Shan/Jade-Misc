@@ -124,13 +124,11 @@ export class BlogPage {
 	}
 
 	static renderPagination(currPage: number, pageCount: number, funcName: string) {
-		let html = ` `;
-		return html;
 	}
 
 	static async loadUserArticles () {
 		let list: HttpResponse<UserArticlesResp> = await WebUtil.requestHttp<string, UserArticlesResp>({
-			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadByUser?userId=teo&page=1"
+			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadByUser?userId=u001&page=1"
 		}, {
 			onLoad: (evt, xhr, req) => {
 				// console.log(xhr.response);
@@ -150,9 +148,27 @@ export class BlogPage {
 			let t = articles.articles[i];
 			html = html + this.renderArticle(t);
 		}
-		html = html + this.renderPagination(articles.page, articles.pageCount, 'BlogPage.loadPage');
+		// this.renderPagination(articles.page, articles.pageCount, 'BlogPage.loadPage');
 		let tk = document.querySelector("#articles");
+		//  html = html + WebHtmlPage.renderPagination( 1, 20, n => `javascript:queryBlog(${n})`)
+		//  html = html + WebHtmlPage.renderPagination( 7, 20, n => `javascript:queryBlog(${n})`)
+		//  html = html + WebHtmlPage.renderPagination( 8, 20, n => `javascript:queryBlog(${n})`)
+		//  html = html + WebHtmlPage.renderPagination(13, 20, n => `javascript:queryBlog(${n})`)
+		//  html = html + WebHtmlPage.renderPagination(14, 20, n => `javascript:queryBlog(${n})`)
+		//  html = html + WebHtmlPage.renderPagination(20, 20, n => `javascript:queryBlog(${n})`)
 		if (tk) tk.innerHTML = html;
+
+		let pagging = WebHtmlPage.renderPaging(articles.page, articles.pageCount);
+		tk?.appendChild(pagging);
+
+
+		// let br = document.createElement("br");
+		// pagging = WebHtmlPage.renderPaging(1, 20); tk?.appendChild(pagging);tk?.appendChild(br);
+		// pagging = WebHtmlPage.renderPaging(7, 20); tk?.appendChild(pagging);tk?.appendChild(br);
+		// pagging = WebHtmlPage.renderPaging(8, 20); tk?.appendChild(pagging);tk?.appendChild(br);
+		// pagging = WebHtmlPage.renderPaging(13, 20); tk?.appendChild(pagging);tk?.appendChild(br);
+		// pagging = WebHtmlPage.renderPaging(14, 20); tk?.appendChild(pagging);tk?.appendChild(br);
+		// pagging = WebHtmlPage.renderPaging(20, 20); tk?.appendChild(pagging);tk?.appendChild(br);
 	}
 
 	static async initWikiPage(basePath: string, title: string) {

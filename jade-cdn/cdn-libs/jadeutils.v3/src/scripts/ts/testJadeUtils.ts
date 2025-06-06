@@ -208,17 +208,17 @@ class TestWebHtmlPage {
 
 		//
 		// _1_ 2 3 4 5 6 ... 20
-		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar01', page.renderPagination( 1, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar01', WebHtmlPage.renderPagination( 1, 20, n => `javascript:queryBlog(${n})`));
 		// 1 2 3 4 5 6 _7_ 8 9 10 11 12 ... 20
-		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar02', page.renderPagination( 7, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar02', WebHtmlPage.renderPagination( 7, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ... 3 4 5 6 7 _8_ 9 10 11 12 13 ... 20
-		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar03', page.renderPagination( 8, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar03', WebHtmlPage.renderPagination( 8, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ... 8 9 10 11 12 _13_ 14 15 16 17 18 ... 20
-		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar07', page.renderPagination(13, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar07', WebHtmlPage.renderPagination(13, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ...  9 10 11 12 13 _14_ 15 16 17 18 19 20
-		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar08', page.renderPagination(14, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar08', WebHtmlPage.renderPagination(14, 20, n => `javascript:queryBlog(${n})`));
 		// 1 ... 15 16 17 18 19 _20_
-		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar09', page.renderPagination(20, 20, n => `javascript:queryBlog(${n})`));
+		WebHtmlPage.setElemHtmlBySelectorAll('#pageBar09', WebHtmlPage.renderPagination(20, 20, n => `javascript:queryBlog(${n})`));
 
 		//
 		DataTableHelper.bindInitDataTable();
