@@ -93,6 +93,17 @@ export class WebHtmlPage {
 	{
 		pageNo = pageNo && pageNo > 0 ? pageNo : 1;
 		count  = count  && count  > 0 ? count  : 1;
+
+		let funCk = //
+		/*
+		 (n0: number) => {
+			let cc = n0;
+			return genFunc ? () => { genFunc(cc) } :
+			() => {console.log(`go-page(${cc})`)}; 
+		}
+			*/
+		genFunc ? genFunc : (n: number) => { console.log(`go-page(${n})`)};
+
 		let size = 5;
 		// 1 ... 3 4 5 6 7 _8_ 9 10 11 12 13 ... 20
 		let ulNode = document.createElement('ul');
@@ -101,18 +112,18 @@ export class WebHtmlPage {
 		// first page
 		if (pageNo === 1) {
 			let a: HTMLAnchorElement = document.createElement("a");
-			if (genHref) { a.href = "javascript:void(0);"; }
 			a.innerHTML = "&laquo;";
+			a.onclick = ev => {console.log("already-page-1")};
+			if (genHref) { a.href = "javascript:void(0);"; }
 			let li = document.createElement("li");
 			li.appendChild(a);
 			ulNode.appendChild(li);
 		} else {
 			{
 				let a: HTMLAnchorElement = document.createElement("a");
-				if (genHref) {
-					a.href = genHref(pageNo - 1);
-				}
-				a.innerHTML = "&laquo;";
+				a.innerHTML = "&laquo;";let kk = pageNo - i; 
+				a.onclick = ev => { funCk(kk) };
+				if (genHref) { a.href = genHref(pageNo - 1); }
 				let li = document.createElement("li");
 				li.appendChild(a);
 				ulNode.appendChild(li);
@@ -120,8 +131,9 @@ export class WebHtmlPage {
 			//
 			{
 				let a: HTMLAnchorElement = document.createElement("a");
-				if (genHref) { a.href = genHref(i); }
-				a.innerHTML = `${i}`;
+				a.innerHTML = `${i}`;let kk = i; 
+				a.onclick = ev => { funCk(kk); };
+				if (genHref) { a.href = genHref(i) }
 				let li = document.createElement("li");
 				li.appendChild(a);
 				ulNode.appendChild(li);
@@ -132,9 +144,10 @@ export class WebHtmlPage {
 		if (pageNo > (size + 2)) {
 			i = pageNo - size;
 			let a: HTMLAnchorElement = document.createElement("a");
-			if (genHref) { a.href = "javascript:void(0);"; }
-			a.classList.add("disable");
 			a.innerHTML = "...";
+			a.classList.add("disable");
+			a.onclick = ev => console.log(`elips`);
+			if (genHref) { a.href = "javascript:void(0);"; }
 			let li = document.createElement("li");
 			li.appendChild(a);
 			ulNode.appendChild(li);
@@ -142,8 +155,9 @@ export class WebHtmlPage {
 		// pre no
 		while (pageNo > i) {
 			let a: HTMLAnchorElement = document.createElement("a");
+			a.innerHTML = `${i}`;let kk = i; 
+			a.onclick = ev => { funCk(kk); };
 			if (genHref) { a.href = genHref(i); }
-			a.innerHTML = `${i}`;
 			let li = document.createElement("li");
 			li.appendChild(a);
 			ulNode.appendChild(li);
@@ -152,8 +166,9 @@ export class WebHtmlPage {
 		// curr page
 		{
 			let a: HTMLAnchorElement = document.createElement("a");
-			if (genHref) { a.href = "javascript:void(0);"; }
 			a.innerHTML = `${pageNo}`;
+			a.onclick = ev => console.log(`already-curr-page`);
+			if (genHref) { a.href = "javascript:void(0);"; }
 			let li = document.createElement("li");
 			li.classList.add("active")
 			li.appendChild(a);
@@ -164,8 +179,9 @@ export class WebHtmlPage {
 		i = pageNo + 1;
 		while (i < count && i <= (pageNo + size)) {
 			let a: HTMLAnchorElement = document.createElement("a");
+			a.innerHTML = `${i}`;let kk = i; 
+			a.onclick = ev => { funCk(kk); };
 			if (genHref) { a.href = genHref(i); }
-			a.innerHTML = `${i}`;
 			let li = document.createElement("li");
 			li.appendChild(a);
 			ulNode.appendChild(li);
@@ -174,34 +190,38 @@ export class WebHtmlPage {
 		// elps
 		if ((i + 2) < count) {
 			let a: HTMLAnchorElement = document.createElement("a");
-			if (genHref) { a.href = "javascript:void(0);"; }
-			a.classList.add("disable");
 			a.innerHTML = "...";
+			a.classList.add("disable");
+			a.onclick = ev => console.log(`elips`);
+			if (genHref) { a.href = "javascript:void(0);"; }
 			let li = document.createElement("li");
 			li.appendChild(a);
 			ulNode.appendChild(li);
 		}
 		if (pageNo === count) {
 			let a: HTMLAnchorElement = document.createElement("a");
-			if (genHref) { a.href = "javascript:void(0);"; }
-			a.classList.add("disable");
 			a.innerHTML = "&raquo;";
+			a.classList.add("disable");
+			a.onclick = ev => console.log("already-page-max");
+			if (genHref) { a.href = "javascript:void(0);"; }
 			let li = document.createElement("li");
 			li.appendChild(a);
 			ulNode.appendChild(li);
 		} else {
 			{
 				let a: HTMLAnchorElement = document.createElement("a");
+				a.innerHTML = `${count}`;let kk = count; 
+				a.onclick = ev => { funCk(kk); };
 				if (genHref) { a.href = genHref(count); }
-				a.innerHTML = `${count}`;
 				let li = document.createElement("li");
 				li.appendChild(a);
 				ulNode.appendChild(li);
 			}
 			{
 				let a: HTMLAnchorElement = document.createElement("a");
+				a.innerHTML = "&raquo;";let kk = pageNo + 1;
+				a.onclick = ev => {  funCk(kk) };
 				if (genHref) { a.href = genHref(pageNo + 1); }
-				a.innerHTML = "&raquo;";
 				let li = document.createElement("li");
 				li.appendChild(a);
 				ulNode.appendChild(li);
