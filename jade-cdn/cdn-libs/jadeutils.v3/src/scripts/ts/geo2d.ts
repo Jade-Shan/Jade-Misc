@@ -3,7 +3,7 @@ export interface Geo {
 }
 
 export interface Geo2D extends Geo {
-
+	getCenter(geo: Geo2D): Point2D;
 }
 
 export class Point2D implements Geo2D {
@@ -15,21 +15,37 @@ export class Point2D implements Geo2D {
 		this.y = y;
 	}
 
+	getCenter(geo: Geo2D): Point2D {
+		return new Point2D(this.x, this.y);
+	}
+
+
+	// centerX(): number { return this.x; }
+	// centerY(): number { return this.y; }
+	// centerX() { return Math.abs(this.a.x - this.b.x) / 2 + (this.a.x > this.b.x ? this.b.x: this.a.x); } 
+	// centerY() { return Math.abs(this.a.y - this.b.y) / 2 + (this.a.y > this.b.y ? this.b.y: this.a.y); } 
+
 }
 
 export class Line2D implements Geo2D {
-	a: Point2D = { x: 0, y: 0 };
-	b: Point2D = { x: 0, y: 0 };
+	a: Point2D;
+	b: Point2D;
 
 	constructor(a: Point2D, b: Point2D) {
 		this.a = a;
 		this.b = b;
 	}
+
+	getCenter(geo: Geo2D): Point2D {
+		let x = Math.abs(this.a.x - this.b.x) / 2 + (this.a.x > this.b.x ? this.b.x : this.a.x);
+		let y = Math.abs(this.a.y - this.b.y) / 2 + (this.a.y > this.b.y ? this.b.y : this.a.y);
+		return new Point2D(x, y);
+	}
 }
 
 export class Ray implements Geo2D {
-	start: Point2D = { x: 0, y: 0 };
-	end  : Point2D = { x: 0, y: 0 };
+	start: Point2D = new Point2D(0, 0); 
+	end  : Point2D = new Point2D(0, 0); 
 	angle : number = 0;
 	cAngel: number = 0;
 	range : number = 0;
@@ -48,6 +64,12 @@ export class Ray implements Geo2D {
 		this.angle = angle;
 		this.cAngel = cAngle;
 		this.range = range;
+	}
+
+	getCenter(geo: Geo2D): Point2D {
+		let x = Math.abs(this.start.x - this.end.x) / 2 + (this.start.x > this.end.x ? this.end.x : this.start.x);
+		let y = Math.abs(this.start.y - this.end.y) / 2 + (this.start.y > this.end.y ? this.end.y : this.start.y);
+		return new Point2D(x, y);
 	}
 
 }
@@ -107,11 +129,11 @@ export namespace Geo2DUtils {
 	 */
 	function pointToLine(line: Line2D, p: Point2D): Point2D {
 		if (line.a.x == line.b.x && line.a.y == line.b.y) {
-			return { x: line.a.x, y: line.b.y };
+			return new Point2D(line.a.x, line.b.y);
 		} else if (line.a.x == line.b.x) {
-			return { x: line.a.x, y: p.y };
+			return new Point2D(line.a.x, p.y);
 		} else if (line.a.y == line.b.y) {
-			return { x: p.x, y: line.a.y };
+			return new Point2D(p.x, line.a.y);
 		} else {
 			let a = p.x - line.a.x;
 			let b = p.y - line.a.y;
@@ -123,11 +145,11 @@ export namespace Geo2DUtils {
 			let param = dot / lenSq;
 
 			if (param < 0) {
-				return { x: line.a.x, y: line.a.y };
+				return new Point2D(line.a.x, line.a.y);
 			} else if (param > 1) {
-				return { x: line.b.x, y: line.b.y };
+				return new Point2D(line.b.x, line.b.y);
 			} else {
-				return { x: line.a.x + param * c, y: line.a.y + param * d };
+				return new Point2D(line.a.x + param * c, line.a.y + param * d);
 			}
 		}
 	}
@@ -176,7 +198,7 @@ export namespace Geo2DUtils {
 		let t = area_cda / (area_abd - area_abc);
 		let dx = Math.round(t * (line1.b.x - line1.a.x));
 		let dy = Math.round(t * (line1.b.y - line1.a.y));
-		return { x: line1.a.x + dx, y: line1.a.y + dy };
+		return new Point2D(line1.a.x + dx, line1.a.y + dy);
 	}
 
 	/**
