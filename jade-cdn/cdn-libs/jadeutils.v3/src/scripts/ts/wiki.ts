@@ -70,6 +70,9 @@ export class WikiPage {
 			{ elemSlt: "#switch-theme-paper-print", themeName: "paper-print" },
 		]
 		page.bindChangeTheme(themes);
+
+		// 调整一下目录列表的大小
+		changeTocWithWindow();
 	}
 
 }
