@@ -13,8 +13,6 @@ export class NumUtil {
 	/**
 	 * 以可读的形式格式化数字
 	 *
-	 * 调用例子：var total = Number(0.09999999).add(0.09999999);
-	 *
 	 * @param n: 
 	 * @param formatExp: 格式表达式（代码还没有写，默认`##,###.##`的形式）
 	 * @returns: 人类可读性的字符串

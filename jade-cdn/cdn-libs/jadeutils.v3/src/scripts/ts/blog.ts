@@ -43,9 +43,9 @@ interface UserArticlesResp {
 
 export class BlogPage {
 
-	static async loadUserInfo() {
+	static async loadUserInfo(userId: string) {
 		let userInfoResp: HttpResponse<UserInfoResp> = await WebUtil.requestHttp<string, UserInfoResp>({
-			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=teo"
+			method: "GET", url: `http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=${userId}`
 		}, {
 			onLoad: (evt, xhr, req) => {
 				// console.log(xhr.response);
@@ -123,12 +123,9 @@ export class BlogPage {
 		return html;
 	}
 
-	static renderPagination(currPage: number, pageCount: number, funcName: string) {
-	}
-
-	static async loadUserArticles () {
+	static async loadUserArticles (userId: string, currPage: number) {
 		let list: HttpResponse<UserArticlesResp> = await WebUtil.requestHttp<string, UserArticlesResp>({
-			method: "GET", url: "http://www.jade-dungeon.cn:8088/api/blog/loadByUser?userId=u001&page=1"
+			method: "GET", url: `http://www.jade-dungeon.cn:8088/api/blog/loadByUser?userId=${userId}&page=${currPage}`
 		}, {
 			onLoad: (evt, xhr, req) => {
 				// console.log(xhr.response);
@@ -195,40 +192,11 @@ export class BlogPage {
 			}
 		]);
 
-//		//
-//		DataTableHelper.bindInitDataTable();
-//
-//		//
-//		page.bindImageNewTab("img.img-newwin");
-
 		// 
 		BootStrapHelper.initPhotoFrame("photo-frame");
 		//
 		BootStrapHelper.bindImageFrame("img.img-frame");
-//		//
-//		SyntaxHighlighterHelper.loadCodeHightlight(basePath, "../../3rd/SyntaxHighlighter/2.1.364/scripts");
-//		//
-//		MathJaxHelper.initMathJax();
-//		//
-//		let tocOri = document.querySelector<HTMLElement>("div.toc");
-//		if (null != tocOri) {
-//			WebHtmlPage.prepareTocIndex(tocOri.innerHTML, "div.sideTocIdx" );
-//			tocOri.remove();
-//		}
-//		//
-//		WebHtmlPage.bindOnClickBySelectorAll('#tocLevBtn' ,  () => {page.toggleSideTocContract("div.sideTocIdx")});
-//		WebHtmlPage.bindOnClickBySelectorAll('#tocLevBtn2',  () => {page.toggleSideTocContract("div.sideTocIdx")});
-//		WebHtmlPage.bindOnClickBySelectorAll('#tocBoxBtn' ,  () => {page.toggleSideTocWrap    ("div.sideTocIdx", 90, "div.sideToc")});
-//		WebHtmlPage.bindOnClickBySelectorAll('#tocBoxBtn2',  () => {page.toggleSideTocWrap    ("div.sideTocIdx", 80, "div.sideToc")});
-//
-//		let changeTocWithWindow = () => {
-//			page.changeTocPanelSize("div#sideTocIdxTree" , 80);
-//			page.changeTocPanelSize("div#floatTocIdxTree", 90);
-//		};
-//
-//		// $(window).resize(changeTocWithWindow);
-//
-//		window.onresize = changeTocWithWindow;
+		//
 
 		page.initUITheme();
 		let themes = [
@@ -238,16 +206,17 @@ export class BlogPage {
 		]
 		page.bindChangeTheme(themes);
 
+		let userId = "teo";
+		let currPage = 1;
+
 		// 
-		await BlogPage.loadUserInfo();
+		await BlogPage.loadUserInfo(userId);
 
 		//
 		await BlogPage.loadRecommandArticles();
 
 		//
-
-		//
-		await BlogPage.loadUserArticles();
+		await BlogPage.loadUserArticles(userId, currPage);
 
 	}
 
