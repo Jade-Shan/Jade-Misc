@@ -2,53 +2,71 @@ export interface Geo {
 
 }
 
+
 export interface Geo2D extends Geo {
-	getCenter(geo: Geo2D): Point2D;
+
+	getCenter(): Point2D;
+
+	getMinDistance(x: number, y: number): number
+
 }
 
-export class Point2D implements Geo2D {
-	x: number = 0;
-	y: number = 0;
+export type IPoint2D = { readonly x: number, readonly y: number };
+export class Point2D implements Geo2D, IPoint2D {
+	readonly x: number;
+	readonly y: number;
 
 	constructor(x: number, y: number) {
 		this.x = x;
 		this.y = y;
 	}
 
-	getCenter(geo: Geo2D): Point2D {
+	getCenter(): Point2D {
 		return new Point2D(this.x, this.y);
 	}
 
-
-	// centerX(): number { return this.x; }
-	// centerY(): number { return this.y; }
-	// centerX() { return Math.abs(this.a.x - this.b.x) / 2 + (this.a.x > this.b.x ? this.b.x: this.a.x); } 
-	// centerY() { return Math.abs(this.a.y - this.b.y) / 2 + (this.a.y > this.b.y ? this.b.y: this.a.y); } 
+	getMinDistance(x: number, y: number): number {
+		return Geo2DUtils.distanceP2P({ x: this.x, y: this.y }, { x: x, y: y });
+	}
 
 }
 
+export type ILine2D = { readonly a: IPoint2D, readonly b: IPoint2D }
 export class Line2D implements Geo2D {
-	a: Point2D;
-	b: Point2D;
+	readonly a: IPoint2D;
+	readonly b: IPoint2D;
 
-	constructor(a: Point2D, b: Point2D) {
-		this.a = a;
-		this.b = b;
+	constructor(a: IPoint2D, b: IPoint2D) {
+		this.a = new Point2D(a.x, a.y);
+		this.b = new Point2D(b.x, b.y);
 	}
 
-	getCenter(geo: Geo2D): Point2D {
+	getCenter(): Point2D {
 		let x = Math.abs(this.a.x - this.b.x) / 2 + (this.a.x > this.b.x ? this.b.x : this.a.x);
 		let y = Math.abs(this.a.y - this.b.y) / 2 + (this.a.y > this.b.y ? this.b.y : this.a.y);
 		return new Point2D(x, y);
 	}
+
+	getMinDistance(x: number, y: number): number {
+		let l1 = Geo2DUtils.distanceP2P({ x: this.a.x, y: this.a.y }, { x: x, y: y });
+		let l2 = Geo2DUtils.distanceP2P({ x: this.b.x, y: this.b.y }, { x: x, y: y });
+		return l1 < l2 ? l1 : l2;
+	}
 }
 
-export class Ray implements Geo2D {
-	start: Point2D = new Point2D(0, 0); 
-	end  : Point2D = new Point2D(0, 0); 
-	angle : number = 0;
-	cAngel: number = 0;
-	range : number = 0;
+export type IRay2D = {
+	readonly start: IPoint2D,
+	readonly end: IPoint2D,
+	readonly angle: number,
+	readonly cAngel: number,
+	readonly range: number,
+}
+export class Ray2D implements Geo2D {
+	readonly start: Point2D;
+	readonly end: Point2D;
+	readonly angle: number;
+	readonly cAngel: number;
+	readonly range: number;
 
 	/**
 	 * 
@@ -58,20 +76,24 @@ export class Ray implements Geo2D {
 	 * @param cAngle formated angel [0 ~ 2*Pi]
 	 * @param range range
 	 */
-	constructor(start: Point2D, end: Point2D, angle: number, cAngle: number, range: number) {
-		this.start = start;
-		this.end   = end  ;
+	constructor(start: IPoint2D, end: IPoint2D, // 
+		angle: number, cAngle: number, range: number) //
+	{
+		this.start = new Point2D(start.x, start.y);
+		this.end = new Point2D(end.x, end.y);
 		this.angle = angle;
 		this.cAngel = cAngle;
 		this.range = range;
 	}
 
-	getCenter(geo: Geo2D): Point2D {
-		let x = Math.abs(this.start.x - this.end.x) / 2 + (this.start.x > this.end.x ? this.end.x : this.start.x);
-		let y = Math.abs(this.start.y - this.end.y) / 2 + (this.start.y > this.end.y ? this.end.y : this.start.y);
-		return new Point2D(x, y);
+	getCenter(): Point2D {
+		return this.start;
 	}
 
+	getMinDistance(x: number, y: number): number {
+		return Geo2DUtils.distanceP2P( //
+			{ x: this.start.x, y: this.start.y }, { x: x, y: y });
+	}
 }
 
 /**
@@ -94,9 +116,9 @@ export enum QuadPos {
 }
 
 export namespace Geo2DUtils {
-	const PI_HALF = Math.PI / 2;
-	const PI_ONE_HALF = Math.PI + PI_HALF;
-	const PI_DOUBLE = Math.PI * 2;
+	export const PI_HALF = Math.PI / 2;
+	export const PI_ONE_HALF = Math.PI + PI_HALF;
+	export const PI_DOUBLE = Math.PI * 2;
 
 	/**
 	 * 计算两点的距离
@@ -104,7 +126,7 @@ export namespace Geo2DUtils {
 	 * @param b point
 	 * @returns size
 	 */
-	function distanceP2P(a: Point2D, b: Point2D): number {
+	export function distanceP2P(a: IPoint2D, b: IPoint2D): number {
 		let g = a.x - b.x;
 		let j = a.y - b.y;
 		return Math.sqrt(g * g + j * j);
@@ -116,8 +138,12 @@ export namespace Geo2DUtils {
 	 * @param p point
 	 * @returns  result > 0为左， < 0为右， =0为线上
 	 */
-	function pointOfLineSide(line: Line2D, p: Point2D): number {
-		return (line.a.y - line.b.y) * p.x + (line.b.x - line.a.x) * p.y + line.a.x * line.a.y - line.b.x * line.a.y;
+	export function pointOfLineSide(line: { a: IPoint2D, b: IPoint2D }, // 
+		p: IPoint2D): number //
+	{
+		return (line.a.y - line.b.y) * p.x + // 
+			(line.b.x - line.a.x) * p.y + line.a.x * line.a.y - //
+			line.b.x * line.a.y;
 	}
 
 	/*  */
@@ -127,7 +153,7 @@ export namespace Geo2DUtils {
 	 * @param p point
 	 * @returns point
 	 */
-	function pointToLine(line: Line2D, p: Point2D): Point2D {
+	export function pointToLine(line: ILine2D, p: IPoint2D): Point2D {
 		if (line.a.x == line.b.x && line.a.y == line.b.y) {
 			return new Point2D(line.a.x, line.b.y);
 		} else if (line.a.x == line.b.x) {
@@ -160,7 +186,7 @@ export namespace Geo2DUtils {
 	 * @param p point
 	 * @returns distance
 	 */
-	function pointToLineDistence(line: Line2D, p: Point2D): number {
+	export function pointToLineDistence(line: ILine2D, p: IPoint2D): number {
 		let q = pointToLine(line, p);
 		return distanceP2P(p, q);
 	}
@@ -171,7 +197,7 @@ export namespace Geo2DUtils {
 	 * @param line2 line2
 	 * @returns 是否相交，如果相交就返回交点的坐标
 	 */
-	function segmentsIntr(line1: Line2D, line2: Line2D): boolean | Point2D {
+	export function segmentsIntr(line1: ILine2D, line2: ILine2D): boolean | Point2D {
 		let isCross: boolean = false;
 		let x = 0;
 		let y = 0;
@@ -208,7 +234,7 @@ export namespace Geo2DUtils {
 	 * @param p point
 	 * @returns location
 	 */
-	function quadOfPoint(p: Point2D): QuadPos {
+	export function quadOfPoint(p: IPoint2D): QuadPos {
 		if (p.x > 0 && p.y > 0) { return QuadPos.QUAD_1ST; }
 		else if (p.x < 0 && p.y > 0) { return QuadPos.QUAD_2ND; }
 		else if (p.x < 0 && p.y < 0) { return QuadPos.QUAD_3RD; }
@@ -242,7 +268,7 @@ export namespace Geo2DUtils {
 	 * @returns location
 	 * 
 	 */
-	function quadOfLine(l: Line2D): QuadPos {
+	export function quadOfLine(l: ILine2D): QuadPos {
 		// x1 = l.a.x
 		// y1 = l.a.y
 		// x2 = l.b.x
