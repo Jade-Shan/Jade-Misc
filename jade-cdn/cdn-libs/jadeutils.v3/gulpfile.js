@@ -144,7 +144,7 @@ gulp.task('compress-typescript', gulp.series('process-typescript', () => {
 		scriptTsTag + 'basic.js',
 		scriptTsTag + 'dataStructure.js',
 		scriptTsTag + 'geo2d.js',
-		// scriptTsSrc + 'canvas.js',
+		scriptTsTag + 'canvas.js',
 		scriptTsTag + 'web.js', 
 		scriptTsTag + 'webHtmlPage.js',
 		scriptTsTag + '3rdLibTool.js',
