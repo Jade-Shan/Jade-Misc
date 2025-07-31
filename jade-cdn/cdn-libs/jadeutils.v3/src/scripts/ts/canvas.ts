@@ -32,7 +32,7 @@ export namespace CanvasUtils {
 	 */
 	function drawLines(cvsCtx: CanvasRenderingContext2D,
 		width: number, style: string, //
-		lines: Array<{ a: { x: number, y: number }, b: { x: number, y: number } }>) //
+		lines: Array<{a: IPoint2D, b: IPoint2D}>) //
 	{
 		if (lines && lines.length > 0) {
 			cvsCtx.save();
@@ -90,14 +90,6 @@ export class CanvasLine2D extends Line2D implements CanvasShape2D, ICanvasLine2D
 		this.lineWidth = lineWidth;
 	}
 
-
-	// this.shape = new Point2D(x, y);
-	//let cck: HTMLCanvasElement = document.getElement();
-	//let cvsCtx: CanvasRenderingContext2D = cck.getContext("2d");
-}
-
-
-export class CanvasRay2D extends Ray2D implements CanvasShape2D {
 
 	// this.shape = new Point2D(x, y);
 	//let cck: HTMLCanvasElement = document.getElement();
