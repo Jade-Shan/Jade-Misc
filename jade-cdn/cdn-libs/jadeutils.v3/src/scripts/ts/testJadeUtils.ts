@@ -1,8 +1,9 @@
-import { NumUtil, StrUtil, TimeUtil } from './basic';
-import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure'
-import { WebUtil } from './web';
-import { PageConfig, WebHtmlPage } from './webHtmlPage';
-import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool';
+import { NumUtil, StrUtil, TimeUtil } from './basic.js';
+import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
+import { WebUtil } from './web.js';
+import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
+import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
+import { CanvasUtils } from './canvas.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -267,6 +268,38 @@ class TestWebHtmlPage {
 
 }
 
+class TestCanvas {
+
+	static testCanvas() {
+		let cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs001")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawLine(cvsCtx, {a:{x:20, y: 20}, b: {x:135, y:135}, strokeStyle:"rgb(255, 0, 0)", lineWidth: 1});
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs002")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawLines(cvsCtx, [
+				{a:{x:20, y: 20}, b: {x:135, y:135}, strokeStyle:"rgb(255, 0, 0)", lineWidth: 1},
+				{a:{x:120, y: 20}, b: {x:35, y:135}, strokeStyle:"rgb(0, 255, 0)", lineWidth: 1},
+				{a:{x:200, y: 200}, b: {x:79, y:65}, strokeStyle:"rgb(0, 0, 255)", lineWidth: 1}]);
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs003")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawPoint(cvsCtx, {x:100, y: 200, radius: 3, fillStyle:"rgb(255, 0, 0)" });
+			CanvasUtils.drawPoint(cvsCtx, {x:200, y: 200, radius: 3, fillStyle:"rgb(0, 255, 0)" });
+			CanvasUtils.drawPoint(cvsCtx, {x:200, y: 250, radius: 3, fillStyle:"rgb(0, 0, 255)" });
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs004")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawRectangle(cvsCtx, {x:10, y: 10, width: 30, height: 70, lineWidth: 3, fillStyle:"", strokeStyle: "rgb(255, 0, 0)" });
+			CanvasUtils.drawRectangle(cvsCtx, {x:80, y: 50, width: 30, height: 70, lineWidth: 3, fillStyle:"", strokeStyle: "rgb(0, 255, 0)" });
+			CanvasUtils.drawRectangle(cvsCtx, {x:100, y: 150, width: 30, height: 70, lineWidth: 3, fillStyle:"", strokeStyle: "rgb(0, 0, 255)" });
+		}
+	}
+}
+
 
 export class TestJadeUtils {
 
@@ -287,6 +320,10 @@ export class TestJadeUtils {
 
 	static testWiki() {
 		TestWebHtmlPage.testJquery();
+	}
+
+	static testCanvas() {
+		TestCanvas.testCanvas();
 	}
 
 }
