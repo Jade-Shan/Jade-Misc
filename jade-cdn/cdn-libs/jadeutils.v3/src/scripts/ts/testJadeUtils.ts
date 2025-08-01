@@ -273,9 +273,12 @@ class TestCanvas {
 	static testCanvas() {
 		let cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs001")?.getContext("2d");
 		if (null != cvsCtx) {
-			CanvasUtils.drawPoint(cvsCtx, {x:100, y: 200, radius: 3, fillStyle: "red" });
-			CanvasUtils.drawPoint(cvsCtx, {x:200, y: 200, radius: 3, fillStyle: "lime"});
-			CanvasUtils.drawPoint(cvsCtx, {x:200, y: 250, radius: 3, fillStyle: "blue"});
+			CanvasUtils.drawPoint(cvsCtx, {x: 50, y: 50, radius: 3, fillStyle: "red" });
+			CanvasUtils.drawPoint(cvsCtx, {x:250, y: 50, radius: 3, fillStyle: "lime"});
+			CanvasUtils.drawPoint(cvsCtx, {x:250, y:250, radius: 3, fillStyle: "blue"});
+			CanvasUtils.drawPoint(cvsCtx, {x: 50, y:250, radius: 3, fillStyle: "gray"});
+
+			CanvasUtils.drawPoint(cvsCtx, {x:150, y:150, radius: 3, fillStyle: "fuchsia"});
 		}
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs002")?.getContext("2d");
