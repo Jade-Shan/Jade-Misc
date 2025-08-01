@@ -422,7 +422,7 @@ export namespace Geo2DUtils {
 	 * @param quad 点经过的点相对起点所在的象限
 	 * @returns 返回射线
 	 */
-	export function calVtxDstAngle(point: IPoint2D, start: IPoint2D, quad: number): Ray2D {
+	export function calVtxDstAngle(start: IPoint2D, point: IPoint2D, quad: number): Ray2D {
 		let dx = start.x - point.x;
 		let dy = start.y - point.y;
 		let angle = Math.atan2(dy, dx);
