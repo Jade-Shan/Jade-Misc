@@ -3,7 +3,7 @@ import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
 import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
-import { CanvasUtils } from './canvas.js';
+import { CanvasRectangle2D, CanvasUtils, ICanvasRectangle2D } from './canvas.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -273,31 +273,54 @@ class TestCanvas {
 	static testCanvas() {
 		let cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs001")?.getContext("2d");
 		if (null != cvsCtx) {
-			CanvasUtils.drawLine(cvsCtx, {a:{x:20, y: 20}, b: {x:135, y:135}, strokeStyle:"rgb(255, 0, 0)", lineWidth: 1});
+			CanvasUtils.drawPoint(cvsCtx, {x:100, y: 200, radius: 3, fillStyle: "red" });
+			CanvasUtils.drawPoint(cvsCtx, {x:200, y: 200, radius: 3, fillStyle: "lime"});
+			CanvasUtils.drawPoint(cvsCtx, {x:200, y: 250, radius: 3, fillStyle: "blue"});
 		}
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs002")?.getContext("2d");
 		if (null != cvsCtx) {
 			CanvasUtils.drawLines(cvsCtx, [
-				{a:{x:20, y: 20}, b: {x:135, y:135}, strokeStyle:"rgb(255, 0, 0)", lineWidth: 1},
-				{a:{x:120, y: 20}, b: {x:35, y:135}, strokeStyle:"rgb(0, 255, 0)", lineWidth: 1},
-				{a:{x:200, y: 200}, b: {x:79, y:65}, strokeStyle:"rgb(0, 0, 255)", lineWidth: 1}]);
+				{a:{x:20, y: 20}, b: {x:135, y:135}, strokeStyle: "red" , lineWidth: 1},
+				{a:{x:120, y: 20}, b: {x:35, y:135}, strokeStyle: "lime", lineWidth: 1},
+				{a:{x:200, y: 200}, b: {x:79, y:65}, strokeStyle: "blue", lineWidth: 1}]);
 		}
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs003")?.getContext("2d");
 		if (null != cvsCtx) {
-			CanvasUtils.drawPoint(cvsCtx, {x:100, y: 200, radius: 3, fillStyle:"rgb(255, 0, 0)" });
-			CanvasUtils.drawPoint(cvsCtx, {x:200, y: 200, radius: 3, fillStyle:"rgb(0, 255, 0)" });
-			CanvasUtils.drawPoint(cvsCtx, {x:200, y: 250, radius: 3, fillStyle:"rgb(0, 0, 255)" });
 		}
+		//
+		let rect01 = new CanvasRectangle2D( 10,  10,  50, 200, 3, "red" , "");
+		let rect02 = new CanvasRectangle2D( 70,  10, 200,  50, 3, "lime", "");
+		let rect03 = new CanvasRectangle2D(220,  70,  50, 200, 3, "blue", "");
+		let rect04 = new CanvasRectangle2D( 10, 220, 200,  50, 3, "gray", "");
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs004")?.getContext("2d");
 		if (null != cvsCtx) {
-			CanvasUtils.drawRectangle(cvsCtx, {x:10, y: 10, width: 30, height: 70, lineWidth: 3, fillStyle:"", strokeStyle: "rgb(255, 0, 0)" });
-			CanvasUtils.drawRectangle(cvsCtx, {x:80, y: 50, width: 30, height: 70, lineWidth: 3, fillStyle:"", strokeStyle: "rgb(0, 255, 0)" });
-			CanvasUtils.drawRectangle(cvsCtx, {x:100, y: 150, width: 30, height: 70, lineWidth: 3, fillStyle:"", strokeStyle: "rgb(0, 0, 255)" });
+			CanvasUtils.drawRectangle(cvsCtx, rect01);
+			CanvasUtils.drawRectangle(cvsCtx, rect02);
+			CanvasUtils.drawRectangle(cvsCtx, rect03);
+			CanvasUtils.drawRectangle(cvsCtx, rect04);
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs005")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawRectangle(cvsCtx, rect01);
+			CanvasUtils.drawRectangle(cvsCtx, rect02);
+			CanvasUtils.drawRectangle(cvsCtx, rect03);
+			CanvasUtils.drawRectangle(cvsCtx, rect04);
+
+			CanvasUtils.drawPoint(cvsCtx, {x:135, y: 135, radius: 3, fillStyle:"maroon" });
+
+			CanvasUtils.drawShapeVertexes(cvsCtx, rect01, 3, "blue"   );
+			CanvasUtils.drawShapeVertexes(cvsCtx, rect02, 3, "gray"   );
+			CanvasUtils.drawShapeVertexes(cvsCtx, rect03, 3, "fuchsia");
+			CanvasUtils.drawShapeVertexes(cvsCtx, rect04, 3, "red"    );
 		}
 	}
+
+
+
 }
 
 

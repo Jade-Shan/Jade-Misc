@@ -8,7 +8,7 @@ export interface Geo2D extends Geo {
 	/**
 	 * 图形的中心
 	 */
-	readonly center: Point2D;
+	getCenter(): Point2D;
 
 	/**
 	 * 返回图形的所有顶点
@@ -41,7 +41,7 @@ export interface Geo2D extends Geo {
 
 export abstract class ShapeGeo2D implements Geo2D {
 
-	abstract readonly center: Point2D;
+	abstract getCenter(): Point2D;
 
 	abstract getVertex(): Array<Point2D>;
 
@@ -55,13 +55,21 @@ export type IPoint2D = { readonly x: number, readonly y: number };
 export class Point2D extends ShapeGeo2D implements IPoint2D {
 	readonly x: number;
 	readonly y: number;
-	readonly center: Point2D;
+	private center: Point2D | null;
 
 	constructor(x: number, y: number) {
 		super();
 		this.x = x;
 		this.y = y;
-		this.center = new Point2D(this.x, this.y);
+		this.center = null;
+	}
+
+	getCenter() { 
+		let center: Point2D = this.center == null ? new Point2D(this.x, this.y) : this.center;
+		if (null == this.center) {
+			this.center = center;
+		}
+		return center;
 	}
 
 	/**
@@ -80,7 +88,7 @@ export class Point2D extends ShapeGeo2D implements IPoint2D {
 	 */
 	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number } {
 		let n = Geo2DUtils.distanceP2P({ x: this.x, y: this.y }, { x: x, y: y });
-		return { vertex: this.center, distance: n };
+		return { vertex: this.getCenter(), distance: n };
 	}
 
 	/**
@@ -104,7 +112,7 @@ export type ILine2D = { readonly a: IPoint2D, readonly b: IPoint2D }
 export class Line2D extends ShapeGeo2D implements ILine2D {
 	readonly a: Point2D;
 	readonly b: Point2D;
-	readonly center: Point2D;
+	private readonly center: Point2D;
 
 	constructor(a: IPoint2D, b: IPoint2D) {
 		super();
@@ -114,6 +122,8 @@ export class Line2D extends ShapeGeo2D implements ILine2D {
 			Math.abs(this.a.x - this.b.x) / 2 + (this.a.x > this.b.x ? this.b.x : this.a.x), //
 			Math.abs(this.a.y - this.b.y) / 2 + (this.a.y > this.b.y ? this.b.y : this.a.y));
 	}
+
+	getCenter() { return this.center; }
 
 	getVertex(): Array<Point2D> { return [this.a, this.b]; }
 
@@ -145,7 +155,7 @@ export class Rectangle2D extends ShapeGeo2D implements IRectangle2D {
 	readonly y: number;
 	readonly width: number;
 	readonly height: number;
-	readonly center: Point2D;
+	private readonly center: Point2D;
 
 	private readonly vertexs: Array<Point2D>;
 	private readonly sides: Array<Line2D>;
@@ -170,6 +180,8 @@ export class Rectangle2D extends ShapeGeo2D implements IRectangle2D {
 			new Line2D(this.vertexs[3], this.vertexs[0]) //
 		];
 	}
+
+	getCenter() { return this.center; }
 
 	getVertex(): Array<Point2D> {
 		return this.vertexs;
@@ -410,7 +422,7 @@ export namespace Geo2DUtils {
 	 * @param quad 点经过的点相对起点所在的象限
 	 * @returns 返回射线
 	 */
-	export function calVtxDstAngle(start: IPoint2D, point: IPoint2D, quad: number): Ray2D {
+	export function calVtxDstAngle(point: IPoint2D, start: IPoint2D, quad: number): Ray2D {
 		let dx = start.x - point.x;
 		let dy = start.y - point.y;
 		let angle = Math.atan2(dy, dx);
