@@ -1,4 +1,4 @@
-import { Geo2D, Geo2DUtils, Point2D, Line2D, Ray2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, ShapeGeo2D } from './geo2d.js';
+import { Geo2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, ShapeGeo2D } from './geo2d.js';
 
 export namespace CanvasUtils {
 
@@ -80,7 +80,7 @@ export namespace CanvasUtils {
 	}
 
 	export function drawVertexRaysFrom(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: ShapeGeo2D, lineWidth: number, strokeStyle: string) {
-		let rays: Array<Ray2D> = shape.getVertexRaysFrom(x, y);
+		let rays: Array<IRay2D> = shape.getVertexRaysFrom(x, y);
 		if (rays && rays.length > 0) {
 			for (let i = 0; i < rays.length; i++) {
 				// let ray = rays[i];

@@ -141,12 +141,46 @@ export class Line2D extends ShapeGeo2D implements ILine2D {
 
 }
 
-export type Ray2D = {
+export type IRay2D = {
 	readonly start: IPoint2D, // 起点
 	readonly mid: IPoint2D, // 经过的点
 	readonly angle: number,  // 角度
 	readonly cAngle: number, // 规范后的角度
 	readonly length: number, // start 到 end 的距离
+}
+export class Ray2D extends ShapeGeo2D implements IRay2D {
+	readonly start: IPoint2D; // 起点
+	readonly mid: IPoint2D; // 经过的点
+	readonly angle: number;  // 角度
+	readonly cAngle: number; // 规范后的角度
+	readonly length: number; // start 到 end 的距离
+	private center: Point2D;
+
+	constructor(start: IPoint2D, mid: IPoint2D) {
+		super();
+		this.start = start;
+		this.mid = mid;
+		this.center = new Point2D(start.x, start.y);
+		let dx = start.x - mid.x;
+		let dy = start.y - mid.y;
+		this.angle = Math.atan2(dy, dx);
+		this.cAngle = this.angle < 0 ? Geo2DUtils.PI_DOUBLE + this.angle : this.angle;
+		this.length = Geo2DUtils.distanceP2P(start, mid);
+	}
+
+	getCenter(): Point2D { return this.center; }
+
+	getVertex(): Array<Point2D> { return [this.center]; }
+
+	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number, } {
+		let n = Geo2DUtils.distanceP2P(this.center, { x: x, y: y });
+		return { vertex: this.center, distance: n};
+	}
+
+	getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
+		return [new Ray2D({ x: x, y: y }, this.center)];
+	}
+
 }
 
 export type IRectangle2D = { readonly x: number, readonly y: number, readonly width: number, readonly height: number }
@@ -413,12 +447,17 @@ export namespace Geo2DUtils {
 		return quad as QuadPos;
 	}
 
-	export function extendRayLength(ray: Ray2D, extendLength: number): Ray2D {
+	export function extendRayLength(ray: IRay2D, extendLength: number): Ray2D {
 		let length = ray.length + extendLength;
 		let x = Math.cos(ray.angle + Math.PI) * length + ray.start.x;
 		let y = Math.sin(ray.angle + Math.PI) * length + ray.start.y;
-		return { start: ray.start, mid: {x:x,y:y}, // 
-			angle: ray.angle, cAngle: ray.cAngle, length: length };
+		// { start: ray.start, mid: {x:x,y:y}, // 
+		// 	angle: ray.angle, cAngle: ray.cAngle, length: length };
+		return new Ray2D(ray.start, {x:x,y:y});
+	}
+
+	export function calRayByPoints(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
+		return new Ray2D(start, mid);
 	}
 
 
@@ -430,7 +469,7 @@ export namespace Geo2DUtils {
 	 * @param quad 点经过的点相对起点所在的象限
 	 * @returns 返回射线
 	 */
-	export function calRayByPoints(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
+	export function calRayByPointsOld(start: IPoint2D, mid: IPoint2D, quad: number): IRay2D {
 		// 注意三角函数使用时的坐标
 		// 数学上的坐标轴第一象限的原点在左下角
 		// 在Canvas画布上，原点在左上角
@@ -449,6 +488,10 @@ export namespace Geo2DUtils {
 	}
 
 
+	export function calVtxDstAngle(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
+		return new Ray2D(start, mid);
+	}
+
 	/**
 	 * 计算以`start`为起点，经过`point`的射线
 	 * 
@@ -457,7 +500,7 @@ export namespace Geo2DUtils {
 	 * @param quad 点经过的点相对起点所在的象限
 	 * @returns 返回射线
 	 */
-	export function calVtxDstAngle(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
+	export function calVtxDstAngleOld(start: IPoint2D, mid: IPoint2D, quad: number): IRay2D {
 		// 注意三角函数使用时的坐标
 		// 数学上的坐标轴第一象限的原点在左下角
 		// 在Canvas画布上，原点在左上角
@@ -484,8 +527,8 @@ export namespace Geo2DUtils {
 	 * @param rays 所有的射线
 	 * @returns 返回切线
 	 */
-	export function filterObstacleRays(rays: Array<Ray2D>): Array<Ray2D> {
-		let results: Array<Ray2D> = [];
+	export function filterObstacleRays(rays: Array<IRay2D>): Array<IRay2D> {
+		let results: Array<IRay2D> = [];
 		// 找到角度最大的点与最小的点
 		let minIdx = 0;
 		let maxIdx = 0;
@@ -518,7 +561,7 @@ export namespace Geo2DUtils {
 		// 注意三角函数使用时的坐标
 		// 数学上的坐标轴第一象限的原点在左下角
 		// 在Canvas画布上，原点在左上角
-		let rayArr: Array<Ray2D> = geo2D.getVertexRaysFrom(x, y);
+		let rayArr: Array<IRay2D> = geo2D.getVertexRaysFrom(x, y);
 		let rays = filterObstacleRays(rayArr);
 		let result: Array<Line2D> = [];
 		for (let i = 0; i < rays.length; i++) {

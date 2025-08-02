@@ -4,7 +4,7 @@ import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 import { CanvasPoint2D, CanvasRectangle2D, CanvasUtils, ICanvasRectangle2D } from './canvas.js';
-import { Ray2D } from './geo2d.js';
+import { IRay2D } from './geo2d.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -275,7 +275,7 @@ class TestCanvas {
 		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2 
 		let a1 = Math.atan2(y, x);
 		let a2 = a1 * 180 / Math.PI;
-		let a3 = a2 > -0.00000000001 ? a2 : a2 = 180 - a2 + 180;
+		let a3 = a2 < 0 ? a2 : 360 + a2;
 		console.log(`atan2(${x},${y}) = ${a1} = ${a2}° = ${a3}°`);
 	}
 
