@@ -276,7 +276,7 @@ class TestCanvas {
 		let a1 = Math.atan2(y, x);
 		let a2 = a1 * 180 / Math.PI;
 		let a3 = a2 < 0 ? a2 : 360 + a2;
-		console.log(`atan2(${x},${y}) = ${a1} = ${a2}° = ${a3}°`);
+		console.log(`atan2(${y},${x}) = ${a1} = ${a2}° = ${a3}°`);
 	}
 
 	static testTriFun() {

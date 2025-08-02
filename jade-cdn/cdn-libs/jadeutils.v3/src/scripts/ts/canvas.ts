@@ -1,4 +1,4 @@
-import { Geo2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, ShapeGeo2D, Ray2D } from './geo2d.js';
+import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, Geo2D } from './geo2d.js';
 
 export namespace CanvasUtils {
 
@@ -78,7 +78,7 @@ export namespace CanvasUtils {
 		}
 	}
 
-	export function genVertexes(shape: CanvasShape2D, radius: number, fillStyle: string): Array<CanvasPoint2D> {
+	export function genVertexes(shape: CanvasPolygon2D, radius: number, fillStyle: string): Array<CanvasPoint2D> {
 		let result: Array<CanvasPoint2D> = [];
 		let vtxs = shape.getVertex();
 		if (vtxs && vtxs.length > 0) {
@@ -90,12 +90,12 @@ export namespace CanvasUtils {
 		return result;
 	}
 
-	export function drawShapeVertexes(cvsCtx: CanvasRenderingContext2D, shape: CanvasShape2D, radius: number, fillStyle: string) {
+	export function drawShapeVertexes(cvsCtx: CanvasRenderingContext2D, shape: CanvasPolygon2D, radius: number, fillStyle: string) {
 		let vtxs: Array<CanvasPoint2D> = genVertexes(shape, radius, fillStyle);
 		drawPoints(cvsCtx, vtxs);
 	}
 
-	export function drawVertexRaysFrom(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: ShapeGeo2D, extendLength: number, lineWidth: number, strokeStyle: string) {
+	export function drawVertexRaysFrom(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: GeoPolygon2D, extendLength: number, lineWidth: number, strokeStyle: string) {
 		let rays: Array<IRay2D> = shape.getVertexRaysFrom(x, y);
 		if (rays && rays.length > 0) {
 			for (let i = 0; i < rays.length; i++) {
@@ -127,11 +127,20 @@ export namespace CanvasUtils {
 }
 
 
-export interface CanvasShape2D extends Geo2D {
+export interface Canvas2D extends Geo2D {
 
 }
 
-export interface ICanvasPoint2D extends IPoint2D {
+export interface CanvasShape2D extends GeoShape2D {
+
+}
+
+
+export interface CanvasPolygon2D extends CanvasShape2D, GeoPolygon2D {
+
+}
+
+export interface ICanvasPoint2D extends Canvas2D, IPoint2D {
 	readonly radius: number;
 	readonly fillStyle: string;
 }
@@ -158,7 +167,7 @@ export interface ICanvasLine2D extends ILine2D {
 	readonly lineJoin?: "miter" | "round" | "bevel";
 	readonly strokeStyle: string;
 }
-export class CanvasLine2D extends Line2D implements CanvasShape2D, ICanvasLine2D {
+export class CanvasLine2D extends Line2D implements CanvasPolygon2D, ICanvasLine2D {
 	readonly lineWidth: number;
 	readonly strokeStyle: string;
 
@@ -181,7 +190,7 @@ export interface ICanvasRay2D extends IRay2D {
 	readonly lineJoin?: "miter" | "round" | "bevel";
 	readonly strokeStyle: string;
 }
-export class CanvasRay2D extends Ray2D implements CanvasShape2D, ICanvasRay2D {
+export class CanvasRay2D extends Ray2D implements CanvasPolygon2D, ICanvasRay2D {
 	readonly lineWidth: number;
 	readonly strokeStyle: string;
 
@@ -199,7 +208,7 @@ export interface ICanvasRectangle2D extends IRectangle2D {
 	readonly fillStyle: string;
 }
 export class CanvasRectangle2D extends Rectangle2D //
-	implements CanvasShape2D, ICanvasRectangle2D //
+	implements CanvasPolygon2D, ICanvasRectangle2D //
 {
 	readonly lineWidth: number;
 	readonly strokeStyle: string;
