@@ -1,4 +1,4 @@
-import { Geo2D, Geo2DUtils, Point2D, Line2D, Ray2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D } from './geo2d.js';
+import { Geo2D, Geo2DUtils, Point2D, Line2D, Ray2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, ShapeGeo2D } from './geo2d.js';
 
 export namespace CanvasUtils {
 
@@ -38,7 +38,7 @@ export namespace CanvasUtils {
 		cvsCtx.save();
 		cvsCtx.fillStyle = point.fillStyle;
 		cvsCtx.beginPath();
-		cvsCtx.arc(point.x, point.y, point.radius, 0, 2 * Math.PI, true);
+		cvsCtx.arc(point.x, point.y, point.radius, 0, Geo2DUtils.PI_DOUBLE, true);
 		cvsCtx.fill();
 		cvsCtx.restore();
 	}
@@ -77,6 +77,36 @@ export namespace CanvasUtils {
 	export function drawShapeVertexes(cvsCtx: CanvasRenderingContext2D, shape: CanvasShape2D, radius: number, fillStyle: string) {
 		let vtxs: Array<CanvasPoint2D> = genVertexes(shape, radius, fillStyle);
 		drawPoints(cvsCtx, vtxs);
+	}
+
+	export function drawVertexRaysFrom(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: ShapeGeo2D, lineWidth: number, strokeStyle: string) {
+		let rays: Array<Ray2D> = shape.getVertexRaysFrom(x, y);
+		if (rays && rays.length > 0) {
+			for (let i = 0; i < rays.length; i++) {
+				// let ray = rays[i];
+				let ray = Geo2DUtils.extendRayLength(rays[i], 30) ;
+				drawLine(cvsCtx, { a: { x: ray.start.x, y: ray.start.y }, b: { x: ray.mid.x, y: ray.mid.y }, lineWidth, strokeStyle });
+			}
+		}
+	}
+
+
+
+	export function genShapeTengentLine(x: number, y: number, shape: CanvasShape2D, lineWidth: number, strokeStyle: string): Array<CanvasLine2D> {
+		let result: Array<CanvasLine2D> = [];
+		let lines = Geo2DUtils.genTengentLine(x, y, shape, length);
+		if (lines && lines.length > 0) {
+			for (let i = 0; i < lines.length; i++) {
+				let line = lines[i];
+				result.push(new CanvasLine2D(line.a, line.b, lineWidth, strokeStyle));
+			}
+		}
+		return result;
+	}
+
+	export function drawShapeTengentLine(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: CanvasShape2D, lineWidth: number, strokeStyle: string) {
+		let lines: Array<CanvasLine2D> = genShapeTengentLine(x, y, shape, lineWidth, strokeStyle);
+		drawLines(cvsCtx, lines);
 	}
 }
 

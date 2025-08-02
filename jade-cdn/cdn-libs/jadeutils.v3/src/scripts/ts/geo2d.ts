@@ -35,7 +35,7 @@ export interface Geo2D extends Geo {
 	 * 
 	 * @returns 点到所有顶点的射线
 	 */
-	getVertexRaysFrom(x: number, y: number, length: number): Array<Ray2D>
+	getVertexRaysFrom(x: number, y: number): Array<Ray2D>
 
 }
 
@@ -47,7 +47,7 @@ export abstract class ShapeGeo2D implements Geo2D {
 
 	abstract getMostCloseVertex(x: number, y: number): { vertex: Point2D; distance: number; };
 
-	abstract getVertexRaysFrom(x: number, y: number, length: number): Array<Ray2D>;
+	abstract getVertexRaysFrom(x: number, y: number): Array<Ray2D>;
 
 }
 
@@ -100,10 +100,10 @@ export class Point2D extends ShapeGeo2D implements IPoint2D {
 	 * 
 	 * @returns 点到所有顶点的射线
 	 */
-	getVertexRaysFrom(x: number, y: number, length: number): Array<Ray2D> {
+	getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
 		let point = {x: x, y: y};
 		let quad = Geo2DUtils.quadOfPoint({ x: this.x - x, y: this.y - y });
-		return [Geo2DUtils.calVtxDstAngle(this, point, quad)];
+		return [Geo2DUtils.calVtxDstAngle(point, this, quad)];
 	}
 
 }
@@ -133,20 +133,20 @@ export class Line2D extends ShapeGeo2D implements ILine2D {
 		return l1 < l2 ? { vertex: this.a, distance: l1 } : { vertex: this.b, distance: l2 };
 	}
 
-	getVertexRaysFrom(x: number, y: number, length: number): Array<Ray2D> {
+	getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
 		let point = {x: x, y: y};
 		let quad = Geo2DUtils.quadOfLine({a: {x: this.a.x - x, y: this.a.y - y}, b: {x: this.b.x - x, y: this.b.y - y}});
-		return [Geo2DUtils.calVtxDstAngle(this.a, point, quad), Geo2DUtils.calVtxDstAngle(this.b, point, quad)];
+		return [Geo2DUtils.calVtxDstAngle(point, this.a, quad), Geo2DUtils.calVtxDstAngle(point, this.b, quad)];
 	}
 
 }
 
 export type Ray2D = {
 	readonly start: IPoint2D, // 起点
-	readonly point: IPoint2D, // 经过的点
+	readonly mid: IPoint2D, // 经过的点
 	readonly angle: number,  // 角度
 	readonly cAngle: number, // 规范后的角度
-	readonly length: number, // start 到 point 的距离
+	readonly length: number, // start 到 end 的距离
 }
 
 export type IRectangle2D = { readonly x: number, readonly y: number, readonly width: number, readonly height: number }
@@ -200,17 +200,17 @@ export class Rectangle2D extends ShapeGeo2D implements IRectangle2D {
 		return { vertex: pt, distance: md };
 	}
 
-	getVertexRaysFrom(x: number, y: number, length: number): Array<Ray2D> {
+	getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
 		let point = {x: x, y: y};
 		let quad = 0b0000;
 		quad = quad | Geo2DUtils.quadOfLine({a: {x: this.vertexs[0].x - x, y: this.vertexs[0].y - y}, b: {x: this.vertexs[1].x - x, y: this.vertexs[1].y - y}});
 		quad = quad | Geo2DUtils.quadOfLine({a: {x: this.vertexs[1].x - x, y: this.vertexs[1].y - y}, b: {x: this.vertexs[2].x - x, y: this.vertexs[2].y - y}});
 		quad = quad | Geo2DUtils.quadOfLine({a: {x: this.vertexs[2].x - x, y: this.vertexs[2].y - y}, b: {x: this.vertexs[3].x - x, y: this.vertexs[3].y - y}});
 		return [ //
-			Geo2DUtils.calVtxDstAngle(this.vertexs[0], point, quad),
-			Geo2DUtils.calVtxDstAngle(this.vertexs[1], point, quad),
-			Geo2DUtils.calVtxDstAngle(this.vertexs[2], point, quad),
-			Geo2DUtils.calVtxDstAngle(this.vertexs[3], point, quad)];
+			Geo2DUtils.calVtxDstAngle(point, this.vertexs[0], quad),
+			Geo2DUtils.calVtxDstAngle(point, this.vertexs[1], quad),
+			Geo2DUtils.calVtxDstAngle(point, this.vertexs[2], quad),
+			Geo2DUtils.calVtxDstAngle(point, this.vertexs[3], quad)];
 	}
 
 }
@@ -413,18 +413,29 @@ export namespace Geo2DUtils {
 		return quad as QuadPos;
 	}
 
+	export function extendRayLength(ray: Ray2D, extendLength: number): Ray2D {
+		let length = ray.length + extendLength;
+		let x = Math.cos(ray.angle + Math.PI) * length + ray.start.x;
+		let y = Math.sin(ray.angle + Math.PI) * length + ray.start.y;
+		return { start: ray.start, mid: {x:x,y:y}, // 
+			angle: ray.angle, cAngle: ray.cAngle, length: length };
+	}
+
 
 	/**
 	 * 计算以`start`为起点，经过`point`的射线
 	 * 
 	 * @param start 起点
-	 * @param point 经过的点
+	 * @param mid 经过的点
 	 * @param quad 点经过的点相对起点所在的象限
 	 * @returns 返回射线
 	 */
-	export function calVtxDstAngle(start: IPoint2D, point: IPoint2D, quad: number): Ray2D {
-		let dx = start.x - point.x;
-		let dy = start.y - point.y;
+	export function calRayByPoints(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
+		// 注意三角函数使用时的坐标
+		// 数学上的坐标轴第一象限的原点在左下角
+		// 在Canvas画布上，原点在左上角
+		let dx = start.x - mid.x;
+		let dy = start.y - mid.y;
 		let angle = Math.atan2(dy, dx);
 		let cAngle = 0;
 		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
@@ -434,7 +445,34 @@ export namespace Geo2DUtils {
 		} else {
 			cAngle = angle;
 		}
-		return { start: start, point: point, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
+		return { start: start, mid: mid, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
+	}
+
+
+	/**
+	 * 计算以`start`为起点，经过`point`的射线
+	 * 
+	 * @param start 起点
+	 * @param mid 经过的点
+	 * @param quad 点经过的点相对起点所在的象限
+	 * @returns 返回射线
+	 */
+	export function calVtxDstAngle(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
+		// 注意三角函数使用时的坐标
+		// 数学上的坐标轴第一象限的原点在左下角
+		// 在Canvas画布上，原点在左上角
+		let dx = start.x - mid.x;
+		let dy = start.y - mid.y;
+		let angle = Math.atan2(dy, dx);
+		let cAngle = 0;
+		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
+			cAngle = angle;
+		} else if (angle < 0) {
+			cAngle = Math.PI * 2 + angle;
+		} else {
+			cAngle = angle;
+		}
+		return { start: start, mid: mid, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
 	}
 
 
@@ -476,8 +514,11 @@ export namespace Geo2DUtils {
 	 * @param rays 多条射线
 	 * @returns 返回两条切线的线段
 	 */
-	export function genTengentLine(x: number, y: number, length: number, geo2D: Geo2D): Array<Line2D> {
-		let rayArr: Array<Ray2D> = geo2D.getVertexRaysFrom(x, y, length);
+	export function genTengentLine(x: number, y: number, geo2D: Geo2D, length: number): Array<Line2D> {
+		// 注意三角函数使用时的坐标
+		// 数学上的坐标轴第一象限的原点在左下角
+		// 在Canvas画布上，原点在左上角
+		let rayArr: Array<Ray2D> = geo2D.getVertexRaysFrom(x, y);
 		let rays = filterObstacleRays(rayArr);
 		let result: Array<Line2D> = [];
 		for (let i = 0; i < rays.length; i++) {

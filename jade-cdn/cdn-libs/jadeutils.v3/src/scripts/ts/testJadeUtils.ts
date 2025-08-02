@@ -3,7 +3,8 @@ import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
 import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
-import { CanvasRectangle2D, CanvasUtils, ICanvasRectangle2D } from './canvas.js';
+import { CanvasPoint2D, CanvasRectangle2D, CanvasUtils, ICanvasRectangle2D } from './canvas.js';
+import { Ray2D } from './geo2d.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -270,15 +271,41 @@ class TestWebHtmlPage {
 
 class TestCanvas {
 
-	static testCanvas() {
-		let cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs001")?.getContext("2d");
-		if (null != cvsCtx) {
-			CanvasUtils.drawPoint(cvsCtx, {x: 50, y: 50, radius: 3, fillStyle: "red" });
-			CanvasUtils.drawPoint(cvsCtx, {x:250, y: 50, radius: 3, fillStyle: "lime"});
-			CanvasUtils.drawPoint(cvsCtx, {x:250, y:250, radius: 3, fillStyle: "blue"});
-			CanvasUtils.drawPoint(cvsCtx, {x: 50, y:250, radius: 3, fillStyle: "gray"});
+	static testAtan2(x: number, y: number) {
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2 
+		let a1 = Math.atan2(y, x);
+		let a2 = a1 * 180 / Math.PI;
+		let a3 = a2 > -0.00000000001 ? a2 : a2 = 180 - a2 + 180;
+		console.log(`atan2(${x},${y}) = ${a1} = ${a2}° = ${a3}°`);
+	}
 
-			CanvasUtils.drawPoint(cvsCtx, {x:150, y:150, radius: 3, fillStyle: "fuchsia"});
+	static testTriFun() {
+		this.testAtan2(100,0);
+		this.testAtan2(100,100);
+		this.testAtan2(0,100);
+		this.testAtan2(-100,100);
+		this.testAtan2(-100,0);
+		this.testAtan2(-100,-100);
+		this.testAtan2(0,-100);
+		this.testAtan2(100,-1000);
+	}
+
+	static testCanvas() {
+		this.testTriFun();
+
+
+		let cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs001")?.getContext("2d");
+		let testPt1 = {x: 50, y: 50, radius: 3, fillStyle: "red"    };
+		let testPt2 = {x:250, y: 50, radius: 3, fillStyle: "lime"   };
+		let testPt3 = {x:250, y:250, radius: 3, fillStyle: "blue"   };
+		let testPt4 = {x: 50, y:250, radius: 3, fillStyle: "gray"   };
+		let testPt5 = {x:150, y:150, radius: 3, fillStyle: "fuchsia"};
+		if (null != cvsCtx) {
+			CanvasUtils.drawPoint(cvsCtx, testPt1);
+			CanvasUtils.drawPoint(cvsCtx, testPt2);
+			CanvasUtils.drawPoint(cvsCtx, testPt3);
+			CanvasUtils.drawPoint(cvsCtx, testPt4);
+			CanvasUtils.drawPoint(cvsCtx, testPt5);
 		}
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs002")?.getContext("2d");
@@ -291,6 +318,12 @@ class TestCanvas {
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs003")?.getContext("2d");
 		if (null != cvsCtx) {
+			CanvasUtils.drawPoints(cvsCtx, [testPt1, testPt2, testPt3, testPt4, testPt5]);
+		// let testPt1 = {x: 50, y: 50, radius: 3, fillStyle: "red"    };
+		// let testPt2 = {x:250, y: 50, radius: 3, fillStyle: "lime"   };
+		// let testPt3 = {x:250, y:250, radius: 3, fillStyle: "blue"   };
+		// let testPt4 = {x: 50, y:250, radius: 3, fillStyle: "gray"   };
+		// let testPt5 = {x:150, y:150, radius: 3, fillStyle: "fuchsia"};
 		}
 		//
 		let rect01 = new CanvasRectangle2D( 10,  10,  50, 200, 3, "red" , "");
@@ -306,6 +339,8 @@ class TestCanvas {
 			CanvasUtils.drawRectangle(cvsCtx, rect04);
 		}
 		//
+		let center = new CanvasPoint2D(135, 135, 3,"maroon");
+		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs005")?.getContext("2d");
 		if (null != cvsCtx) {
 			CanvasUtils.drawRectangle(cvsCtx, rect01);
@@ -313,12 +348,35 @@ class TestCanvas {
 			CanvasUtils.drawRectangle(cvsCtx, rect03);
 			CanvasUtils.drawRectangle(cvsCtx, rect04);
 
-			CanvasUtils.drawPoint(cvsCtx, {x:135, y: 135, radius: 3, fillStyle:"maroon" });
+			CanvasUtils.drawPoint(cvsCtx, center);
 
 			CanvasUtils.drawShapeVertexes(cvsCtx, rect01, 3, "blue"   );
 			CanvasUtils.drawShapeVertexes(cvsCtx, rect02, 3, "gray"   );
 			CanvasUtils.drawShapeVertexes(cvsCtx, rect03, 3, "fuchsia");
 			CanvasUtils.drawShapeVertexes(cvsCtx, rect04, 3, "red"    );
+
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs006")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawRectangle(cvsCtx, rect01);
+			CanvasUtils.drawRectangle(cvsCtx, rect03);
+
+			CanvasUtils.drawPoint(cvsCtx, center);
+
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect01, 1, "red" );
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect03, 1, "blue");
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs007")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawRectangle(cvsCtx, rect02);
+			CanvasUtils.drawRectangle(cvsCtx, rect04);
+
+			CanvasUtils.drawPoint(cvsCtx, center);
+
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect02, 1, "lime");
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect04, 1, "gray");
 		}
 	}
 
