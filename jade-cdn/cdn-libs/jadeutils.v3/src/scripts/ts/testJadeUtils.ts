@@ -3,8 +3,8 @@ import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
 import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
-import { CanvasPoint2D, CanvasRectangle2D, CanvasUtils, ICanvasRectangle2D } from './canvas.js';
-import { IRay2D } from './geo2d.js';
+import { CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
+import { Geo2DUtils, IRay2D, Ray2D } from './geo2d.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -319,11 +319,20 @@ class TestCanvas {
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs003")?.getContext("2d");
 		if (null != cvsCtx) {
 			CanvasUtils.drawPoints(cvsCtx, [testPt1, testPt2, testPt3, testPt4, testPt5]);
-		// let testPt1 = {x: 50, y: 50, radius: 3, fillStyle: "red"    };
-		// let testPt2 = {x:250, y: 50, radius: 3, fillStyle: "lime"   };
-		// let testPt3 = {x:250, y:250, radius: 3, fillStyle: "blue"   };
-		// let testPt4 = {x: 50, y:250, radius: 3, fillStyle: "gray"   };
-		// let testPt5 = {x:150, y:150, radius: 3, fillStyle: "fuchsia"};
+			// let testRay1: ICanvasRay2D = new CanvasRay2D(testPt5, testPt1, 1, "red" );
+			// let testRay2: ICanvasRay2D = new CanvasRay2D(testPt5, testPt2, 1, "lime");
+			// let testRay3: ICanvasRay2D = new CanvasRay2D(testPt5, testPt3, 1, "blue");
+			// let testRay4: ICanvasRay2D = new CanvasRay2D(testPt5, testPt4, 1, "gray");
+
+			let testRay1: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt1), 30)
+			let testRay2: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt2), 30)
+			let testRay3: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt3), 30)
+			let testRay4: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt4), 30)
+
+			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay1.start, testRay1.mid, 1, "red" ));
+			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay2.start, testRay2.mid, 1, "lime"));
+			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay3.start, testRay3.mid, 1, "blue"));
+			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay4.start, testRay4.mid, 1, "gray"));
 		}
 		//
 		let rect01 = new CanvasRectangle2D( 10,  10,  50, 200, 3, "red" , "");

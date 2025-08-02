@@ -1,4 +1,4 @@
-import { Geo2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, ShapeGeo2D } from './geo2d.js';
+import { Geo2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, ShapeGeo2D, Ray2D } from './geo2d.js';
 
 export namespace CanvasUtils {
 
@@ -32,6 +32,12 @@ export namespace CanvasUtils {
 				drawLine(cvsCtx, lines[i]);
 			}
 		}
+	}
+
+	export function drawRay(cvsCtx: CanvasRenderingContext2D, ray: ICanvasRay2D) {
+		drawLine(cvsCtx, {a: ray.start, b: ray.mid, // 
+			lineWidth: ray.lineWidth, strokeStyle: ray.strokeStyle, //
+			lineCap: ray.lineCap, lineJoin: ray.lineJoin})
 	}
 
 	export function drawPoint(cvsCtx: CanvasRenderingContext2D, point: ICanvasPoint2D) {
@@ -148,13 +154,31 @@ export class CanvasLine2D extends Line2D implements CanvasShape2D, ICanvasLine2D
 
 	constructor(a: IPoint2D, b: IPoint2D, lineWidth: number, strokeStyle: string) //
 	{
-		super({ x: a.x, y: a.y }, { x: b.x, y: a.y });
+		super(a, b);
 		this.strokeStyle = strokeStyle;
 		this.lineWidth = lineWidth;
 	}
 
 	static from(line: ICanvasLine2D): CanvasLine2D {
 		return new CanvasLine2D(line.a, line.b, line.lineWidth, line.strokeStyle);
+	}
+
+}
+
+export interface ICanvasRay2D extends IRay2D {
+	readonly lineWidth: number;
+	readonly lineCap?: "butt" | "round" | "square";
+	readonly lineJoin?: "miter" | "round" | "bevel";
+	readonly strokeStyle: string;
+}
+export class CanvasRay2D extends Ray2D implements CanvasShape2D, ICanvasRay2D {
+	readonly lineWidth: number;
+	readonly strokeStyle: string;
+
+	constructor(start: IPoint2D, mid: IPoint2D, lineWidth: number, strokeStyle: string) {
+		super(start, mid);
+		this.strokeStyle = strokeStyle;
+		this.lineWidth = lineWidth;
 	}
 
 }
