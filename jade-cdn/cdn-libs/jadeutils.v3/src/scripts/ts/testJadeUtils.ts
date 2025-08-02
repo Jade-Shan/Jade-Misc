@@ -373,8 +373,8 @@ class TestCanvas {
 
 			CanvasUtils.drawPoint(cvsCtx, center);
 
-			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect01, 1, "red" );
-			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect03, 1, "blue");
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect01, 30, 1, "red" );
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect03, 30, 1, "blue");
 		}
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs007")?.getContext("2d");
@@ -384,8 +384,31 @@ class TestCanvas {
 
 			CanvasUtils.drawPoint(cvsCtx, center);
 
-			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect02, 1, "lime");
-			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect04, 1, "gray");
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect02, 30, 1, "lime");
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect04, 30, 1, "gray");
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs008")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawRectangle(cvsCtx, rect01);
+			CanvasUtils.drawRectangle(cvsCtx, rect03);
+
+			CanvasUtils.drawPoint(cvsCtx, center);
+
+			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect01, 30, 1, "red" );
+			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect03, 30, 1, "blue");
+
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs009")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawRectangle(cvsCtx, rect02);
+			CanvasUtils.drawRectangle(cvsCtx, rect04);
+
+			CanvasUtils.drawPoint(cvsCtx, center);
+
+			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect02, 30, 1, "lime");
+			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect04, 30, 1, "gray");
 		}
 	}
 

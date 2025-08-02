@@ -35,9 +35,19 @@ export namespace CanvasUtils {
 	}
 
 	export function drawRay(cvsCtx: CanvasRenderingContext2D, ray: ICanvasRay2D) {
-		drawLine(cvsCtx, {a: ray.start, b: ray.mid, // 
+		drawLine(cvsCtx, {
+			a: ray.start, b: ray.mid, // 
 			lineWidth: ray.lineWidth, strokeStyle: ray.strokeStyle, //
-			lineCap: ray.lineCap, lineJoin: ray.lineJoin})
+			lineCap: ray.lineCap, lineJoin: ray.lineJoin
+		})
+	}
+
+	export function drawRays(cvsCtx: CanvasRenderingContext2D, rays: Array<ICanvasRay2D>) {
+		if (rays && rays.length > 0) {
+			for (let i = 0; i < rays.length; i++) {
+				drawRay(cvsCtx, rays[i]);
+			}
+		}
 	}
 
 	export function drawPoint(cvsCtx: CanvasRenderingContext2D, point: ICanvasPoint2D) {
@@ -85,12 +95,12 @@ export namespace CanvasUtils {
 		drawPoints(cvsCtx, vtxs);
 	}
 
-	export function drawVertexRaysFrom(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: ShapeGeo2D, lineWidth: number, strokeStyle: string) {
+	export function drawVertexRaysFrom(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: ShapeGeo2D, extendLength: number, lineWidth: number, strokeStyle: string) {
 		let rays: Array<IRay2D> = shape.getVertexRaysFrom(x, y);
 		if (rays && rays.length > 0) {
 			for (let i = 0; i < rays.length; i++) {
 				// let ray = rays[i];
-				let ray = Geo2DUtils.extendRayLength(rays[i], 30) ;
+				let ray = Geo2DUtils.extendRayLength(rays[i], extendLength);
 				drawLine(cvsCtx, { a: { x: ray.start.x, y: ray.start.y }, b: { x: ray.mid.x, y: ray.mid.y }, lineWidth, strokeStyle });
 			}
 		}
@@ -98,21 +108,21 @@ export namespace CanvasUtils {
 
 
 
-	export function genShapeTengentLine(x: number, y: number, shape: CanvasShape2D, lineWidth: number, strokeStyle: string): Array<CanvasLine2D> {
-		let result: Array<CanvasLine2D> = [];
-		let lines = Geo2DUtils.genTengentLine(x, y, shape, length);
-		if (lines && lines.length > 0) {
-			for (let i = 0; i < lines.length; i++) {
-				let line = lines[i];
-				result.push(new CanvasLine2D(line.a, line.b, lineWidth, strokeStyle));
+	export function genShapeTengentLine(x: number, y: number, shape: CanvasShape2D, extendLength: number, lineWidth: number, strokeStyle: string): Array<CanvasRay2D> {
+		let result: Array<CanvasRay2D> = [];
+		let rays: Array<Ray2D> = Geo2DUtils.genTengentRays(x, y, shape, extendLength);
+		if (rays && rays.length > 0) {
+			for (let i = 0; i < rays.length; i++) {
+				let ray = rays[i];
+				result.push(new CanvasRay2D(ray.start, ray.mid, lineWidth, strokeStyle));
 			}
 		}
 		return result;
 	}
 
-	export function drawShapeTengentLine(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: CanvasShape2D, lineWidth: number, strokeStyle: string) {
-		let lines: Array<CanvasLine2D> = genShapeTengentLine(x, y, shape, lineWidth, strokeStyle);
-		drawLines(cvsCtx, lines);
+	export function drawShapeTengentRays(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: CanvasShape2D, extendLength: number, lineWidth: number, strokeStyle: string) {
+		let rays: Array<CanvasRay2D> = genShapeTengentLine(x, y, shape, extendLength, lineWidth, strokeStyle);
+		drawRays(cvsCtx, rays);
 	}
 }
 
@@ -134,10 +144,10 @@ export class CanvasPoint2D extends Point2D //
 	constructor(x: number, y: number, radius: number, fillStyle: string) {
 		super(x, y);
 		this.radius = radius;
-		this.fillStyle= fillStyle;
+		this.fillStyle = fillStyle;
 	}
 
-	static from (point: ICanvasPoint2D): CanvasPoint2D {
+	static from(point: ICanvasPoint2D): CanvasPoint2D {
 		return new CanvasPoint2D(point.x, point.y, point.radius, point.fillStyle);
 	}
 }
@@ -196,8 +206,7 @@ export class CanvasRectangle2D extends Rectangle2D //
 	readonly fillStyle: string;
 
 	constructor(x: number, y: number, width: number, height: number, //
-		lineWidth: number, strokeStyle: string, fillStyle: string) 
-	{
+		lineWidth: number, strokeStyle: string, fillStyle: string) {
 		super(x, y, width, height);
 		this.lineWidth = lineWidth;
 		this.strokeStyle = strokeStyle;

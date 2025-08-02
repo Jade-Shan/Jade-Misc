@@ -1,3 +1,5 @@
+import { NumUtil } from "./basic";
+
 export interface Geo {
 
 }
@@ -146,6 +148,7 @@ export type IRay2D = {
 	readonly mid: IPoint2D, // 经过的点
 	readonly angle: number,  // 角度
 	readonly cAngle: number, // 规范后的角度
+	readonly angleStr: string , //
 	readonly length: number, // start 到 end 的距离
 }
 export class Ray2D extends ShapeGeo2D implements IRay2D {
@@ -153,6 +156,7 @@ export class Ray2D extends ShapeGeo2D implements IRay2D {
 	readonly mid: IPoint2D; // 经过的点
 	readonly angle: number;  // 角度
 	readonly cAngle: number; // 规范后的角度
+	readonly angleStr: string ; //
 	readonly length: number; // start 到 end 的距离
 	private center: Point2D;
 
@@ -165,6 +169,11 @@ export class Ray2D extends ShapeGeo2D implements IRay2D {
 		let dy = start.y - mid.y;
 		this.angle = Math.atan2(dy, dx);
 		this.cAngle = this.angle < 0 ? Geo2DUtils.PI_DOUBLE + this.angle : this.angle;
+		let ccg = this.cAngle * 180 / Math.PI;
+		this.angleStr = ``;
+		// `(${NumUtil.toFixed(dx, 2)}, ${NumUtil.toFixed(dy, 2)})` +
+		// 	` = ${NumUtil.toFixed(this.angle, 2)} = ${NumUtil.toFixed(this.cAngle, 2)}` +
+		// 	` = ${NumUtil.toFixed(ccg, 2)}°`;
 		this.length = Geo2DUtils.distanceP2P(start, mid);
 	}
 
@@ -461,63 +470,76 @@ export namespace Geo2DUtils {
 	}
 
 
-	/**
-	 * 计算以`start`为起点，经过`point`的射线
-	 * 
-	 * @param start 起点
-	 * @param mid 经过的点
-	 * @param quad 点经过的点相对起点所在的象限
-	 * @returns 返回射线
-	 */
-	export function calRayByPointsOld(start: IPoint2D, mid: IPoint2D, quad: number): IRay2D {
-		// 注意三角函数使用时的坐标
-		// 数学上的坐标轴第一象限的原点在左下角
-		// 在Canvas画布上，原点在左上角
-		let dx = start.x - mid.x;
-		let dy = start.y - mid.y;
-		let angle = Math.atan2(dy, dx);
-		let cAngle = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngle = angle;
-		} else if (angle < 0) {
-			cAngle = Math.PI * 2 + angle;
-		} else {
-			cAngle = angle;
-		}
-		return { start: start, mid: mid, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
-	}
+	// /**
+	//  * 计算以`start`为起点，经过`point`的射线
+	//  * 
+	//  * @param start 起点
+	//  * @param mid 经过的点
+	//  * @param quad 点经过的点相对起点所在的象限
+	//  * @returns 返回射线
+	//  */
+	// export function calRayByPointsOld(start: IPoint2D, mid: IPoint2D, quad: number): IRay2D {
+	// 	// 注意三角函数使用时的坐标
+	// 	// 数学上的坐标轴第一象限的原点在左下角
+	// 	// 在Canvas画布上，原点在左上角
+	// 	let dx = start.x - mid.x;
+	// 	let dy = start.y - mid.y;
+	// 	let angle = Math.atan2(dy, dx);
+	// 	let cAngle = 0;
+	// 	if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
+	// 		cAngle = angle;
+	// 	} else if (angle < 0) {
+	// 		cAngle = Math.PI * 2 + angle;
+	// 	} else {
+	// 		cAngle = angle;
+	// 	}
+	// 	return { start: start, mid: mid, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
+	// }
 
 
 	export function calVtxDstAngle(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
 		return new Ray2D(start, mid);
 	}
 
-	/**
-	 * 计算以`start`为起点，经过`point`的射线
-	 * 
-	 * @param start 起点
-	 * @param mid 经过的点
-	 * @param quad 点经过的点相对起点所在的象限
-	 * @returns 返回射线
-	 */
-	export function calVtxDstAngleOld(start: IPoint2D, mid: IPoint2D, quad: number): IRay2D {
-		// 注意三角函数使用时的坐标
-		// 数学上的坐标轴第一象限的原点在左下角
-		// 在Canvas画布上，原点在左上角
-		let dx = start.x - mid.x;
-		let dy = start.y - mid.y;
-		let angle = Math.atan2(dy, dx);
-		let cAngle = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngle = angle;
-		} else if (angle < 0) {
-			cAngle = Math.PI * 2 + angle;
-		} else {
-			cAngle = angle;
-		}
-		return { start: start, mid: mid, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
-	}
+	// /**
+	//  * 计算以`start`为起点，经过`point`的射线
+	//  * 
+	//  * @param start 起点
+	//  * @param mid 经过的点
+	//  * @param quad 点经过的点相对起点所在的象限
+	//  * @returns 返回射线
+	//  */
+	// export function calVtxDstAngleOld(start: IPoint2D, mid: IPoint2D, quad: number): IRay2D {
+	// 	// 注意三角函数使用时的坐标
+	// 	// 数学上的坐标轴第一象限的原点在左下角
+	// 	// 在Canvas画布上，原点在左上角
+	// 	let dx = start.x - mid.x;
+	// 	let dy = start.y - mid.y;
+	// 	let angle = Math.atan2(dy, dx);
+	// 	let cAngle = 0;
+	// 	if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
+	// 		cAngle = angle;
+	// 	} else if (angle < 0) {
+	// 		cAngle = Math.PI * 2 + angle;
+	// 	} else {
+	// 		cAngle = angle;
+	// 	}
+	// 	return { start: start, mid: mid, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
+	// }
 
+
+	export function filterObstacleRaysNew(rays: Array<IRay2D>): Array<Ray2D> {
+		let results: Array<Ray2D> = [];
+		// 找到角度最大的点与最小的点
+		let min = rays[0];
+		let max = rays[0];
+		for (let i = 1; i < rays.length; i++) {
+			let curr = rays[i];
+			if (curr.cAngle < min.cAngle) { min = curr; }
+			if (curr.cAngle > max.cAngle) { max = curr }
+		}
+		return results;
+	}
 
 
 	/**
@@ -527,8 +549,8 @@ export namespace Geo2DUtils {
 	 * @param rays 所有的射线
 	 * @returns 返回切线
 	 */
-	export function filterObstacleRays(rays: Array<IRay2D>): Array<IRay2D> {
-		let results: Array<IRay2D> = [];
+	export function filterObstacleRays(rays: Array<IRay2D>): Array<Ray2D> {
+		let results: Array<Ray2D> = [];
 		// 找到角度最大的点与最小的点
 		let minIdx = 0;
 		let maxIdx = 0;
@@ -543,7 +565,8 @@ export namespace Geo2DUtils {
 		let loopEnd = maxIdx > -1 ? maxIdx - 1 : rays.length - 1;
 		for (let i = loopStart; i > loopEnd; i--) {
 			let idx = i < rays.length ? i : i - rays.length;
-			results.push(rays[idx]);
+			let rr = rays[idx];
+			results.push(new Ray2D(rr.start, rr.mid));
 		}
 		return results;
 	}
@@ -557,18 +580,24 @@ export namespace Geo2DUtils {
 	 * @param rays 多条射线
 	 * @returns 返回两条切线的线段
 	 */
-	export function genTengentLine(x: number, y: number, geo2D: Geo2D, length: number): Array<Line2D> {
+	export function genTengentRays(x: number, y: number, geo2D: Geo2D, extendLength: number): Array<Ray2D> {
 		// 注意三角函数使用时的坐标
 		// 数学上的坐标轴第一象限的原点在左下角
 		// 在Canvas画布上，原点在左上角
-		let rayArr: Array<IRay2D> = geo2D.getVertexRaysFrom(x, y);
+		let rayArr: Array<Ray2D> = geo2D.getVertexRaysFrom(x, y);
 		let rays = filterObstacleRays(rayArr);
-		let result: Array<Line2D> = [];
-		for (let i = 0; i < rays.length; i++) {
-			let endX = x + Math.round(length * Math.cos(rays[i].angle));
-			let endY = y + Math.round(length * Math.sin(rays[i].angle));
-			result.push(new Line2D({ x: x, y: y }, { x: endX, y: endY }));
+		let result: Array<Ray2D> = [];
+
+		if (rays && rays.length > 0) {
+			for (let i=0; i< rays.length; i++) {
+				result .push(Geo2DUtils.extendRayLength(rays[i], extendLength));
+			}
 		}
+		// for (let i = 0; i < rays.length; i++) {
+		// 	let endX = x + Math.round(length * Math.cos(rays[i].angle));
+		// 	let endY = y + Math.round(length * Math.sin(rays[i].angle));
+		// 	result.push(new Line2D({ x: x, y: y }, { x: endX, y: endY }));
+		// }
 		return result;
 	}
 }
