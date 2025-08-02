@@ -1,4 +1,4 @@
-import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, Geo2D } from './geo2d.js';
+import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, IGeo2D, GeoCurve2D } from './geo2d.js';
 
 export namespace CanvasUtils {
 
@@ -127,25 +127,20 @@ export namespace CanvasUtils {
 }
 
 
-export interface Canvas2D extends Geo2D {
+export interface ICanvas2D extends IGeo2D { }
 
-}
+export interface CanvasShape2D extends GeoShape2D { }
 
-export interface CanvasShape2D extends GeoShape2D {
+export interface CanvasCurve2D extends CanvasShape2D, GeoCurve2D { }
 
-}
+export interface CanvasPolygon2D extends CanvasShape2D, GeoPolygon2D { }
 
-
-export interface CanvasPolygon2D extends CanvasShape2D, GeoPolygon2D {
-
-}
-
-export interface ICanvasPoint2D extends Canvas2D, IPoint2D {
+export interface ICanvasPoint2D extends ICanvas2D, IPoint2D {
 	readonly radius: number;
 	readonly fillStyle: string;
 }
 export class CanvasPoint2D extends Point2D //
-	implements CanvasShape2D, ICanvasPoint2D // 
+	implements CanvasCurve2D, ICanvasPoint2D // 
 {
 	readonly radius: number;
 	readonly fillStyle: string;
@@ -161,7 +156,7 @@ export class CanvasPoint2D extends Point2D //
 	}
 }
 
-export interface ICanvasLine2D extends ILine2D {
+export interface ICanvasLine2D extends ICanvas2D, ILine2D {
 	readonly lineWidth: number;
 	readonly lineCap?: "butt" | "round" | "square";
 	readonly lineJoin?: "miter" | "round" | "bevel";

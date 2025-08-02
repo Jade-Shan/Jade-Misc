@@ -1,10 +1,10 @@
 import { NumUtil } from "./basic";
 
-export interface Geo2D {
+export interface IGeo2D {
 
 }
 
-export interface GeoShape2D extends Geo2D {
+export interface GeoShape2D extends IGeo2D {
 
 	/**
 	 * 图形的中心
@@ -33,15 +33,19 @@ export interface GeoShape2D extends Geo2D {
 
 }
 
+export interface GeoCurve2D extends GeoShape2D {
 
-export interface GeoPolygon2D extends GeoShape2D{
+}
+
+
+export interface GeoPolygon2D extends GeoShape2D {
 
 	getVertex(): Array<Point2D>;
 
 }
 
 export type IPoint2D = { readonly x: number, readonly y: number };
-export class Point2D implements GeoShape2D, IPoint2D {
+export class Point2D implements GeoCurve2D, IPoint2D {
 	readonly x: number;
 	readonly y: number;
 	private center: Point2D | null;
