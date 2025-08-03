@@ -264,10 +264,28 @@ export enum QuadPos {
 	/** Y轴负   */ AXIS_Y_NAG = 0b1100,
 }
 
+export interface IAngle {
+	oriAgl: number;
+	fmtAgl: number;
+	oriDgr: number;
+	fmtDgr: number;
+
+		// this.cAngle = this.angle < 0 ? Geo2DUtils.PI_DOUBLE + this.angle : this.angle;
+		// let ccg = this.cAngle * 180 / Math.PI;
+		// this.angleStr = ``;
+}
+
 export namespace Geo2DUtils {
 	export const PI_HALF = Math.PI / 2;
 	export const PI_ONE_HALF = Math.PI + PI_HALF;
 	export const PI_DOUBLE = Math.PI * 2;
+
+	export function formatAngle(angle: number): IAngle {
+		let fmtAgl = angle < 0 ? Geo2DUtils.PI_DOUBLE + angle : angle;
+		let oriDgr = angle * 180 / Math.PI;
+		let fmtDgr = fmtAgl * 180 / Math.PI;
+		return {oriAgl: angle, fmtAgl: fmtAgl, oriDgr: oriDgr, fmtDgr: fmtDgr};
+	}
 
 	/**
 	 * 计算两点的距离
@@ -443,8 +461,7 @@ export namespace Geo2DUtils {
 		return quad as QuadPos;
 	}
 
-	export function extendRayLength(ray: IRay2D, extendLength: number): Ray2D {
-		let length = ray.length + extendLength;
+	export function extendRayLength(ray: IRay2D, length: number): Ray2D {
 		let x = Math.cos(ray.angle + Math.PI) * length + ray.start.x;
 		let y = Math.sin(ray.angle + Math.PI) * length + ray.start.y;
 		// { start: ray.start, mid: {x:x,y:y}, // 
@@ -586,5 +603,17 @@ export namespace Geo2DUtils {
 		// 	result.push(new Line2D({ x: x, y: y }, { x: endX, y: endY }));
 		// }
 		return result;
+	}
+
+	/**
+	 * 以`c`为圆心，计算以`c`为端点并且经过`from`点的射线旋转到
+	 * `to`这一点的位置后，开始的角度与结束的角度。
+	 * 
+	 * @param c 圆心
+	 * @param from 开始
+	 * @param to 结束
+	 */
+	export function revolveRay(c: IPoint2D, from: IPoint2D, to: IPoint2D) {
+
 	}
 }

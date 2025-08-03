@@ -274,9 +274,12 @@ class TestCanvas {
 	static testAtan2(x: number, y: number) {
 		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2 
 		let a1 = Math.atan2(y, x);
-		let a2 = a1 * 180 / Math.PI;
-		let a3 = a2 < 0 ? a2 : 360 + a2;
-		console.log(`atan2(${y},${x}) = ${a1} = ${a2}° = ${a3}°`);
+		let angle = Geo2DUtils.formatAngle(a1);
+		console.log(`atan2(${y},${x}) = ${
+			NumUtil.toFixed(angle.oriAgl, 6) } = ${
+			NumUtil.toFixed(angle.fmtAgl, 6) } = ${
+			NumUtil.toFixed(angle.oriDgr, 3) }° = ${
+			NumUtil.toFixed(angle.fmtDgr, 3) }°`);
 	}
 
 	static testTriFun() {
@@ -287,7 +290,7 @@ class TestCanvas {
 		this.testAtan2(-100,0);
 		this.testAtan2(-100,-100);
 		this.testAtan2(0,-100);
-		this.testAtan2(100,-1000);
+		this.testAtan2(100,-100);
 	}
 
 	static testCanvas() {
@@ -324,10 +327,10 @@ class TestCanvas {
 			// let testRay3: ICanvasRay2D = new CanvasRay2D(testPt5, testPt3, 1, "blue");
 			// let testRay4: ICanvasRay2D = new CanvasRay2D(testPt5, testPt4, 1, "gray");
 
-			let testRay1: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt1), 30)
-			let testRay2: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt2), 30)
-			let testRay3: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt3), 30)
-			let testRay4: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt4), 30)
+			let testRay1: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt1), 170);
+			let testRay2: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt2), 170);
+			let testRay3: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt3), 170);
+			let testRay4: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt4), 170);
 
 			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay1.start, testRay1.mid, 1, "red" ));
 			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay2.start, testRay2.mid, 1, "lime"));
@@ -412,8 +415,8 @@ class TestCanvas {
 
 			CanvasUtils.drawPoint(cvsCtx, center);
 
-			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect01, 30, 1, "red" );
-			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect03, 30, 1, "blue");
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect01, 190, 1, "red" );
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect03, 190, 1, "blue");
 		}
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs037")?.getContext("2d");
@@ -423,8 +426,8 @@ class TestCanvas {
 
 			CanvasUtils.drawPoint(cvsCtx, center);
 
-			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect02, 30, 1, "lime");
-			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect04, 30, 1, "gray");
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect02, 190, 1, "lime");
+			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect04, 190, 1, "gray");
 		}
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs038")?.getContext("2d");
@@ -434,8 +437,8 @@ class TestCanvas {
 
 			CanvasUtils.drawPoint(cvsCtx, center);
 
-			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect01, 30, 1, "red" );
-			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect03, 30, 1, "blue");
+			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect01, 190, 1, "red" );
+			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect03, 190, 1, "blue");
 
 		}
 		//
@@ -446,8 +449,8 @@ class TestCanvas {
 
 			CanvasUtils.drawPoint(cvsCtx, center);
 
-			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect02, 30, 1, "lime");
-			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect04, 30, 1, "gray");
+			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect02, 190, 1, "lime");
+			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect04, 190, 1, "gray");
 		}
 	}
 
