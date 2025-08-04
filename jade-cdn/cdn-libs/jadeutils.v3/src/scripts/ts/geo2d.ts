@@ -1,4 +1,4 @@
-import { NumUtil } from "./basic";
+import { NumUtil } from "./basic.js";
 
 export interface IGeo2D {
 
@@ -619,16 +619,52 @@ export namespace Geo2DUtils {
 	 * @param start 开始
 	 * @param end 结束
 	 */
-	export function revolveRay(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
-		let startAngle = Math.atan2(startPoint.y - c.y, startPoint.x -c.x);
-		let endAngle   = Math.atan2(  endPoint.y - c.y,   endPoint.x -c.x);
+	export function revolveRayV2(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
+		let d1 = {x: startPoint.x -c.x, y: startPoint.y - c.y};
+		let d2 = {x: endPoint.x -c.x, y: endPoint.y - c.y};
+		let startAngle = Math.atan2(d1.y, d1.x);
+		let endAngle   = Math.atan2(d2.y, d2.x);
 		let diffAngle = endAngle - startAngle;
 
 		// 特殊处理从旋转的角度跨过第一象限和第四象限的情况
-		let {y1, y2} = startPoint.y < endPoint.y ? {y1: startPoint.y , y2: endPoint.y} : {y1: endPoint.y , y2:startPoint. y};
-		if (y1 < c.y && c.y < y2 && pointOfLineSide({a: startPoint, b: endPoint}, c) > 0) {
+		if (pointOfLineSide({a: startPoint, b: endPoint}, c) > 0) {
 			diffAngle = (PI_DOUBLE - diffAngle);
 		}
+
+		return {start: startAngle, end: endAngle, diff: diffAngle};
+	}
+
+	export function revolveRay(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
+		let d1 = {x: startPoint.x -c.x, y: startPoint.y - c.y};
+		let d2 = {x:   endPoint.x -c.x, y:   endPoint.y - c.y};
+		let startAngle = Math.atan2(d1.y, d1.x);
+		let endAngle   = Math.atan2(d2.y, d2.x);
+		let diffAngle = endAngle - startAngle;
+
+		let needRev = false;
+		//if (pointOfLineSide({a: startPoint, b: endPoint}, c) > 0) {
+		//	needRev = true;
+		//}
+		if (d1.x <0 && d2.x < 0 && d1.y<0 && d2.y >0) {
+			diffAngle = -1 * (PI_DOUBLE - diffAngle);
+		}
+		if (d1.x <0 && d2.x < 0 && d1.y>0 && d2.y <0) {
+			diffAngle = PI_DOUBLE - diffAngle;
+		}
+		let ca = formatAngle(diffAngle);
+		let side = pointOfLineSide({a: startPoint, b: endPoint}, c);
+			console.log(`need rev:${needRev} side ${NumUtil.toFixed(side, 2)} ` + 
+			`revolv ${NumUtil.toFixed(d1.x,3)}, ${NumUtil.toFixed(d1.y,3)} ` + 
+			`to ${NumUtil.toFixed(d2.x,3)},${NumUtil.toFixed(d2.y,3)} ` + 
+			`angle: ${NumUtil.toFixed(diffAngle, 3)} = ${NumUtil.toFixed(ca.fmtAgl,2)} = ` + 
+			`${NumUtil.toFixed(ca.oriDgr,2)}° = ${NumUtil.toFixed(ca.fmtDgr,2)}° `);
+		// 特殊处理从旋转的角度跨过第一象限和第四象限的情况
+		//if (side > 0) {
+		//	diffAngle = PI_DOUBLE - diffAngle;
+		//}
+		//if (pointOfLineSide({a: startPoint, b: endPoint}, c) > 0) {
+		//	diffAngle = (PI_DOUBLE - diffAngle);
+		//}
 
 		return {start: startAngle, end: endAngle, diff: diffAngle};
 	}
