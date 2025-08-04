@@ -322,16 +322,12 @@ class TestCanvas {
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs003")?.getContext("2d");
 		if (null != cvsCtx) {
 			CanvasUtils.drawPoints(cvsCtx, [testPt1, testPt2, testPt3, testPt4, testPt5]);
-			// let testRay1: ICanvasRay2D = new CanvasRay2D(testPt5, testPt1, 1, "red" );
-			// let testRay2: ICanvasRay2D = new CanvasRay2D(testPt5, testPt2, 1, "lime");
-			// let testRay3: ICanvasRay2D = new CanvasRay2D(testPt5, testPt3, 1, "blue");
-			// let testRay4: ICanvasRay2D = new CanvasRay2D(testPt5, testPt4, 1, "gray");
-
+			// 
 			let testRay1: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt1), 170);
 			let testRay2: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt2), 170);
 			let testRay3: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt3), 170);
 			let testRay4: Ray2D = Geo2DUtils.extendRayLength(new Ray2D(testPt5, testPt4), 170);
-
+			//
 			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay1.start, testRay1.mid, 1, "red" ));
 			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay2.start, testRay2.mid, 1, "lime"));
 			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay3.start, testRay3.mid, 1, "blue"));
@@ -340,14 +336,14 @@ class TestCanvas {
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs004")?.getContext("2d");
 		if (null != cvsCtx) {
-			let testLine01 = new CanvasLine2D({x: 20, y: 10}, {x:280, y: 10},  1, "red");
-			let testLine02 = new CanvasLine2D({x:290, y: 20}, {x:290, y:280},  1, "lime");
-			let testLine03 = new CanvasLine2D({x: 20, y:290}, {x:280, y:290},  1, "blue");
-			let testLine04 = new CanvasLine2D({x: 10, y:280}, {x: 10, y: 20},  1, "gray");
+			let testLine01 = new CanvasLine2D({x: 30, y: 60}, {x: 60, y: 30}, 1, "red");
+			let testLine02 = new CanvasLine2D({x:240, y: 30}, {x:270, y: 60}, 1, "lime");
+			let testLine03 = new CanvasLine2D({x:270, y:240}, {x:240, y:270}, 1, "blue");
+			let testLine04 = new CanvasLine2D({x: 60, y:270}, {x: 30, y:240}, 1, "gray");
 			CanvasUtils.drawLines(cvsCtx, [testLine01, testLine02, testLine03, testLine04]);
-
+			//
 			CanvasUtils.drawPoint(cvsCtx, testPt5);
-
+			//
 			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine01.a, 1, "red" ));
 			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine01.b, 1, "red" ));
 			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine02.a, 1, "lime"));
@@ -369,6 +365,66 @@ class TestCanvas {
 		}
 		//
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs005")?.getContext("2d");
+		if (null != cvsCtx) {
+			let testLine01 = new CanvasLine2D({x: 60, y: 30}, {x: 30, y: 60}, 1, "red");
+			let testLine02 = new CanvasLine2D({x:270, y: 60}, {x:240, y: 30}, 1, "lime");
+			let testLine03 = new CanvasLine2D({x:240, y:270}, {x:270, y:240}, 1, "blue");
+			let testLine04 = new CanvasLine2D({x: 30, y:240}, {x: 60, y:270}, 1, "gray");
+			CanvasUtils.drawLines(cvsCtx, [testLine01, testLine02, testLine03, testLine04]);
+			//
+			CanvasUtils.drawPoint(cvsCtx, testPt5);
+			//
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine01.a, 1, "red" ));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine01.b, 1, "red" ));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine02.a, 1, "lime"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine02.b, 1, "lime"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine03.a, 1, "blue"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine03.b, 1, "blue"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine04.a, 1, "gray"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine04.b, 1, "gray"));
+
+			let ag1 = Geo2DUtils.revolveRay(testPt5, testLine01.a, testLine01.b);
+			let ag2 = Geo2DUtils.revolveRay(testPt5, testLine02.a, testLine02.b);
+			let ag3 = Geo2DUtils.revolveRay(testPt5, testLine03.a, testLine03.b);
+			let ag4 = Geo2DUtils.revolveRay(testPt5, testLine04.a, testLine04.b);
+
+			CanvasUtils.drawArc(cvsCtx, testPt5, 30, ag1, 1, "red");
+			CanvasUtils.drawArc(cvsCtx, testPt5, 40, ag2, 1, "lime");
+			CanvasUtils.drawArc(cvsCtx, testPt5, 50, ag3, 1, "blue");
+			CanvasUtils.drawArc(cvsCtx, testPt5, 60, ag4, 1, "gray");
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs006")?.getContext("2d");
+		if (null != cvsCtx) {
+			let testLine01 = new CanvasLine2D({x: 20, y: 10}, {x:280, y: 10},  1, "red");
+			let testLine02 = new CanvasLine2D({x:290, y: 20}, {x:290, y:280},  1, "lime");
+			let testLine03 = new CanvasLine2D({x: 20, y:290}, {x:280, y:290},  1, "blue");
+			let testLine04 = new CanvasLine2D({x: 10, y:280}, {x: 10, y: 20},  1, "gray");
+			CanvasUtils.drawLines(cvsCtx, [testLine01, testLine02, testLine03, testLine04]);
+			//
+			CanvasUtils.drawPoint(cvsCtx, testPt5);
+			//
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine01.a, 1, "red" ));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine01.b, 1, "red" ));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine02.a, 1, "lime"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine02.b, 1, "lime"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine03.a, 1, "blue"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine03.b, 1, "blue"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine04.a, 1, "gray"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(testPt5, testLine04.b, 1, "gray"));
+
+			let ag1 = Geo2DUtils.revolveRay(testPt5, testLine01.a, testLine01.b);
+			let ag2 = Geo2DUtils.revolveRay(testPt5, testLine02.a, testLine02.b);
+			let ag3 = Geo2DUtils.revolveRay(testPt5, testLine03.a, testLine03.b);
+			let ag4 = Geo2DUtils.revolveRay(testPt5, testLine04.a, testLine04.b);
+
+			CanvasUtils.drawArc(cvsCtx, testPt5, 30, ag1, 1, "red");
+			CanvasUtils.drawArc(cvsCtx, testPt5, 40, ag2, 1, "lime");
+			CanvasUtils.drawArc(cvsCtx, testPt5, 50, ag3, 1, "blue");
+			CanvasUtils.drawArc(cvsCtx, testPt5, 60, ag4, 1, "gray");
+		}
+		//
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs007")?.getContext("2d");
 		if (null != cvsCtx) {
 			let testLine01 = new CanvasLine2D({x:280, y: 10}, {x: 20, y: 10},  1, "red");
 			let testLine02 = new CanvasLine2D({x:290, y:280}, {x:290, y: 20},  1, "lime");
@@ -400,7 +456,7 @@ class TestCanvas {
 
 
 		//
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs006")?.getContext("2d");
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs008")?.getContext("2d");
 		if (null != cvsCtx) {
 			let p1 = {x:170, y:130, radius: 3, fillStyle: "red"};
 			let p2 = {x:130, y:170, radius: 3, fillStyle: "blue"};
@@ -422,7 +478,7 @@ class TestCanvas {
 			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
 		}
 		//
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs007")?.getContext("2d");
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs009")?.getContext("2d");
 		if (null != cvsCtx) {
 			let p1 = {x:130, y:130, radius: 3, fillStyle: "red"};
 			let p2 = {x:170, y:170, radius: 3, fillStyle: "blue"};
@@ -447,7 +503,7 @@ class TestCanvas {
 
 
 		//
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs008")?.getContext("2d");
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs010")?.getContext("2d");
 		if (null != cvsCtx) {
 			let p1 = {x:170, y:130, radius: 3, fillStyle: "red"};
 			let p2 = {x:130, y:170, radius: 3, fillStyle: "blue"};
@@ -469,7 +525,7 @@ class TestCanvas {
 			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
 		}
 		//
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs009")?.getContext("2d");
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs011")?.getContext("2d");
 		if (null != cvsCtx) {
 			let p1 = {x:130, y:130, radius: 3, fillStyle: "red"};
 			let p2 = {x:170, y:170, radius: 3, fillStyle: "blue"};
