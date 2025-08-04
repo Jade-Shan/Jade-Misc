@@ -642,14 +642,19 @@ export namespace Geo2DUtils {
 		let diffAngle = endAngle - startAngle;
 
 		let needRev = false;
-		//if (pointOfLineSide({a: startPoint, b: endPoint}, c) > 0) {
-		//	needRev = true;
-		//}
-		if (d1.x <0 && d2.x < 0 && d1.y<0 && d2.y >0) {
-			diffAngle = -1 * (PI_DOUBLE - diffAngle);
-		}
-		if (d1.x <0 && d2.x < 0 && d1.y>0 && d2.y <0) {
-			diffAngle = PI_DOUBLE - diffAngle;
+
+		if (d1.x * d2.x < 0 && d1.y * d2.y < 0) {
+			// 跨三个象限
+			needRev = true;
+		} else if (d1.x < 0 && d2.x < 0) {
+			// 跨第一第四象限
+			if (d1.y < 0 && d2.y > 0) {
+				// 从第四象限到第一象限
+				diffAngle = -1 * (PI_DOUBLE - diffAngle);
+			} else if (d1.y > 0 && d2.y < 0) {
+				// 从第一象限第四象限
+				diffAngle = PI_DOUBLE - diffAngle;
+			}
 		}
 		let ca = formatAngle(diffAngle);
 		let side = pointOfLineSide({a: startPoint, b: endPoint}, c);
@@ -658,13 +663,6 @@ export namespace Geo2DUtils {
 			`to ${NumUtil.toFixed(d2.x,3)},${NumUtil.toFixed(d2.y,3)} ` + 
 			`angle: ${NumUtil.toFixed(diffAngle, 3)} = ${NumUtil.toFixed(ca.fmtAgl,2)} = ` + 
 			`${NumUtil.toFixed(ca.oriDgr,2)}° = ${NumUtil.toFixed(ca.fmtDgr,2)}° `);
-		// 特殊处理从旋转的角度跨过第一象限和第四象限的情况
-		//if (side > 0) {
-		//	diffAngle = PI_DOUBLE - diffAngle;
-		//}
-		//if (pointOfLineSide({a: startPoint, b: endPoint}, c) > 0) {
-		//	diffAngle = (PI_DOUBLE - diffAngle);
-		//}
 
 		return {start: startAngle, end: endAngle, diff: diffAngle};
 	}
