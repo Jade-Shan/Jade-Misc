@@ -4,7 +4,7 @@ import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 import { CanvasLine2D, CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
-import { Geo2DUtils, IRay2D, Ray2D } from './geo2d.js';
+import { Geo2DUtils, IRay2D, Line2D, Ray2D } from './geo2d.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -293,9 +293,29 @@ class TestCanvas {
 		this.testAtan2(100,-100);
 	}
 
+	static testLinePointSide() {
+
+		let line1 = new Line2D({ x:20, y:20 }, { x:90, y:90 });
+		Geo2DUtils.checkPointLineSide(line1, {x: 60, y: 50})
+		Geo2DUtils.checkPointLineSide(line1, {x: 50, y: 60})
+
+		let line2 = new Line2D({ x:90, y:20 }, { x:20, y:90 });
+		Geo2DUtils.checkPointLineSide(line2, {x: 70, y: 70})
+		Geo2DUtils.checkPointLineSide(line2, {x: 40, y: 40})
+
+		let line3 = new Line2D({ x:90, y:90 }, { x:20, y:20 });
+		Geo2DUtils.checkPointLineSide(line1, {x: 60, y: 50})
+		Geo2DUtils.checkPointLineSide(line1, {x: 50, y: 60})
+
+		let line4 = new Line2D({ x:20, y:90 }, { x:90, y:20 });
+		Geo2DUtils.checkPointLineSide(line2, {x: 70, y: 70})
+		Geo2DUtils.checkPointLineSide(line2, {x: 40, y: 40})
+	}
+
 	static testCanvas() {
 		this.testTriFun();
 
+		this.testLinePointSide();
 
 		let cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs001")?.getContext("2d");
 		let testPt1 = {x: 50, y: 50, radius: 3, fillStyle: "red"    };
@@ -472,7 +492,7 @@ class TestCanvas {
 			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.b, 1, "lime"));
 			//
 			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
-			let ag2 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
+			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 
 			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, 1, "red");
 			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
@@ -494,7 +514,7 @@ class TestCanvas {
 			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.b, 1, "lime"));
 			//
 			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
-			let ag2 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
+			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 
 			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, 1, "red");
 			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
@@ -519,7 +539,7 @@ class TestCanvas {
 			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.b, 1, "lime"));
 			//
 			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
-			let ag2 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
+			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 
 			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, 1, "red");
 			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
@@ -541,7 +561,7 @@ class TestCanvas {
 			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.b, 1, "lime"));
 			//
 			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
-			let ag2 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
+			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 
 			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, 1, "red");
 			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");

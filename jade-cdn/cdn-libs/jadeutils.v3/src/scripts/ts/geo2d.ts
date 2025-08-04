@@ -270,9 +270,9 @@ export interface IAngle {
 	oriDgr: number;
 	fmtDgr: number;
 
-		// this.cAngle = this.angle < 0 ? Geo2DUtils.PI_DOUBLE + this.angle : this.angle;
-		// let ccg = this.cAngle * 180 / Math.PI;
-		// this.angleStr = ``;
+	// this.cAngle = this.angle < 0 ? Geo2DUtils.PI_DOUBLE + this.angle : this.angle;
+	// let ccg = this.cAngle * 180 / Math.PI;
+	// this.angleStr = ``;
 }
 
 export interface IRevolveOption {
@@ -290,7 +290,13 @@ export namespace Geo2DUtils {
 		let fmtAgl = angle < 0 ? Geo2DUtils.PI_DOUBLE + angle : angle;
 		let oriDgr = angle * 180 / Math.PI;
 		let fmtDgr = fmtAgl * 180 / Math.PI;
-		return {oriAgl: angle, fmtAgl: fmtAgl, oriDgr: oriDgr, fmtDgr: fmtDgr};
+		return { oriAgl: angle, fmtAgl: fmtAgl, oriDgr: oriDgr, fmtDgr: fmtDgr };
+	}
+
+	export function formatAngleStr(angle: number): string {
+		let agl = formatAngle(angle);
+		return `angle: ${NumUtil.toFixed(agl.oriAgl, 3)} = ${NumUtil.toFixed(agl.fmtAgl, 3)} = ` +
+			`${NumUtil.toFixed(agl.oriDgr, 2)}° = ${NumUtil.toFixed(agl.fmtDgr, 2)}°`;
 	}
 
 	/**
@@ -620,32 +626,36 @@ export namespace Geo2DUtils {
 	 * @param end 结束
 	 */
 	export function revolveRayV2(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
-		let d1 = {x: startPoint.x -c.x, y: startPoint.y - c.y};
-		let d2 = {x: endPoint.x -c.x, y: endPoint.y - c.y};
+		let d1 = { x: startPoint.x - c.x, y: startPoint.y - c.y };
+		let d2 = { x: endPoint.x - c.x, y: endPoint.y - c.y };
 		let startAngle = Math.atan2(d1.y, d1.x);
-		let endAngle   = Math.atan2(d2.y, d2.x);
+		let endAngle = Math.atan2(d2.y, d2.x);
 		let diffAngle = endAngle - startAngle;
 
 		// 特殊处理从旋转的角度跨过第一象限和第四象限的情况
-		if (pointOfLineSide({a: startPoint, b: endPoint}, c) > 0) {
+		if (pointOfLineSide({ a: startPoint, b: endPoint }, c) > 0) {
 			diffAngle = (PI_DOUBLE - diffAngle);
 		}
 
-		return {start: startAngle, end: endAngle, diff: diffAngle};
+		return { start: startAngle, end: endAngle, diff: diffAngle };
 	}
 
 	export function revolveRay(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
-		let d1 = {x: startPoint.x -c.x, y: startPoint.y - c.y};
-		let d2 = {x:   endPoint.x -c.x, y:   endPoint.y - c.y};
+		let d1 = { x: startPoint.x - c.x, y: startPoint.y - c.y };
+		let d2 = { x: endPoint.x - c.x, y: endPoint.y - c.y };
 		let startAngle = Math.atan2(d1.y, d1.x);
-		let endAngle   = Math.atan2(d2.y, d2.x);
+		let endAngle = Math.atan2(d2.y, d2.x);
 		let diffAngle = endAngle - startAngle;
-
-		let needRev = false;
 
 		if (d1.x * d2.x < 0 && d1.y * d2.y < 0) {
 			// 跨三个象限
-			needRev = true;
+			if (checkPointLineSide({ a: startPoint, b: endPoint }, c) > 0) {
+				if (d1.y < 0 && d2.y > 0) {
+					diffAngle = -1 * (PI_DOUBLE - diffAngle);
+				} else if (d1.y > 0 && d2.y < 0) {
+					diffAngle = PI_DOUBLE - diffAngle;
+				}
+			}
 		} else if (d1.x < 0 && d2.x < 0) {
 			// 跨第一第四象限
 			if (d1.y < 0 && d2.y > 0) {
@@ -657,14 +667,43 @@ export namespace Geo2DUtils {
 			}
 		}
 		let ca = formatAngle(diffAngle);
-		let side = pointOfLineSide({a: startPoint, b: endPoint}, c);
-			console.log(`need rev:${needRev} side ${NumUtil.toFixed(side, 2)} ` + 
-			`revolv ${NumUtil.toFixed(d1.x,3)}, ${NumUtil.toFixed(d1.y,3)} ` + 
-			`to ${NumUtil.toFixed(d2.x,3)},${NumUtil.toFixed(d2.y,3)} ` + 
-			`angle: ${NumUtil.toFixed(diffAngle, 3)} = ${NumUtil.toFixed(ca.fmtAgl,2)} = ` + 
-			`${NumUtil.toFixed(ca.oriDgr,2)}° = ${NumUtil.toFixed(ca.fmtDgr,2)}° `);
+		let side = checkPointLineSide({ a: startPoint, b: endPoint }, c);
+		console.log(`${(new Date()).getUTCMilliseconds()} 
+=================================================================================	
+		 side ${NumUtil.toFixed(side, 2)} ` +
+			`revolv ${NumUtil.toFixed(d1.x, 3)}, ${NumUtil.toFixed(d1.y, 3)} ` +
+			`to ${NumUtil.toFixed(d2.x, 3)},${NumUtil.toFixed(d2.y, 3)} ` +
+			`angle: ${NumUtil.toFixed(diffAngle, 3)} = ${NumUtil.toFixed(ca.fmtAgl, 2)} = ` +
+			`${NumUtil.toFixed(ca.oriDgr, 2)}° = ${NumUtil.toFixed(ca.fmtDgr, 2)}° 
+=================================================================================	
+			`);
 
-		return {start: startAngle, end: endAngle, diff: diffAngle};
+		return { start: startAngle, end: endAngle, diff: diffAngle };
+	}
+
+	export function checkPointLineSide(line: ILine2D, p: IPoint2D): number {
+		console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
+		let diffAngle = 0;
+		let ll = line.b.y < line.a.y ? { a: line.b, b: line.a } : line;
+		let angle = Math.atan2(ll.b.y - ll.a.y, ll.b.x - ll.a.x);
+		console.log(`line angle: ${formatAngleStr(angle)}`);
+		if (ll.a.y < p.y) {
+			let ac = Math.atan2(p.y - ll.a.y, p.x - ll.a.x);
+			console.log(`point angle: ${formatAngleStr(ac)}`);
+			diffAngle = angle - ac;
+			console.log(`diff angle: ${formatAngleStr(diffAngle)}`);
+		} else if (ll.a.y > p.y) {
+			let n1 = (ll.b.x - ll.a.x) * (ll.b.y - ll.a.y);
+			let n2 = ll.b.y - ll.a.y;
+			let n3 = n1 / n2;
+			let cx = ll.b.x - n3;
+			let c = { x: cx, y: p.y };
+			//
+			let ac = Math.atan2(p.y - c.y, p.x - c.x);
+			diffAngle = angle = ac;
+		}
+		console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
+		return diffAngle;
 	}
 
 }
