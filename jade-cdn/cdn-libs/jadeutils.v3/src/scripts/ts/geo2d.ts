@@ -275,6 +275,12 @@ export interface IAngle {
 		// this.angleStr = ``;
 }
 
+export interface IRevolveOption {
+	start: number;
+	end: number;
+	diff: number;
+}
+
 export namespace Geo2DUtils {
 	export const PI_HALF = Math.PI / 2;
 	export const PI_ONE_HALF = Math.PI + PI_HALF;
@@ -606,14 +612,25 @@ export namespace Geo2DUtils {
 	}
 
 	/**
-	 * 以`c`为圆心，计算以`c`为端点并且经过`from`点的射线旋转到
-	 * `to`这一点的位置后，开始的角度与结束的角度。
+	 * 以`c`为圆心，计算以`c`为端点并且经过`start`点的射线旋转到
+	 * `end`这一点的位置后，开始的角度与结束的角度。
 	 * 
 	 * @param c 圆心
-	 * @param from 开始
-	 * @param to 结束
+	 * @param start 开始
+	 * @param end 结束
 	 */
-	export function revolveRay(c: IPoint2D, from: IPoint2D, to: IPoint2D) {
+	export function revolveRay(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
+		let startAngle = Math.atan2(startPoint.y - c.y, startPoint.x -c.x);
+		let endAngle   = Math.atan2(  endPoint.y - c.y,   endPoint.x -c.x);
+		let diffAngle = endAngle - startAngle;
 
+		// 特殊处理从旋转的角度跨过第一象限和第四象限的情况
+		let {y1, y2} = startPoint.y < endPoint.y ? {y1: startPoint.y , y2: endPoint.y} : {y1: endPoint.y , y2:startPoint. y};
+		if (y1 < c.y && c.y < y2 && pointOfLineSide({a: startPoint, b: endPoint}, c) > 0) {
+			diffAngle = (PI_DOUBLE - diffAngle);
+		}
+
+		return {start: startAngle, end: endAngle, diff: diffAngle};
 	}
+
 }

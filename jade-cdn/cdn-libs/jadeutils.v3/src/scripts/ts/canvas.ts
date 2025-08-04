@@ -1,6 +1,16 @@
-import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, IGeo2D, GeoCurve2D } from './geo2d.js';
+import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, IGeo2D, GeoCurve2D, IRevolveOption } from './geo2d.js';
 
 export namespace CanvasUtils {
+
+	export function drawArc(cvsCtx: CanvasRenderingContext2D, center: IPoint2D, radius: number, revole: IRevolveOption, lineWidth: number, strokeStyle: string) {
+		cvsCtx.save();
+		cvsCtx.strokeStyle = strokeStyle;
+		cvsCtx.lineWidth = lineWidth;
+		cvsCtx.beginPath();
+		cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
+		cvsCtx.stroke();
+		cvsCtx.restore();
+	}
 
 	/**
 	 * 画一条线段
