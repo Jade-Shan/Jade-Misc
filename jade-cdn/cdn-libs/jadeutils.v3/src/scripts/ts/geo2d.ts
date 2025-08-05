@@ -485,64 +485,9 @@ export namespace Geo2DUtils {
 		return new Ray2D(start, mid);
 	}
 
-
-	// /**
-	//  * 计算以`start`为起点，经过`point`的射线
-	//  * 
-	//  * @param start 起点
-	//  * @param mid 经过的点
-	//  * @param quad 点经过的点相对起点所在的象限
-	//  * @returns 返回射线
-	//  */
-	// export function calRayByPointsOld(start: IPoint2D, mid: IPoint2D, quad: number): IRay2D {
-	// 	// 注意三角函数使用时的坐标
-	// 	// 数学上的坐标轴第一象限的原点在左下角
-	// 	// 在Canvas画布上，原点在左上角
-	// 	let dx = start.x - mid.x;
-	// 	let dy = start.y - mid.y;
-	// 	let angle = Math.atan2(dy, dx);
-	// 	let cAngle = 0;
-	// 	if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-	// 		cAngle = angle;
-	// 	} else if (angle < 0) {
-	// 		cAngle = Math.PI * 2 + angle;
-	// 	} else {
-	// 		cAngle = angle;
-	// 	}
-	// 	return { start: start, mid: mid, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
-	// }
-
-
 	export function calVtxDstAngle(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
 		return new Ray2D(start, mid);
 	}
-
-	// /**
-	//  * 计算以`start`为起点，经过`point`的射线
-	//  * 
-	//  * @param start 起点
-	//  * @param mid 经过的点
-	//  * @param quad 点经过的点相对起点所在的象限
-	//  * @returns 返回射线
-	//  */
-	// export function calVtxDstAngleOld(start: IPoint2D, mid: IPoint2D, quad: number): IRay2D {
-	// 	// 注意三角函数使用时的坐标
-	// 	// 数学上的坐标轴第一象限的原点在左下角
-	// 	// 在Canvas画布上，原点在左上角
-	// 	let dx = start.x - mid.x;
-	// 	let dy = start.y - mid.y;
-	// 	let angle = Math.atan2(dy, dx);
-	// 	let cAngle = 0;
-	// 	if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-	// 		cAngle = angle;
-	// 	} else if (angle < 0) {
-	// 		cAngle = Math.PI * 2 + angle;
-	// 	} else {
-	// 		cAngle = angle;
-	// 	}
-	// 	return { start: start, mid: mid, angle: angle, cAngle: cAngle, length: Math.sqrt(dx * dx + dy * dy) };
-	// }
-
 
 	export function filterObstacleRaysNew(rays: Array<IRay2D>): Array<Ray2D> {
 		let results: Array<Ray2D> = [];
@@ -556,7 +501,6 @@ export namespace Geo2DUtils {
 		}
 		return results;
 	}
-
 
 	/**
 	 * 对于一个外部的点，它到指定的图形每个顶点会有对应的多条射线`rays`。
@@ -625,21 +569,6 @@ export namespace Geo2DUtils {
 	 * @param start 开始
 	 * @param end 结束
 	 */
-	export function revolveRayV2(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
-		let d1 = { x: startPoint.x - c.x, y: startPoint.y - c.y };
-		let d2 = { x: endPoint.x - c.x, y: endPoint.y - c.y };
-		let startAngle = Math.atan2(d1.y, d1.x);
-		let endAngle = Math.atan2(d2.y, d2.x);
-		let diffAngle = endAngle - startAngle;
-
-		// 特殊处理从旋转的角度跨过第一象限和第四象限的情况
-		if (pointOfLineSide({ a: startPoint, b: endPoint }, c) > 0) {
-			diffAngle = (PI_DOUBLE - diffAngle);
-		}
-
-		return { start: startAngle, end: endAngle, diff: diffAngle };
-	}
-
 	export function revolveRay(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
 		let d1 = { x: startPoint.x - c.x, y: startPoint.y - c.y };
 		let d2 = { x: endPoint.x - c.x, y: endPoint.y - c.y };
@@ -670,30 +599,30 @@ export namespace Geo2DUtils {
 		}
 		let ca = formatAngle(diffAngle);
 		let side = checkPointLineSide({ a: startPoint, b: endPoint }, c);
-		console.log(`${(new Date()).getUTCMilliseconds()} 
-=================================================================================	
-		 side ${NumUtil.toFixed(side, 2)} ` +
-			`revolv ${NumUtil.toFixed(d1.x, 3)}, ${NumUtil.toFixed(d1.y, 3)} ` +
-			`to ${NumUtil.toFixed(d2.x, 3)},${NumUtil.toFixed(d2.y, 3)} ` +
-			`angle: ${NumUtil.toFixed(diffAngle, 3)} = ${NumUtil.toFixed(ca.fmtAgl, 2)} = ` +
-			`${NumUtil.toFixed(ca.oriDgr, 2)}° = ${NumUtil.toFixed(ca.fmtDgr, 2)}° 
-=================================================================================	
-			`);
+//		console.log(`${(new Date()).getUTCMilliseconds()} 
+//=================================================================================	
+//		 side ${NumUtil.toFixed(side, 2)} ` +
+//			`revolv ${NumUtil.toFixed(d1.x, 3)}, ${NumUtil.toFixed(d1.y, 3)} ` +
+//			`to ${NumUtil.toFixed(d2.x, 3)},${NumUtil.toFixed(d2.y, 3)} ` +
+//			`angle: ${NumUtil.toFixed(diffAngle, 3)} = ${NumUtil.toFixed(ca.fmtAgl, 2)} = ` +
+//			`${NumUtil.toFixed(ca.oriDgr, 2)}° = ${NumUtil.toFixed(ca.fmtDgr, 2)}° 
+//=================================================================================	
+//			`);
 
 		return { start: startAngle, end: endAngle, diff: diffAngle };
 	}
 
 	export function checkPointLineSide(line: ILine2D, p: IPoint2D): number {
-		console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
+		//console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
 		let diffAngle = 0;
 		let ll = line.b.y < line.a.y ? { a: line.b, b: line.a } : line;
 		let angle = Math.atan2(ll.b.y - ll.a.y, ll.b.x - ll.a.x);
-		console.log(`line angle: ${formatAngleStr(angle)}`);
+		//console.log(`line angle: ${formatAngleStr(angle)}`);
 		if (ll.a.y < p.y) {
 			let ac = Math.atan2(p.y - ll.a.y, p.x - ll.a.x);
-			console.log(`point angle: ${formatAngleStr(ac)}`);
+			//console.log(`point angle: ${formatAngleStr(ac)}`);
 			diffAngle = angle - ac;
-			console.log(`diff angle: ${formatAngleStr(diffAngle)}`);
+			//console.log(`diff angle: ${formatAngleStr(diffAngle)}`);
 		} else if (ll.a.y > p.y) {
 			let n1 = (ll.b.x - ll.a.x) * (ll.b.y - ll.a.y);
 			let n2 = ll.b.y - ll.a.y;
@@ -704,7 +633,7 @@ export namespace Geo2DUtils {
 			let ac = Math.atan2(p.y - c.y, p.x - c.x);
 			diffAngle = angle = ac;
 		}
-		console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
+		//console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
 		return diffAngle;
 	}
 
