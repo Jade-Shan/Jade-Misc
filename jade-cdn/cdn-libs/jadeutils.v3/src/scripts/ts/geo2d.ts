@@ -20,16 +20,18 @@ export interface GeoShape2D extends IGeo2D {
 	 */
 	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number }
 
-	/**
-	 * 对于一个外部的点`(x,y)`，返回这个点到图形近的顶占的射线
-	 * 
-	 * @param x 外部点的坐标x
-	 * @param y 外部点的坐标y
-	 * @param length 射线最大的长度
-	 * 
-	 * @returns 点到所有顶点的射线
-	 */
-	getVertexRaysFrom(x: number, y: number): Array<Ray2D>
+	///**
+	// * 对于一个外部的点`(x,y)`，返回这个点到图形近的顶占的射线
+	// * 
+	// * @param x 外部点的坐标x
+	// * @param y 外部点的坐标y
+	// * @param length 射线最大的长度
+	// * 
+	// * @returns 点到所有顶点的射线
+	// */
+	//getVertexRaysFrom(x: number, y: number): Array<Ray2D>
+
+	getVertexesFrom(x: number, y: number): Array<Point2D>;
 
 }
 
@@ -71,6 +73,8 @@ export class Point2D implements GeoCurve2D, IPoint2D {
 	 */
 	getVertex(): Array<Point2D> { return [this]; }
 
+	getVertexesFrom(x: number, y: number): Array<Point2D> { return [this]; }
+
 	/**
 	 * 对于一个外部的点`(x,y)`，返回这个点到图形近的顶占和距离
 	 * 
@@ -83,20 +87,20 @@ export class Point2D implements GeoCurve2D, IPoint2D {
 		return { vertex: this.getCenter(), distance: n };
 	}
 
-	/**
-	 * 对于一个外部的点`(x,y)`，返回这个点到图形近的顶占的射线
-	 * 
-	 * @param x 外部点的坐标x
-	 * @param y 外部点的坐标y
-	 * @param length 射线最大的长度
-	 * 
-	 * @returns 点到所有顶点的射线
-	 */
-	getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
-		let point = { x: x, y: y };
-		let quad = Geo2DUtils.quadOfPoint({ x: this.x - x, y: this.y - y });
-		return [Geo2DUtils.calVtxDstAngle(point, this, quad)];
-	}
+	///**
+	// * 对于一个外部的点`(x,y)`，返回这个点到图形近的顶占的射线
+	// * 
+	// * @param x 外部点的坐标x
+	// * @param y 外部点的坐标y
+	// * @param length 射线最大的长度
+	// * 
+	// * @returns 点到所有顶点的射线
+	// */
+	//getVertexRaysFrom(x: number, y: number): Array<{vertex:IPoint2D, ray: Ray2D}> {
+	//	let point = { x: x, y: y };
+	//	let quad = Geo2DUtils.quadOfPoint({ x: this.x - x, y: this.y - y });
+	//	return [Geo2DUtils.calVtxDstAngle(point, this, quad)];
+	//}
 
 }
 
@@ -118,17 +122,19 @@ export class Line2D implements GeoPolygon2D, ILine2D {
 
 	getVertex(): Array<Point2D> { return [this.a, this.b]; }
 
+	getVertexesFrom(x: number, y: number): Array<Point2D> { return [this.a, this.b]; }
+
 	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number } {
 		let l1 = Geo2DUtils.distanceP2P({ x: this.a.x, y: this.a.y }, { x: x, y: y });
 		let l2 = Geo2DUtils.distanceP2P({ x: this.b.x, y: this.b.y }, { x: x, y: y });
 		return l1 < l2 ? { vertex: this.a, distance: l1 } : { vertex: this.b, distance: l2 };
 	}
 
-	getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
-		let point = { x: x, y: y };
-		let quad = Geo2DUtils.quadOfLine({ a: { x: this.a.x - x, y: this.a.y - y }, b: { x: this.b.x - x, y: this.b.y - y } });
-		return [Geo2DUtils.calVtxDstAngle(point, this.a, quad), Geo2DUtils.calVtxDstAngle(point, this.b, quad)];
-	}
+	//getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
+	//	let point = { x: x, y: y };
+	//	let quad = Geo2DUtils.quadOfLine({ a: { x: this.a.x - x, y: this.a.y - y }, b: { x: this.b.x - x, y: this.b.y - y } });
+	//	return [Geo2DUtils.calVtxDstAngle(point, this.a, quad), Geo2DUtils.calVtxDstAngle(point, this.b, quad)];
+	//}
 
 }
 
@@ -169,14 +175,16 @@ export class Ray2D implements GeoPolygon2D, IRay2D {
 
 	getVertex(): Array<Point2D> { return [this.center]; }
 
+	getVertexesFrom(x: number, y: number): Array<Point2D> { return [this.center]; }
+
 	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number, } {
 		let n = Geo2DUtils.distanceP2P(this.center, { x: x, y: y });
 		return { vertex: this.center, distance: n };
 	}
 
-	getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
-		return [new Ray2D({ x: x, y: y }, this.center)];
-	}
+	//getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
+	//	return [new Ray2D({ x: x, y: y }, this.center)];
+	//}
 
 }
 
@@ -213,9 +221,9 @@ export class Rectangle2D implements GeoPolygon2D, IRectangle2D {
 
 	getCenter() { return this.center; }
 
-	getVertex(): Array<Point2D> {
-		return this.vertexs;
-	}
+	getVertex(): Array<Point2D> { return this.vertexs; }
+
+	getVertexesFrom(x: number, y: number): Array<Point2D> { return this.vertexs; }
 
 	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number } {
 		let pt = this.vertexs[0];
@@ -230,18 +238,18 @@ export class Rectangle2D implements GeoPolygon2D, IRectangle2D {
 		return { vertex: pt, distance: md };
 	}
 
-	getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
-		let point = { x: x, y: y };
-		let quad = 0b0000;
-		quad = quad | Geo2DUtils.quadOfLine({ a: { x: this.vertexs[0].x - x, y: this.vertexs[0].y - y }, b: { x: this.vertexs[1].x - x, y: this.vertexs[1].y - y } });
-		quad = quad | Geo2DUtils.quadOfLine({ a: { x: this.vertexs[1].x - x, y: this.vertexs[1].y - y }, b: { x: this.vertexs[2].x - x, y: this.vertexs[2].y - y } });
-		quad = quad | Geo2DUtils.quadOfLine({ a: { x: this.vertexs[2].x - x, y: this.vertexs[2].y - y }, b: { x: this.vertexs[3].x - x, y: this.vertexs[3].y - y } });
-		return [ //
-			Geo2DUtils.calVtxDstAngle(point, this.vertexs[0], quad),
-			Geo2DUtils.calVtxDstAngle(point, this.vertexs[1], quad),
-			Geo2DUtils.calVtxDstAngle(point, this.vertexs[2], quad),
-			Geo2DUtils.calVtxDstAngle(point, this.vertexs[3], quad)];
-	}
+	//getVertexRaysFrom(x: number, y: number): Array<Ray2D> {
+	//	let point = { x: x, y: y };
+	//	let quad = 0b0000;
+	//	quad = quad | Geo2DUtils.quadOfLine({ a: { x: this.vertexs[0].x - x, y: this.vertexs[0].y - y }, b: { x: this.vertexs[1].x - x, y: this.vertexs[1].y - y } });
+	//	quad = quad | Geo2DUtils.quadOfLine({ a: { x: this.vertexs[1].x - x, y: this.vertexs[1].y - y }, b: { x: this.vertexs[2].x - x, y: this.vertexs[2].y - y } });
+	//	quad = quad | Geo2DUtils.quadOfLine({ a: { x: this.vertexs[2].x - x, y: this.vertexs[2].y - y }, b: { x: this.vertexs[3].x - x, y: this.vertexs[3].y - y } });
+	//	return [ //
+	//		Geo2DUtils.calVtxDstAngle(point, this.vertexs[0], quad),
+	//		Geo2DUtils.calVtxDstAngle(point, this.vertexs[1], quad),
+	//		Geo2DUtils.calVtxDstAngle(point, this.vertexs[2], quad),
+	//		Geo2DUtils.calVtxDstAngle(point, this.vertexs[3], quad)];
+	//}
 
 }
 
@@ -485,22 +493,33 @@ export namespace Geo2DUtils {
 		return new Ray2D(start, mid);
 	}
 
-	export function calVtxDstAngle(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
-		return new Ray2D(start, mid);
-	}
-
-	export function filterObstacleRaysNew(rays: Array<IRay2D>): Array<Ray2D> {
-		let results: Array<Ray2D> = [];
-		// 找到角度最大的点与最小的点
-		let min = rays[0];
-		let max = rays[0];
-		for (let i = 1; i < rays.length; i++) {
-			let curr = rays[i];
-			if (curr.cAngle < min.cAngle) { min = curr; }
-			if (curr.cAngle > max.cAngle) { max = curr }
+	export function genVertexRaysFrom(x: number, y: number, shape: GeoShape2D, length?: number): Array<{ vertex: Point2D, ray: Ray2D }> {
+		let results: Array<{ vertex: Point2D, ray: Ray2D }> = [];
+		let vertexes = shape.getVertexesFrom(x, y);
+		for (let i = 0; i < vertexes.length; i++) {
+			let ray = new Ray2D({ x: x, y: y }, vertexes[i]);
+			ray = length ? setRayLength(ray, length) : ray;
+			results.push({ vertex: vertexes[i], ray: ray });
 		}
 		return results;
 	}
+
+	//export function calVtxDstAngle(start: IPoint2D, mid: IPoint2D, quad: number): Ray2D {
+	//	return new Ray2D(start, mid);
+	//}
+
+	//export function filterObstacleRaysNew(rays: Array<IRay2D>): Array<Ray2D> {
+	//	let results: Array<Ray2D> = [];
+	//	// 找到角度最大的点与最小的点
+	//	let min = rays[0];
+	//	let max = rays[0];
+	//	for (let i = 1; i < rays.length; i++) {
+	//		let curr = rays[i];
+	//		if (curr.cAngle < min.cAngle) { min = curr; }
+	//		if (curr.cAngle > max.cAngle) { max = curr }
+	//	}
+	//	return results;
+	//}
 
 	/**
 	 * 对于一个外部的点，它到指定的图形每个顶点会有对应的多条射线`rays`。
@@ -531,35 +550,35 @@ export namespace Geo2DUtils {
 		return results;
 	}
 
-	/**
-	 * 两条点到图形的切线，用线段表示
-	 * 
-	 * @param x 点的坐标x
-	 * @param y 点的坐标y
-	 * @param length 线段的长度
-	 * @param rays 多条射线
-	 * @returns 返回两条切线的线段
-	 */
-	export function genTengentRays(x: number, y: number, geo2D: GeoShape2D, length: number): Array<Ray2D> {
-		// 注意三角函数使用时的坐标
-		// 数学上的坐标轴第一象限的原点在左下角
-		// 在Canvas画布上，原点在左上角
-		let rayArr: Array<Ray2D> = geo2D.getVertexRaysFrom(x, y);
-		let rays = filterObstacleRays(rayArr);
-		let result: Array<Ray2D> = [];
+	///**
+	// * 两条点到图形的切线，用线段表示
+	// * 
+	// * @param x 点的坐标x
+	// * @param y 点的坐标y
+	// * @param length 线段的长度
+	// * @param rays 多条射线
+	// * @returns 返回两条切线的线段
+	// */
+	//export function genTengentRays(x: number, y: number, geo2D: GeoShape2D, length: number): Array<Ray2D> {
+	//	// 注意三角函数使用时的坐标
+	//	// 数学上的坐标轴第一象限的原点在左下角
+	//	// 在Canvas画布上，原点在左上角
+	//	let rayArr: Array<Ray2D> = geo2D.getVertexRaysFrom(x, y);
+	//	let rays = filterObstacleRays(rayArr);
+	//	let result: Array<Ray2D> = [];
 
-		if (rays && rays.length > 0) {
-			for (let i = 0; i < rays.length; i++) {
-				result.push(Geo2DUtils.setRayLength(rays[i], length));
-			}
-		}
-		// for (let i = 0; i < rays.length; i++) {
-		// 	let endX = x + Math.round(length * Math.cos(rays[i].angle));
-		// 	let endY = y + Math.round(length * Math.sin(rays[i].angle));
-		// 	result.push(new Line2D({ x: x, y: y }, { x: endX, y: endY }));
-		// }
-		return result;
-	}
+	//	if (rays && rays.length > 0) {
+	//		for (let i = 0; i < rays.length; i++) {
+	//			result.push(Geo2DUtils.setRayLength(rays[i], length));
+	//		}
+	//	}
+	//	// for (let i = 0; i < rays.length; i++) {
+	//	// 	let endX = x + Math.round(length * Math.cos(rays[i].angle));
+	//	// 	let endY = y + Math.round(length * Math.sin(rays[i].angle));
+	//	// 	result.push(new Line2D({ x: x, y: y }, { x: endX, y: endY }));
+	//	// }
+	//	return result;
+	//}
 
 	/**
 	 * 以`c`为圆心，计算以`c`为端点并且经过`start`点的射线旋转到

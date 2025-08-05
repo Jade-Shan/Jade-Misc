@@ -4,7 +4,7 @@ import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 import { CanvasLine2D, CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
-import { Geo2DUtils, IRay2D, Line2D, Ray2D } from './geo2d.js';
+import { Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -353,9 +353,43 @@ class TestCanvas {
 			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay3.start, testRay3.mid, 1, "blue"));
 			CanvasUtils.drawRay(cvsCtx, new CanvasRay2D(testRay4.start, testRay4.mid, 1, "gray"));
 		}
+
+		//
+		let rect01 = new CanvasRectangle2D( 50,  50,  60, 120, 3, "red" , "");
+		let rect02 = new CanvasRectangle2D(130,  50, 120,  60, 3, "lime", "");
+		let rect03 = new CanvasRectangle2D(190, 130,  60, 120, 3, "blue", "");
+		let rect04 = new CanvasRectangle2D( 50, 190, 120,  60, 3, "gray", "");
 		//
 		console.log("========================== test cvs 004 ======================")
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs004")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawRectangle(cvsCtx, rect01);
+			CanvasUtils.drawRectangle(cvsCtx, rect02);
+			CanvasUtils.drawRectangle(cvsCtx, rect03);
+			CanvasUtils.drawRectangle(cvsCtx, rect04);
+		}
+
+		//
+		console.log("========================== test cvs 005 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs005")?.getContext("2d");
+		if (null != cvsCtx) {
+			CanvasUtils.drawRectangle(cvsCtx, rect01);
+			CanvasUtils.drawRectangle(cvsCtx, rect02);
+			CanvasUtils.drawRectangle(cvsCtx, rect03);
+			CanvasUtils.drawRectangle(cvsCtx, rect04);
+			//
+			CanvasUtils.drawPoint(cvsCtx, center);
+			//
+			CanvasUtils.drawShapeVertexes(cvsCtx, rect01, 3, "blue"   );
+			CanvasUtils.drawShapeVertexes(cvsCtx, rect02, 3, "gray"   );
+			CanvasUtils.drawShapeVertexes(cvsCtx, rect03, 3, "fuchsia");
+			CanvasUtils.drawShapeVertexes(cvsCtx, rect04, 3, "red"    );
+
+		}
+
+		//
+		console.log("========================== test cvs 006 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs006")?.getContext("2d");
 		if (null != cvsCtx) {
 			let testLine01 = new CanvasLine2D({x: 30, y: 60}, {x: 60, y: 30}, 1, "red");
 			let testLine02 = new CanvasLine2D({x:240, y: 30}, {x:270, y: 60}, 1, "lime");
@@ -385,8 +419,8 @@ class TestCanvas {
 			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, 1, "gray");
 		}
 		//
-		console.log("========================== test cvs 005 ======================")
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs005")?.getContext("2d");
+		console.log("========================== test cvs 007 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs007")?.getContext("2d");
 		if (null != cvsCtx) {
 			let testLine01 = new CanvasLine2D({x: 60, y: 30}, {x: 30, y: 60}, 1, "red");
 			let testLine02 = new CanvasLine2D({x:270, y: 60}, {x:240, y: 30}, 1, "lime");
@@ -416,8 +450,8 @@ class TestCanvas {
 			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, 1, "gray");
 		}
 		//
-		console.log("========================== test cvs 006 ======================")
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs006")?.getContext("2d");
+		console.log("========================== test cvs 008 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs008")?.getContext("2d");
 		if (null != cvsCtx) {
 			let testLine01 = new CanvasLine2D({x: 20, y: 10}, {x:280, y: 10},  1, "red");
 			let testLine02 = new CanvasLine2D({x:290, y: 20}, {x:290, y:280},  1, "lime");
@@ -447,8 +481,8 @@ class TestCanvas {
 			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, 1, "gray");
 		}
 		//
-		console.log("========================== test cvs 007 ======================")
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs007")?.getContext("2d");
+		console.log("========================== test cvs 009 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs009")?.getContext("2d");
 		if (null != cvsCtx) {
 			let testLine01 = new CanvasLine2D({x:280, y: 10}, {x: 20, y: 10},  1, "red");
 			let testLine02 = new CanvasLine2D({x:290, y:280}, {x:290, y: 20},  1, "lime");
@@ -479,8 +513,8 @@ class TestCanvas {
 		}
 
 		//
-		console.log("========================== test cvs 008 ======================")
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs008")?.getContext("2d");
+		console.log("========================== test cvs 010 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs010")?.getContext("2d");
 		if (null != cvsCtx) {
 			let p1 = {x:170, y:130, radius: 3, fillStyle: "red"};
 			let p2 = {x:130, y:170, radius: 3, fillStyle: "blue"};
@@ -502,8 +536,8 @@ class TestCanvas {
 			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
 		}
 		//
-		console.log("========================== test cvs 009 ======================")
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs009")?.getContext("2d");
+		console.log("========================== test cvs 011 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs011")?.getContext("2d");
 		if (null != cvsCtx) {
 			let p1 = {x:130, y:130, radius: 3, fillStyle: "red"};
 			let p2 = {x:170, y:170, radius: 3, fillStyle: "blue"};
@@ -526,8 +560,8 @@ class TestCanvas {
 		}
 
 		//
-		console.log("========================== test cvs 010 ======================")
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs010")?.getContext("2d");
+		console.log("========================== test cvs 012 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs012")?.getContext("2d");
 		if (null != cvsCtx) {
 			let p1 = {x:170, y:130, radius: 3, fillStyle: "red"};
 			let p2 = {x:130, y:170, radius: 3, fillStyle: "blue"};
@@ -550,8 +584,8 @@ class TestCanvas {
 		}
 
 		//
-		console.log("========================== test cvs 011 ======================")
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs011")?.getContext("2d");
+		console.log("========================== test cvs 013 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs013")?.getContext("2d");
 		if (null != cvsCtx) {
 			let p1 = {x:130, y:130, radius: 3, fillStyle: "red"};
 			let p2 = {x:170, y:170, radius: 3, fillStyle: "blue"};
@@ -574,37 +608,7 @@ class TestCanvas {
 		}
 
 		//
-		let rect01 = new CanvasRectangle2D( 50,  50,  60, 120, 3, "red" , "");
-		let rect02 = new CanvasRectangle2D(130,  50, 120,  60, 3, "lime", "");
-		let rect03 = new CanvasRectangle2D(190, 130,  60, 120, 3, "blue", "");
-		let rect04 = new CanvasRectangle2D( 50, 190, 120,  60, 3, "gray", "");
-		//
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs012")?.getContext("2d");
-		if (null != cvsCtx) {
-			CanvasUtils.drawRectangle(cvsCtx, rect01);
-			CanvasUtils.drawRectangle(cvsCtx, rect02);
-			CanvasUtils.drawRectangle(cvsCtx, rect03);
-			CanvasUtils.drawRectangle(cvsCtx, rect04);
-		}
-
-		//
-		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs013")?.getContext("2d");
-		if (null != cvsCtx) {
-			CanvasUtils.drawRectangle(cvsCtx, rect01);
-			CanvasUtils.drawRectangle(cvsCtx, rect02);
-			CanvasUtils.drawRectangle(cvsCtx, rect03);
-			CanvasUtils.drawRectangle(cvsCtx, rect04);
-			//
-			CanvasUtils.drawPoint(cvsCtx, center);
-			//
-			CanvasUtils.drawShapeVertexes(cvsCtx, rect01, 3, "blue"   );
-			CanvasUtils.drawShapeVertexes(cvsCtx, rect02, 3, "gray"   );
-			CanvasUtils.drawShapeVertexes(cvsCtx, rect03, 3, "fuchsia");
-			CanvasUtils.drawShapeVertexes(cvsCtx, rect04, 3, "red"    );
-
-		}
-
-		//
+		console.log("========================== test cvs 014 ======================")
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs014")?.getContext("2d");
 		if (null != cvsCtx) {
 			CanvasUtils.drawRectangle(cvsCtx, rect01);
@@ -614,9 +618,12 @@ class TestCanvas {
 			//
 			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect01, 150, 1, "red" );
 			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect03, 150, 1, "blue");
+			//let vtxRays1 = Geo2DUtils.genVertexRaysFrom(center.x, center.y, rect01, 150);
+			//let vtxRays2 = Geo2DUtils.genVertexRaysFrom(center.x, center.y, rect03, 150);
 		}
 
 		//
+		console.log("========================== test cvs 015 ======================")
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs015")?.getContext("2d");
 		if (null != cvsCtx) {
 			CanvasUtils.drawRectangle(cvsCtx, rect02);
@@ -626,9 +633,12 @@ class TestCanvas {
 			//
 			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect02, 150, 1, "lime");
 			CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect04, 150, 1, "gray");
+			//let vtxRays1 = Geo2DUtils.genVertexRaysFrom(center.x, center.y, rect02, 150);
+			//let vtxRays2 = Geo2DUtils.genVertexRaysFrom(center.x, center.y, rect04, 150);
 		}
 
 		//
+		console.log("========================== test cvs 016 ======================")
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs016")?.getContext("2d");
 		if (null != cvsCtx) {
 			CanvasUtils.drawRectangle(cvsCtx, rect01);
@@ -636,11 +646,12 @@ class TestCanvas {
 			//
 			CanvasUtils.drawPoint(cvsCtx, center);
 			//
-			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect01, 150, 1, "red" );
-			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect03, 150, 1, "blue");
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect01, 150, {lineWidth: 1,  strokeStyle:"red" ,fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect03, 150, {lineWidth: 1,  strokeStyle:"blue",fillStyle: "rgba(100,100,100,0.5)"});
 		}
 
 		//
+		console.log("========================== test cvs 017 ======================")
 		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs017")?.getContext("2d");
 		if (null != cvsCtx) {
 			CanvasUtils.drawRectangle(cvsCtx, rect02);
@@ -648,9 +659,36 @@ class TestCanvas {
 			//
 			CanvasUtils.drawPoint(cvsCtx, center);
 			//
-			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect02, 150, 1, "lime");
-			CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect04, 150, 1, "gray");
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect02, 150, {lineWidth: 1,  strokeStyle:"lime",fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect04, 150, {lineWidth: 1,  strokeStyle:"gray",fillStyle: "rgba(100,100,100,0.5)"});
 		}
+
+		////
+		//console.log("========================== test cvs 016 ======================")
+		//cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs016")?.getContext("2d");
+		//if (null != cvsCtx) {
+		//	CanvasUtils.drawRectangle(cvsCtx, rect01);
+		//	CanvasUtils.drawRectangle(cvsCtx, rect03);
+		//	//
+		//	CanvasUtils.drawPoint(cvsCtx, center);
+		//	//
+		//	CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect01, 150, 1, "red" );
+		//	CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect03, 150, 1, "blue");
+		//}
+
+		////
+		//console.log("========================== test cvs 017 ======================")
+		//cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs017")?.getContext("2d");
+		//if (null != cvsCtx) {
+		//	CanvasUtils.drawRectangle(cvsCtx, rect02);
+		//	CanvasUtils.drawRectangle(cvsCtx, rect04);
+		//	//
+		//	CanvasUtils.drawPoint(cvsCtx, center);
+		//	//
+		//	CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect02, 150, 1, "lime");
+		//	CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect04, 150, 1, "gray");
+		//}
+
 	}
 
 
