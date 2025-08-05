@@ -106,12 +106,12 @@ export namespace CanvasUtils {
 		drawPoints(cvsCtx, vtxs);
 	}
 
-	export function drawVertexRaysFrom(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: GeoPolygon2D, extendLength: number, lineWidth: number, strokeStyle: string) {
+	export function drawVertexRaysFrom(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: GeoPolygon2D, length: number, lineWidth: number, strokeStyle: string) {
 		let rays: Array<IRay2D> = shape.getVertexRaysFrom(x, y);
 		if (rays && rays.length > 0) {
 			for (let i = 0; i < rays.length; i++) {
 				// let ray = rays[i];
-				let ray = Geo2DUtils.extendRayLength(rays[i], extendLength);
+				let ray = Geo2DUtils.setRayLength(rays[i], length);
 				drawLine(cvsCtx, { a: { x: ray.start.x, y: ray.start.y }, b: { x: ray.mid.x, y: ray.mid.y }, lineWidth, strokeStyle });
 			}
 		}

@@ -473,7 +473,7 @@ export namespace Geo2DUtils {
 		return quad as QuadPos;
 	}
 
-	export function extendRayLength(ray: IRay2D, length: number): Ray2D {
+	export function setRayLength(ray: IRay2D, length: number): Ray2D {
 		let x = Math.cos(ray.angle + Math.PI) * length + ray.start.x;
 		let y = Math.sin(ray.angle + Math.PI) * length + ray.start.y;
 		// { start: ray.start, mid: {x:x,y:y}, // 
@@ -596,7 +596,7 @@ export namespace Geo2DUtils {
 	 * @param rays 多条射线
 	 * @returns 返回两条切线的线段
 	 */
-	export function genTengentRays(x: number, y: number, geo2D: GeoShape2D, extendLength: number): Array<Ray2D> {
+	export function genTengentRays(x: number, y: number, geo2D: GeoShape2D, length: number): Array<Ray2D> {
 		// 注意三角函数使用时的坐标
 		// 数学上的坐标轴第一象限的原点在左下角
 		// 在Canvas画布上，原点在左上角
@@ -606,7 +606,7 @@ export namespace Geo2DUtils {
 
 		if (rays && rays.length > 0) {
 			for (let i = 0; i < rays.length; i++) {
-				result.push(Geo2DUtils.extendRayLength(rays[i], extendLength));
+				result.push(Geo2DUtils.setRayLength(rays[i], length));
 			}
 		}
 		// for (let i = 0; i < rays.length; i++) {
