@@ -7,6 +7,7 @@ export namespace CanvasUtils {
 		cvsCtx.strokeStyle = strokeStyle;
 		cvsCtx.lineWidth = lineWidth;
 		cvsCtx.beginPath();
+		// 因为Canvas的原点坐标是在左上角，所以顺时钟和逆时钟的方向和笛卡尔坐标系是反的
 		cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
 		cvsCtx.stroke();
 		cvsCtx.restore();
