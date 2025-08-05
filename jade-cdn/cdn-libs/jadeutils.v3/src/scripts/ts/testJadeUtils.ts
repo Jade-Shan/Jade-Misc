@@ -525,52 +525,53 @@ class TestCanvas {
 			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
 		}
 
+		//
+		console.log("========================== test cvs 010 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs010")?.getContext("2d");
+		if (null != cvsCtx) {
+			let p1 = {x:170, y:130, radius: 3, fillStyle: "red"};
+			let p2 = {x:130, y:170, radius: 3, fillStyle: "blue"};
+			let testLine01 = new CanvasLine2D({x:220, y: 220}, {x: 80, y: 80},  1, "gray");
+			//
+			CanvasUtils.drawLines(cvsCtx, [testLine01]);
+			CanvasUtils.drawPoint(cvsCtx, p1);
+			CanvasUtils.drawPoint(cvsCtx, p2);
+			// TODO:
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p1, testLine01.a, 1, "red" ));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p1, testLine01.b, 1, "red" ));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.a, 1, "lime"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.b, 1, "lime"));
+			//
+			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
+			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 
+			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, 1, "red");
+			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
+		}
 
-		////
-		//cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs010")?.getContext("2d");
-		//if (null != cvsCtx) {
-		//	let p1 = {x:170, y:130, radius: 3, fillStyle: "red"};
-		//	let p2 = {x:130, y:170, radius: 3, fillStyle: "blue"};
-		//	let testLine01 = new CanvasLine2D({x:220, y: 220}, {x: 80, y: 80},  1, "gray");
-
-		//	CanvasUtils.drawLines(cvsCtx, [testLine01]);
-		//	CanvasUtils.drawPoint(cvsCtx, p1);
-		//	CanvasUtils.drawPoint(cvsCtx, p2);
-		//	// TODO:
-		//	CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p1, testLine01.a, 1, "red" ));
-		//	CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p1, testLine01.b, 1, "red" ));
-		//	CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.a, 1, "lime"));
-		//	CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.b, 1, "lime"));
-		//	//
-		//	let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
-		//	let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
-
-		//	CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, 1, "red");
-		//	CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
-		//}
-		////
-		//cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs011")?.getContext("2d");
-		//if (null != cvsCtx) {
-		//	let p1 = {x:130, y:130, radius: 3, fillStyle: "red"};
-		//	let p2 = {x:170, y:170, radius: 3, fillStyle: "blue"};
-		//	let testLine01 = new CanvasLine2D({x:80, y: 220}, {x: 220, y: 80},  1, "gray");
-
-		//	CanvasUtils.drawLines(cvsCtx, [testLine01]);
-		//	CanvasUtils.drawPoint(cvsCtx, p1);
-		//	CanvasUtils.drawPoint(cvsCtx, p2);
-		//	// TODO:
-		//	CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p1, testLine01.a, 1, "red" ));
-		//	CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p1, testLine01.b, 1, "red" ));
-		//	CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.a, 1, "lime"));
-		//	CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.b, 1, "lime"));
-		//	//
-		//	let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
-		//	let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
-
-		//	CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, 1, "red");
-		//	CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
-		//}
+		//
+		console.log("========================== test cvs 011 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs011")?.getContext("2d");
+		if (null != cvsCtx) {
+			let p1 = {x:130, y:130, radius: 3, fillStyle: "red"};
+			let p2 = {x:170, y:170, radius: 3, fillStyle: "blue"};
+			let testLine01 = new CanvasLine2D({x:80, y: 220}, {x: 220, y: 80},  1, "gray");
+			// 
+			CanvasUtils.drawLines(cvsCtx, [testLine01]);
+			CanvasUtils.drawPoint(cvsCtx, p1);
+			CanvasUtils.drawPoint(cvsCtx, p2);
+			//
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p1, testLine01.a, 1, "red" ));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p1, testLine01.b, 1, "red" ));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.a, 1, "lime"));
+			CanvasUtils.drawLine(cvsCtx, new CanvasLine2D(p2, testLine01.b, 1, "lime"));
+			//
+			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
+			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
+			//
+			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, 1, "red");
+			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, 1, "lime");
+		}
 
 
 
