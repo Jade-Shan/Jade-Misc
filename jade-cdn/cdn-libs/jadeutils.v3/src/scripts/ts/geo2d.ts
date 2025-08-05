@@ -651,19 +651,21 @@ export namespace Geo2DUtils {
 			// 跨三个象限
 			if (checkPointLineSide({ a: startPoint, b: endPoint }, c) > 0) {
 				if (d1.y < 0 && d2.y > 0) {
-					diffAngle = -1 * (PI_DOUBLE - diffAngle);
+				// 从三四象限到一二象限
+				diffAngle = diffAngle - PI_DOUBLE;
 				} else if (d1.y > 0 && d2.y < 0) {
-					diffAngle = PI_DOUBLE - diffAngle;
+				// 从一二象限三四象限
+				diffAngle =  (-1 * diffAngle) + PI_DOUBLE;
 				}
 			}
 		} else if (d1.x < 0 && d2.x < 0) {
 			// 跨第一第四象限
 			if (d1.y < 0 && d2.y > 0) {
 				// 从第四象限到第一象限
-				diffAngle = -1 * (PI_DOUBLE - diffAngle);
+				diffAngle = diffAngle - PI_DOUBLE;
 			} else if (d1.y > 0 && d2.y < 0) {
 				// 从第一象限第四象限
-				diffAngle = PI_DOUBLE - diffAngle;
+				diffAngle =  diffAngle + PI_DOUBLE;
 			}
 		}
 		let ca = formatAngle(diffAngle);
