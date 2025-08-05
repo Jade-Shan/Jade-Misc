@@ -10,15 +10,25 @@ export interface ICanvasStyle {
 
 export namespace CanvasUtils {
 
-	export function drawArc(cvsCtx: CanvasRenderingContext2D, center: IPoint2D, radius: number, revole: IRevolveOption, lineWidth: number, strokeStyle: string) {
+	function drawWithCanvas(cvsCtx: CanvasRenderingContext2D, func: (cvs: CanvasRenderingContext2D) => void, style?: ICanvasStyle) {
 		cvsCtx.save();
-		cvsCtx.strokeStyle = strokeStyle;
-		cvsCtx.lineWidth = lineWidth;
+		if (style?.lineWidth) { cvsCtx.lineWidth = style.lineWidth; }
+		if (style?.strokeStyle) { cvsCtx.strokeStyle = style.strokeStyle; }
+		if (style?.fillStyle) { cvsCtx.fillStyle = style.fillStyle; }
 		cvsCtx.beginPath();
-		// 因为Canvas的原点坐标是在左上角，所以顺时钟和逆时钟的方向和笛卡尔坐标系是反的
-		cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
-		cvsCtx.stroke();
+		func(cvsCtx);
+		if (style?.lineWidth && style.lineWidth > 0) { cvsCtx.stroke(); }
+		if (style?.fillStyle) { cvsCtx.fill(); }
 		cvsCtx.restore();
+	}
+
+
+
+	export function drawArc(cvsCtx: CanvasRenderingContext2D, center: IPoint2D, radius: number, revole: IRevolveOption, style?: ICanvasStyle) {
+		drawWithCanvas(cvsCtx, (cvsCtx) => {
+			// 因为Canvas的原点坐标是在左上角，所以顺时钟和逆时钟的方向和笛卡尔坐标系是反的
+			cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
+		}, style);
 	}
 
 	/**
@@ -163,20 +173,6 @@ export namespace CanvasUtils {
 			cvsCtx.lineTo(start.vertex.x, start.vertex.y);
 		}, style);
 	}
-
-	function drawWithCanvas(cvsCtx: CanvasRenderingContext2D, func: (cvs: CanvasRenderingContext2D) => void, style?: ICanvasStyle) {
-		cvsCtx.save();
-		if (style?.lineWidth) { cvsCtx.lineWidth = style.lineWidth; }
-		if (style?.strokeStyle) { cvsCtx.strokeStyle = style.strokeStyle; }
-		if (style?.fillStyle) { cvsCtx.fillStyle = style.fillStyle; }
-		cvsCtx.beginPath();
-		func(cvsCtx);
-		if (style?.lineWidth && style.lineWidth > 0) { cvsCtx.stroke(); }
-		if (style?.fillStyle) { cvsCtx.fill(); }
-		cvsCtx.restore();
-	}
-
-
 
 	export function genShapeTengentLine(x: number, y: number, shape: CanvasShape2D, length: number, lineWidth: number, strokeStyle: string): Array<CanvasRay2D> {
 		let result: Array<CanvasRay2D> = [];
