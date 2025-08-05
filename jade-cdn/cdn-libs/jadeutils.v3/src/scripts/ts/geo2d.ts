@@ -655,7 +655,7 @@ export namespace Geo2DUtils {
 				diffAngle = diffAngle - PI_DOUBLE;
 				} else if (d1.y > 0 && d2.y < 0) {
 				// 从一二象限三四象限
-				diffAngle =  (-1 * diffAngle) + PI_DOUBLE;
+				diffAngle =  diffAngle + PI_DOUBLE;
 				}
 			}
 		} else if (d1.x < 0 && d2.x < 0) {
