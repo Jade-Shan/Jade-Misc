@@ -1,5 +1,5 @@
 import { NumUtil } from './basic.js';
-import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, IGeo2D, GeoCurve2D, IRevolveOption } from './geo2d.js';
+import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, IGeo2D, GeoCurve2D, IRevolveOption, ICircle2D, Circle2D } from './geo2d.js';
 
 
 export interface ICanvasStyle {
@@ -287,6 +287,29 @@ export class CanvasRectangle2D extends Rectangle2D //
 	static from(rect: ICanvasRectangle2D): CanvasRectangle2D {
 		return new CanvasRectangle2D(rect.x, rect.y, rect.width, rect.height, //
 			rect.lineWidth, rect.strokeStyle, rect.fillStyle);
+	}
+
+}
+
+
+export interface ICanvasCircle2D extends ICanvas2D, ICircle2D {
+	readonly lineWidth: number;
+	readonly strokeStyle: string;
+	readonly fillStyle: string;
+
+}
+export class CanvasCircle2D extends Circle2D // 
+	implements CanvasCurve2D, ICanvasCircle2D // 
+{
+	readonly lineWidth: number;
+	readonly strokeStyle: string;
+	readonly fillStyle: string;
+
+	constructor(c: Point2D, radius: number, lineWidth: number, strokeStyle: string, fillStyle: string) {
+		super(c, radius);
+		this.lineWidth = lineWidth;
+		this.strokeStyle = strokeStyle;
+		this.fillStyle = fillStyle;
 	}
 
 }

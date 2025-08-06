@@ -46,6 +46,74 @@ export interface GeoPolygon2D extends GeoShape2D {
 
 }
 
+export type ICircle2D = { readonly c: Point2D, readonly radius: number }
+export class Circle2D implements GeoCurve2D, ICircle2D {
+	readonly c: Point2D;
+	readonly radius: number;
+
+	constructor(c: Point2D, radius: number) {
+		this.c = c;
+		this.radius = radius;
+	}
+
+	getCenter(): Point2D { return this.c; }
+
+	getMostCloseVertex(x: number, y: number): { vertex: Point2D; distance: number; } {
+		let dx = this.c.x - x;
+		let dy = this.c.y - y;
+		let cDist = Math.round(Math.sqrt(dx * dx + dy * dy)); // 点到圆心的距离
+		let minDist = cDist - this.radius // 点到圆的距离
+
+		if (cDist == 0) {
+			// 点和圆心重合
+			return { vertex: this.c, distance: minDist };
+		} else if (dx == 0) {
+			// 点和圆心水平对齐,cos不存在
+			return { vertex: new Point2D(this.c.x, this.c.y - minDist), distance: minDist };
+		} else if (dy ==0 ) {
+			// 点和圆心垂直对齐,cos不存在
+			return { vertex: new Point2D(this.c.x - minDist, this.c.y), distance: minDist };
+		} else {
+			let angle = Math.atan2(dy, dx);
+			let ca = Geo2DUtils.formatAngle(angle);
+			console.log(`${(new Date()).getUTCMilliseconds()}: ` +
+				`angle: ${NumUtil.toFixed(ca.oriAgl, 3)} = ${NumUtil.toFixed(ca.fmtAgl, 3)} = ` +
+				`${NumUtil.toFixed(ca.oriDgr, 2)}° = ${NumUtil.toFixed(ca.fmtDgr, 2)}°`);
+			let tx = Math.sin(angle) * minDist;
+			let ty = Math.cos(angle) * minDist;
+			return { vertex: new Point2D(tx, ty), distance: minDist };
+		}
+	}
+
+	getVertexesFrom(x: number, y: number): Array<Point2D> {
+		// 外部点到圆心的连线的角度
+		let dx     = this.c.x - x;
+		let dy     = this.c.y - y;
+		let angle  = Math.atan2(dy, dx);
+
+		// 两个切线交点到圆心的角度
+		let angle1 = angle - Geo2DUtils.PI_HALF;
+		let angle2 = angle + Geo2DUtils.PI_HALF;
+		// 两个切线交点的坐标
+		let dx1    = Math.round(this.radius * Math.cos(angle1));
+		let dy1    = Math.round(this.radius * Math.sin(angle1));
+		let dx2    = Math.round(this.radius * Math.cos(angle2));
+		let dy2    = Math.round(this.radius * Math.sin(angle2));
+		let pos1   = new Point2D(this.c.x + dx1, this.c.y + dy1);
+		let pos2   = new Point2D(this.c.x + dx2, this.c.y + dy2);
+		//
+		return [pos1, pos2];
+		// 两个切线与外部点的距离与角度
+		// let cx1    = pos1.x - x;
+		// let cy1    = pos1.y - y;
+		// let cx2    = pos2.x - x;
+		// let cy2    = pos2.y - y;
+		// let angle3 = Math.atan2(cy1, cx1);
+		// let angle4 = Math.atan2(cy1, cx1);
+	}
+
+}
+
 export type IPoint2D = { readonly x: number, readonly y: number };
 export class Point2D implements GeoCurve2D, IPoint2D {
 	readonly x: number;
