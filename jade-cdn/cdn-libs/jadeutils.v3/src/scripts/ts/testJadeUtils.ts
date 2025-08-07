@@ -3,7 +3,7 @@ import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
 import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
-import { CanvasLine2D, CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
+import { CanvasCircle2D, CanvasLine2D, CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
 import { Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
@@ -663,31 +663,64 @@ class TestCanvas {
 			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect04, 150, {lineWidth: 1,  strokeStyle:"gray",fillStyle: "rgba(100,100,100,0.5)"});
 		}
 
-		////
-		//console.log("========================== test cvs 016 ======================")
-		//cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs016")?.getContext("2d");
-		//if (null != cvsCtx) {
-		//	CanvasUtils.drawRectangle(cvsCtx, rect01);
-		//	CanvasUtils.drawRectangle(cvsCtx, rect03);
-		//	//
-		//	CanvasUtils.drawPoint(cvsCtx, center);
-		//	//
-		//	CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect01, 150, 1, "red" );
-		//	CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect03, 150, 1, "blue");
-		//}
+		//
+		console.log("========================== test cvs 018 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs018")?.getContext("2d");
+		if (null != cvsCtx) {
+			let cric01 = new CanvasCircle2D(150,  80, 60, 3, "red" , "");
+			let cric03 = new CanvasCircle2D(150, 220, 60, 3, "blue", "");
+			//
+			CanvasUtils.drawPoint(cvsCtx, center);
+			CanvasUtils.drawCircle(cvsCtx, cric01);
+			CanvasUtils.drawCircle(cvsCtx, cric03);
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, {lineWidth: 1,  strokeStyle:"red" ,fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric03, 145, {lineWidth: 1,  strokeStyle:"blue",fillStyle: "rgba(100,100,100,0.5)"});
+		}
 
-		////
-		//console.log("========================== test cvs 017 ======================")
-		//cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs017")?.getContext("2d");
-		//if (null != cvsCtx) {
-		//	CanvasUtils.drawRectangle(cvsCtx, rect02);
-		//	CanvasUtils.drawRectangle(cvsCtx, rect04);
-		//	//
-		//	CanvasUtils.drawPoint(cvsCtx, center);
-		//	//
-		//	CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect02, 150, 1, "lime");
-		//	CanvasUtils.drawShapeTengentRays(cvsCtx, center.x, center.y, rect04, 150, 1, "gray");
-		//}
+		//
+		console.log("========================== test cvs 019 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs019")?.getContext("2d");
+		if (null != cvsCtx) {
+			let cric02 = new CanvasCircle2D(220, 150, 60, 3, "lime", "");
+			let cric04 = new CanvasCircle2D( 80, 150, 60, 3, "gray", "");
+			CanvasUtils.drawPoint(cvsCtx, center);
+			CanvasUtils.drawCircle(cvsCtx, cric02);
+			CanvasUtils.drawCircle(cvsCtx, cric04);
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric02, 145, {lineWidth: 1,  strokeStyle:"lime",fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric04, 145, {lineWidth: 1,  strokeStyle:"gray",fillStyle: "rgba(100,100,100,0.5)"});
+		}
+
+		//
+		console.log("========================== test cvs 020 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs020")?.getContext("2d");
+		if (null != cvsCtx) {
+			let cric01 = new CanvasCircle2D(100, 100, 60, 3, "red" , "");
+			let cric03 = new CanvasCircle2D(200, 200, 60, 3, "blue", "");
+			//
+			CanvasUtils.drawPoint(cvsCtx, center);
+			CanvasUtils.drawCircle(cvsCtx, cric01);
+			CanvasUtils.drawCircle(cvsCtx, cric03);
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, {lineWidth: 1,  strokeStyle:"red" ,fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric03, 145, {lineWidth: 1,  strokeStyle:"blue",fillStyle: "rgba(100,100,100,0.5)"});
+		}
+
+		//
+		console.log("========================== test cvs 021 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs021")?.getContext("2d");
+		if (null != cvsCtx) {
+			let cric02 = new CanvasCircle2D(100, 200, 60, 3, "lime", "");
+			let cric04 = new CanvasCircle2D(200, 100, 60, 3, "gray", "");
+			//
+			CanvasUtils.drawPoint(cvsCtx, center);
+			CanvasUtils.drawCircle(cvsCtx, cric02);
+			CanvasUtils.drawCircle(cvsCtx, cric04);
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric02, 145, {lineWidth: 1,  strokeStyle: "lime", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric04, 145, {lineWidth: 1,  strokeStyle: "gray", fillStyle: "rgba(100,100,100,0.5)"});
+		}
 
 	}
 

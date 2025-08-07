@@ -51,8 +51,8 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 	readonly c: Point2D;
 	readonly radius: number;
 
-	constructor(c: Point2D, radius: number) {
-		this.c = c;
+	constructor(x: number, y: number, radius: number) {
+		this.c = new Point2D(x, y);
 		this.radius = radius;
 	}
 

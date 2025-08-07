@@ -97,14 +97,35 @@ export namespace CanvasUtils {
 	}
 
 	export function drawRectangle(cvsCtx: CanvasRenderingContext2D, rect: ICanvasRectangle2D) {
-		if (rect.lineWidth > 0) {
-			cvsCtx.strokeStyle = rect.strokeStyle;
-			cvsCtx.strokeRect(rect.x, rect.y, rect.width, rect.height);
-		}
+		cvsCtx.save();
 		if (rect.fillStyle && rect.fillStyle.length > 0) {
+			cvsCtx.beginPath();
 			cvsCtx.fillStyle = rect.fillStyle;
 			cvsCtx.fillRect(rect.x, rect.y, rect.width, rect.height);
 		}
+		if (rect.lineWidth > 0) {
+			cvsCtx.beginPath();
+			cvsCtx.strokeStyle = rect.strokeStyle;
+			cvsCtx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+		}
+		cvsCtx.restore();
+	}
+
+	export function drawCircle(cvsCtx: CanvasRenderingContext2D, circle: ICanvasCircle2D) {
+		cvsCtx.save();
+		if (circle.fillStyle && circle.fillStyle.length > 0) {
+			cvsCtx.beginPath();
+			cvsCtx.fillStyle = circle.fillStyle;
+			cvsCtx.arc(circle.c.x, circle.c.y, circle.radius, 0, Geo2DUtils.PI_DOUBLE, false);
+			cvsCtx.fill();
+		}
+		if (circle.lineWidth > 0) {
+			cvsCtx.beginPath();
+			cvsCtx.strokeStyle = circle.strokeStyle;
+			cvsCtx.arc(circle.c.x, circle.c.y, circle.radius, 0, Geo2DUtils.PI_DOUBLE, false);
+			cvsCtx.stroke();
+		}
+		cvsCtx.restore();
 	}
 
 	export function genVertexes(shape: CanvasPolygon2D, radius: number, fillStyle: string): Array<CanvasPoint2D> {
@@ -305,8 +326,8 @@ export class CanvasCircle2D extends Circle2D //
 	readonly strokeStyle: string;
 	readonly fillStyle: string;
 
-	constructor(c: Point2D, radius: number, lineWidth: number, strokeStyle: string, fillStyle: string) {
-		super(c, radius);
+	constructor(x: number, y: number, radius: number, lineWidth: number, strokeStyle: string, fillStyle: string) {
+		super(x, y, radius);
 		this.lineWidth = lineWidth;
 		this.strokeStyle = strokeStyle;
 		this.fillStyle = fillStyle;
