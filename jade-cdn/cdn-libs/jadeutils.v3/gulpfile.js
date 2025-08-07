@@ -122,7 +122,9 @@ gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 		scriptTsSrc + '3rdLibTool.ts',
 		scriptTsSrc + 'wiki.ts',
 		scriptTsSrc + 'blog.ts',
+		scriptTsSrc + 'UIWindow.ts',
 		scriptTsSrc + 'testJadeUtils.ts',
+		scriptTsSrc + 'testJadeUI.ts',
 	]).pipe(ts({
 		target: "es6",
 		module: "es6",
@@ -150,7 +152,9 @@ gulp.task('compress-typescript', gulp.series('process-typescript', () => {
 		scriptTsTag + '3rdLibTool.js',
 		scriptTsTag + 'wiki.js',
 		scriptTsTag + 'blog.js',
+		scriptTsTag + 'UIWindow.js',
 		scriptTsTag + 'testJadeUtils.js',
+		scriptTsTag + 'testJadeUI.js',
 	]).pipe(rename({ suffix: '.min' }))
 		.pipe(uglify())
 		.pipe(gulp.dest(scriptTsTag))

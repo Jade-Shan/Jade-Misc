@@ -87,20 +87,20 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 
 	// 圆外一点`P(x,y)`到圆的切线`PQ1`与`PQ2`
 	getVertexesFrom(x: number, y: number): Array<Point2D> {
-		// 外部点`P(x,y)`到圆心`C`的连线`PC`的角度与距离
+		// 圆心`C`到外部点`P`的连线`CP`的角度与距离
 		let dx     =  x - this.c.x;
 		let dy     =  y - this.c.y;
-		let lenghPC = Math.sqrt(dx * dx + dy * dy);
-		if (lenghPC < this.radius) { // 点在圆内，不存在切线
+		let lenghCP = Math.sqrt(dx * dx + dy * dy);
+		if (lenghCP < this.radius) { // 点在圆内，不存在切线
 			return [];
 		}
-		// 圆心`P`到圆外的点`P`的连线`PC`与x轴正方向的夹角
-		let anglePC  = Math.atan2(dy, dx);
-		// 圆心`P`到圆外的点`P`的连线`PC`与切线`PQ1`、`PQ2`形成的夹角
-		let anglePCQ = Math.acos(this.radius / lenghPC);
+		// 圆心`c`到圆外的点`P`的连线`PC`与x轴正方向的夹角
+		let angleCP  = Math.atan2(dy, dx);
+		// 圆心`C`到圆外的点`P`的连线`PC`与切线`PQ1`、`PQ2`形成的夹角
+		let anglePCQ = Math.acos(this.radius / lenghCP);
 		// 两个切线的点的夹角
-		let anglePCQ1 = anglePC + anglePCQ;
-		let anglePCQ2 = anglePC - anglePCQ;
+		let anglePCQ1 = angleCP + anglePCQ;
+		let anglePCQ2 = angleCP - anglePCQ;
 		//// 打印信息
 		//let ca1 = Geo2DUtils.formatAngle(anglePC);
 		//let ca2 = Geo2DUtils.formatAngle(anglePCQ);
