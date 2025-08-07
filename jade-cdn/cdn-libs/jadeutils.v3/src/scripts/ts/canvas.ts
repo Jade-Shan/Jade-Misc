@@ -25,10 +25,19 @@ export namespace CanvasUtils {
 
 
 	export function drawArc(cvsCtx: CanvasRenderingContext2D, center: IPoint2D, radius: number, revole: IRevolveOption, style?: ICanvasStyle) {
-		drawWithCanvas(cvsCtx, (cvsCtx) => {
-			// 因为Canvas的原点坐标是在左上角，所以顺时钟和逆时钟的方向和笛卡尔坐标系是反的
-			cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
-		}, style);
+		//drawWithCanvas(cvsCtx, (cvsCtx) => {
+		//	// 因为Canvas的原点坐标是在左上角，所以顺时钟和逆时钟的方向和笛卡尔坐标系是反的
+		//	cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
+		//}, style);
+		cvsCtx.save();
+		if (style?.lineWidth) { cvsCtx.lineWidth = style.lineWidth; }
+		if (style?.strokeStyle) { cvsCtx.strokeStyle = style.strokeStyle; }
+		if (style?.fillStyle) { cvsCtx.fillStyle = style.fillStyle; }
+		cvsCtx.beginPath();
+		cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
+		if (style?.lineWidth && style.lineWidth > 0) { cvsCtx.stroke(); }
+		if (style?.fillStyle) { cvsCtx.fill(); }
+		cvsCtx.restore();
 	}
 
 	/**

@@ -413,10 +413,10 @@ class TestCanvas {
 			let ag3 = Geo2DUtils.revolveRay(center , testLine03.a, testLine03.b);
 			let ag4 = Geo2DUtils.revolveRay(center , testLine04.a, testLine04.b);
 			//
-			CanvasUtils.drawArc(cvsCtx, center , 30, ag1, {lineWidth: 1, fillStyle: "red" });
-			CanvasUtils.drawArc(cvsCtx, center , 40, ag2, {lineWidth: 1, fillStyle: "lime"});
-			CanvasUtils.drawArc(cvsCtx, center , 50, ag3, {lineWidth: 1, fillStyle: "blue"});
-			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, {lineWidth: 1, fillStyle: "gray"});
+			CanvasUtils.drawArc(cvsCtx, center , 30, ag1, {lineWidth: 1, strokeStyle: "red" });
+			CanvasUtils.drawArc(cvsCtx, center , 40, ag2, {lineWidth: 1, strokeStyle: "lime"});
+			CanvasUtils.drawArc(cvsCtx, center , 50, ag3, {lineWidth: 1, strokeStyle: "blue"});
+			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, {lineWidth: 1, strokeStyle: "gray"});
 		}
 		//
 		console.log("========================== test cvs 007 ======================")
@@ -444,10 +444,10 @@ class TestCanvas {
 			let ag3 = Geo2DUtils.revolveRay(center , testLine03.a, testLine03.b);
 			let ag4 = Geo2DUtils.revolveRay(center , testLine04.a, testLine04.b);
 			//
-			CanvasUtils.drawArc(cvsCtx, center , 30, ag1, {lineWidth: 1, fillStyle: "red" });
-			CanvasUtils.drawArc(cvsCtx, center , 40, ag2, {lineWidth: 1, fillStyle: "lime"});
-			CanvasUtils.drawArc(cvsCtx, center , 50, ag3, {lineWidth: 1, fillStyle: "blue"});
-			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, {lineWidth: 1, fillStyle: "gray"});
+			CanvasUtils.drawArc(cvsCtx, center , 30, ag1, {lineWidth: 1, strokeStyle: "red" });
+			CanvasUtils.drawArc(cvsCtx, center , 40, ag2, {lineWidth: 1, strokeStyle: "lime"});
+			CanvasUtils.drawArc(cvsCtx, center , 50, ag3, {lineWidth: 1, strokeStyle: "blue"});
+			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, {lineWidth: 1, strokeStyle: "gray"});
 		}
 		//
 		console.log("========================== test cvs 008 ======================")
@@ -475,10 +475,10 @@ class TestCanvas {
 			let ag3 = Geo2DUtils.revolveRay(center , testLine03.a, testLine03.b);
 			let ag4 = Geo2DUtils.revolveRay(center , testLine04.a, testLine04.b);
 			//
-			CanvasUtils.drawArc(cvsCtx, center , 30, ag1, {lineWidth: 1, fillStyle: "red" });
-			CanvasUtils.drawArc(cvsCtx, center , 40, ag2, {lineWidth: 1, fillStyle: "lime"});
-			CanvasUtils.drawArc(cvsCtx, center , 50, ag3, {lineWidth: 1, fillStyle: "blue"});
-			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, {lineWidth: 1, fillStyle: "gray"});
+			CanvasUtils.drawArc(cvsCtx, center , 30, ag1, {lineWidth: 1, strokeStyle: "red" });
+			CanvasUtils.drawArc(cvsCtx, center , 40, ag2, {lineWidth: 1, strokeStyle: "lime"});
+			CanvasUtils.drawArc(cvsCtx, center , 50, ag3, {lineWidth: 1, strokeStyle: "blue"});
+			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, {lineWidth: 1, strokeStyle: "gray"});
 		}
 		//
 		console.log("========================== test cvs 009 ======================")
@@ -506,10 +506,10 @@ class TestCanvas {
 			let ag3 = Geo2DUtils.revolveRay(center , testLine03.a, testLine03.b);
 			let ag4 = Geo2DUtils.revolveRay(center , testLine04.a, testLine04.b);
 			//
-			CanvasUtils.drawArc(cvsCtx, center , 30, ag1, {lineWidth: 1, fillStyle: "red" });
-			CanvasUtils.drawArc(cvsCtx, center , 40, ag2, {lineWidth: 1, fillStyle: "lime"});
-			CanvasUtils.drawArc(cvsCtx, center , 50, ag3, {lineWidth: 1, fillStyle: "blue"});
-			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, {lineWidth: 1, fillStyle: "gray"});
+			CanvasUtils.drawArc(cvsCtx, center , 30, ag1, {lineWidth: 1, strokeStyle: "red" });
+			CanvasUtils.drawArc(cvsCtx, center , 40, ag2, {lineWidth: 1, strokeStyle: "lime"});
+			CanvasUtils.drawArc(cvsCtx, center , 50, ag3, {lineWidth: 1, strokeStyle: "blue"});
+			CanvasUtils.drawArc(cvsCtx, center , 60, ag4, {lineWidth: 1, strokeStyle: "gray"});
 		}
 
 		//
@@ -532,8 +532,8 @@ class TestCanvas {
 			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
 			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 			//
-			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, {lineWidth: 1, fillStyle: "red" });
-			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, {lineWidth: 1, fillStyle: "lime"});
+			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, {lineWidth: 1, strokeStyle: "red" });
+			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, {lineWidth: 1, strokeStyle: "lime"});
 		}
 		//
 		console.log("========================== test cvs 011 ======================")
@@ -555,8 +555,8 @@ class TestCanvas {
 			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
 			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 			//
-			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, {lineWidth: 1, fillStyle: "red" });
-			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, {lineWidth: 1, fillStyle: "lime"});
+			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, {lineWidth: 1, strokeStyle: "red" });
+			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, {lineWidth: 1, strokeStyle: "lime"});
 		}
 
 		//
@@ -579,8 +579,8 @@ class TestCanvas {
 			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
 			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 
-			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, {lineWidth: 1, fillStyle: "red" });
-			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, {lineWidth: 1, fillStyle: "lime"});
+			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, {lineWidth: 1, strokeStyle: "red" });
+			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, {lineWidth: 1, strokeStyle: "lime"});
 		}
 
 		//
@@ -603,8 +603,8 @@ class TestCanvas {
 			let ag1 = Geo2DUtils.revolveRay(p1, testLine01.a, testLine01.b);
 			let ag2 = Geo2DUtils.revolveRay(p2, testLine01.a, testLine01.b);
 			//
-			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, {lineWidth: 1, fillStyle: "red" });
-			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, {lineWidth: 1, fillStyle: "lime"});
+			CanvasUtils.drawArc(cvsCtx, p1, 30, ag1, {lineWidth: 1, strokeStyle: "red" });
+			CanvasUtils.drawArc(cvsCtx, p2, 40, ag2, {lineWidth: 1, strokeStyle: "lime"});
 		}
 
 		//
