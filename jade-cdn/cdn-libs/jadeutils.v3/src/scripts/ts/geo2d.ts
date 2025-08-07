@@ -88,8 +88,8 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 	// 圆外一点`P(x,y)`到圆的切线`PQ1`与`PQ2`
 	getVertexesFrom(x: number, y: number): Array<Point2D> {
 		// 外部点`P(x,y)`到圆心`C`的连线`PC`的角度与距离
-		let dx     = this.c.x - x;
-		let dy     = this.c.y - y;
+		let dx     =  x - this.c.x;
+		let dy     =  y - this.c.y;
 		let lenghPC = Math.sqrt(dx * dx + dy * dy);
 		if (lenghPC < this.radius) { // 点在圆内，不存在切线
 			return [];
@@ -97,20 +97,22 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 		// 圆心`P`到圆外的点`P`的连线`PC`与x轴正方向的夹角
 		let anglePC  = Math.atan2(dy, dx);
 		// 圆心`P`到圆外的点`P`的连线`PC`与切线`PQ1`、`PQ2`形成的夹角
-		// 注意：为什么要用`PI - arccos()`这个操作还没有想明白，
-		// 正常直角坐标系里应该是`arccos()`就够了。这和canvas坐标系的原点在左上角有没有关系？
-		let anglePCQ = Math.PI - Math.acos(this.radius / lenghPC);
+		let anglePCQ = Math.acos(this.radius / lenghPC);
+		// 两个切线的点的夹角
 		let anglePCQ1 = anglePC + anglePCQ;
 		let anglePCQ2 = anglePC - anglePCQ;
-
+		//// 打印信息
+		//let ca1 = Geo2DUtils.formatAngle(anglePC);
+		//let ca2 = Geo2DUtils.formatAngle(anglePCQ);
+		//console.log(`${(new Date()).getUTCMilliseconds()}:
+		//	angle: ${NumUtil.toFixed(ca1.oriAgl, 3)} = ${NumUtil.toFixed(ca1.fmtAgl, 3)} = ` +
+		//	`${NumUtil.toFixed(ca1.oriDgr, 2)}° = ${NumUtil.toFixed(ca1.fmtDgr, 2)}°
+		//	angle: ${NumUtil.toFixed(ca2.oriAgl, 3)} = ${NumUtil.toFixed(ca2.fmtAgl, 3)} = ` +
+		//	`${NumUtil.toFixed(ca2.oriDgr, 2)}° = ${NumUtil.toFixed(ca2.fmtDgr, 2)}°
+		//	`);
 		// 两个节点的坐标
-		let pos1   = new Point2D( // 
-			this.c.x + this.radius * Math.cos(anglePCQ1),
-			this.c.y + this.radius * Math.sin(anglePCQ1));
-		let pos2   = new Point2D( // 
-			this.c.x + this.radius * Math.cos(anglePCQ2),
-			this.c.y + this.radius * Math.sin(anglePCQ2));
-
+		let pos1   = new Point2D(this.c.x + this.radius * Math.cos(anglePCQ1), this.c.y + this.radius * Math.sin(anglePCQ1));
+		let pos2   = new Point2D(this.c.x + this.radius * Math.cos(anglePCQ2), this.c.y + this.radius * Math.sin(anglePCQ2));
 		return [pos1, pos2];
 	}
 
