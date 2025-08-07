@@ -97,7 +97,9 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 		// 圆心`P`到圆外的点`P`的连线`PC`与x轴正方向的夹角
 		let anglePC  = Math.atan2(dy, dx);
 		// 圆心`P`到圆外的点`P`的连线`PC`与切线`PQ1`、`PQ2`形成的夹角
-		let anglePCQ = Math.asin(this.radius / lenghPC);
+		// 注意：为什么要用`PI - arccos()`这个操作还没有想明白，
+		// 正常直角坐标系里应该是`arccos()`就够了。这和canvas坐标系的原点在左上角有没有关系？
+		let anglePCQ = Math.PI - Math.acos(this.radius / lenghPC);
 		let anglePCQ1 = anglePC + anglePCQ;
 		let anglePCQ2 = anglePC - anglePCQ;
 

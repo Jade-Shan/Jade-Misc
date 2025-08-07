@@ -750,6 +750,50 @@ class TestCanvas {
 			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric04, 145, {lineWidth: 1,  strokeStyle: "gray", fillStyle: "rgba(100,100,100,0.5)"});
 		}
 
+		//
+		console.log("========================== test cvs 022 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs022")?.getContext("2d");
+		if (null != cvsCtx) {
+			let cric01 = new CanvasCircle2D( 70,  70, 60, 3, "red" , "");
+			let cric03 = new CanvasCircle2D(230, 230, 60, 3, "blue", "");
+			//
+			CanvasUtils.drawPoint(cvsCtx, center);
+			CanvasUtils.drawCircle(cvsCtx, cric01);
+			CanvasUtils.drawCircle(cvsCtx, cric03);
+			//
+			let vtxPts1 = cric01.getVertexesFrom(center.x, center.y);
+			let vtxPts3 = cric03.getVertexesFrom(center.x, center.y);
+			CanvasUtils.drawPoint(cvsCtx, {x: vtxPts1[0].x, y: vtxPts1[0].y, radius: 3, fillStyle: "red" });
+			CanvasUtils.drawPoint(cvsCtx, {x: vtxPts1[1].x, y: vtxPts1[1].y, radius: 3, fillStyle: "red" });
+			CanvasUtils.drawPoint(cvsCtx, {x: vtxPts3[0].x, y: vtxPts3[0].y, radius: 3, fillStyle: "blue"});
+			CanvasUtils.drawPoint(cvsCtx, {x: vtxPts3[1].x, y: vtxPts3[1].y, radius: 3, fillStyle: "blue"});
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, {lineWidth: 1,  strokeStyle:"red" ,fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric03, 145, {lineWidth: 1,  strokeStyle:"blue",fillStyle: "rgba(100,100,100,0.5)"});
+		}
+
+		//
+		console.log("========================== test cvs 023 ======================")
+		cvsCtx = document.querySelector<HTMLCanvasElement>("#testCvs023")?.getContext("2d");
+		if (null != cvsCtx) {
+			let cric02 = new CanvasCircle2D( 70, 230, 60, 3, "lime", "");
+			let cric04 = new CanvasCircle2D(230,  70, 60, 3, "gray", "");
+			//
+			CanvasUtils.drawPoint(cvsCtx, center);
+			CanvasUtils.drawCircle(cvsCtx, cric02);
+			CanvasUtils.drawCircle(cvsCtx, cric04);
+			//
+			let vtxPts2 = cric02.getVertexesFrom(center.x, center.y);
+			let vtxPts4 = cric04.getVertexesFrom(center.x, center.y);
+			CanvasUtils.drawPoint(cvsCtx, {x: vtxPts2[0].x, y: vtxPts2[0].y, radius: 3, fillStyle: "lime"});
+			CanvasUtils.drawPoint(cvsCtx, {x: vtxPts2[1].x, y: vtxPts2[1].y, radius: 3, fillStyle: "lime"});
+			CanvasUtils.drawPoint(cvsCtx, {x: vtxPts4[0].x, y: vtxPts4[0].y, radius: 3, fillStyle: "gray"});
+			CanvasUtils.drawPoint(cvsCtx, {x: vtxPts4[1].x, y: vtxPts4[1].y, radius: 3, fillStyle: "gray"});
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric02, 145, {lineWidth: 1,  strokeStyle: "lime", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric04, 145, {lineWidth: 1,  strokeStyle: "gray", fillStyle: "rgba(100,100,100,0.5)"});
+		}
+
 	}
 
 
