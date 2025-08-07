@@ -85,31 +85,33 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 		}
 	}
 
+	// 圆外一点`P(x,y)`到圆的切线`PQ1`与`PQ2`
 	getVertexesFrom(x: number, y: number): Array<Point2D> {
-		// 外部点到圆心的连线的角度
+		// 外部点`P(x,y)`到圆心`C`的连线`PC`的角度与距离
 		let dx     = this.c.x - x;
 		let dy     = this.c.y - y;
-		let angle  = Math.atan2(dy, dx);
+		let lenghPC = Math.sqrt(dx * dx + dy * dy);
+		if (lenghPC < this.radius) { // 点在圆内，不存在切线
+			return [];
+		}
+		// 圆心`P`到圆外的点`P`的连线`PC`与x轴正方向的夹角
+		let anglePC  = Math.atan2(dy, dx);
+		// 圆心`P`到圆外的点`P`的连线`PC`与切线`PQ1`、`PQ2`形成的夹角
+		// 注意：为什么要加上`Math.PI -`这个操作还没有想明白，
+		// 正常直角坐标系里应该是不要加的。这和canvas坐标系的原点在左上角有没有关系？
+		let anglePCQ = Math.PI - Math.acos(this.radius / lenghPC);
+		let anglePCQ1 = anglePC + anglePCQ;
+		let anglePCQ2 = anglePC - anglePCQ;
 
-		// 两个切线交点到圆心的角度
-		let angle1 = angle - Geo2DUtils.PI_HALF;
-		let angle2 = angle + Geo2DUtils.PI_HALF;
-		// 两个切线交点的坐标
-		let dx1    = Math.round(this.radius * Math.cos(angle1));
-		let dy1    = Math.round(this.radius * Math.sin(angle1));
-		let dx2    = Math.round(this.radius * Math.cos(angle2));
-		let dy2    = Math.round(this.radius * Math.sin(angle2));
-		let pos1   = new Point2D(this.c.x + dx1, this.c.y + dy1);
-		let pos2   = new Point2D(this.c.x + dx2, this.c.y + dy2);
-		//
+		// 两个节点的坐标
+		let pos1   = new Point2D( // 
+			this.c.x + this.radius * Math.cos(anglePCQ1),
+			this.c.y + this.radius * Math.sin(anglePCQ1));
+		let pos2   = new Point2D( // 
+			this.c.x + this.radius * Math.cos(anglePCQ2),
+			this.c.y + this.radius * Math.sin(anglePCQ2));
+
 		return [pos1, pos2];
-		// 两个切线与外部点的距离与角度
-		// let cx1    = pos1.x - x;
-		// let cy1    = pos1.y - y;
-		// let cx2    = pos2.x - x;
-		// let cy2    = pos2.y - y;
-		// let angle3 = Math.atan2(cy1, cx1);
-		// let angle4 = Math.atan2(cy1, cx1);
 	}
 
 }
