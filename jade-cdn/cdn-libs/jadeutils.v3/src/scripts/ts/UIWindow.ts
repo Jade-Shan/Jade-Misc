@@ -14,8 +14,6 @@ export class UIDesktopStatus {
 	constructor(parentElement: HTMLElement) {
 		this.parentElement = parentElement;
 	}
-
-
 	
 	getNewWindowPosition(width: number, height: number): IPoint2D {
 		let margin = 90; // 新弹出的位置的间隔
@@ -62,6 +60,28 @@ export class UIDesktopStatus {
 		this.windowZIndex.push(window);
 	}
 
+	closeWindow(win: UIObj) {
+		this.allWindows.remove(win.id);
+		let newIndex: Array<UIObj> = [];
+		for (let i = 0; i < this.windowZIndex.length; i++) {
+			let w = this.windowZIndex[i];
+			if (win.id === w.id) {
+				// do nothing
+			} else {
+				w.activeWindow(false);
+				w.setZIndex(500 + i);
+				newIndex.push(w);
+			}
+		}
+		this.windowZIndex = newIndex;
+		this.parentElement.removeChild(win.windowDiv);
+		if (newIndex.length > 0) {
+			let currWin = newIndex[newIndex.length - 1];
+			currWin.activeWindow(true);
+			currWin.setZIndex(500 + newIndex.length - 1);
+		}
+	}
+
 	setCurrentActive(id: string) {
 		let newIndex: Array<UIObj> = [];
 		let currWin: null | UIObj = null;
@@ -78,7 +98,7 @@ export class UIDesktopStatus {
 			currWin = newIndex[newIndex.length - 1];
 		}
 		if (currWin) {
-			currWin.activeWindow(false);
+			currWin.activeWindow(true);
 			currWin.setZIndex(500 + newIndex.length - 1);
 		}
 	}
@@ -88,6 +108,7 @@ export class UIDesktopStatus {
 
 export interface UIObj {
 	readonly desktop: UIDesktopStatus;
+	readonly windowDiv: HTMLDivElement;
 	readonly id: string;
 	title: string;
 
@@ -104,13 +125,17 @@ export interface UIObj {
 
 export abstract class UIWindowAdptt implements UIObj {
 	readonly desktop: UIDesktopStatus;
+	readonly windowDiv: HTMLDivElement;
 	readonly id: string;
 	title: string;
 
 	constructor(desktop: UIDesktopStatus, id: string, title: string) {
-		this.desktop = desktop;
-		this.id = `${id}-${(new Date()).getTime()}`;
 		this.title = title;
+		this.desktop = desktop;
+		this.id = JadeWindowUI.genWinId(id);
+		this.windowDiv = document.createElement('div');
+		this.windowDiv.id = this.id;
+		this.windowDiv.classList.add("window");
 	}
 
 	abstract renderIn(): void;
@@ -138,14 +163,13 @@ export abstract class UIWindowAdptt implements UIObj {
 	}
 
 	setZIndex(zIndex: number): void {
-		let div = document.getElementById(this.id);
-		if (div) {
-			div.style.zIndex = `${zIndex}`;
-		}
+		this.windowDiv.style.zIndex = `${zIndex}`;
 	}
+
 	minSizeWindow(isMin: boolean): void {
 		throw new Error("Method not implemented.");
 	}
+
 	closeWindow(): void {
 		throw new Error("Method not implemented.");
 	}
@@ -178,20 +202,51 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
 export namespace JadeWindowUI {
 
+	export function genWinId(id: string): string { return `${id}-${(new Date()).getTime()}`; }
+
 	export function genWinTitleBarId(id: string): string { return `titBar-${id}`; }
+
 	export function genWinTitleTextId(id: string): string { return `titText-${id}`; }
 
-	export function renderWindowTplt(win: UIObj): HTMLDivElement {
-		let winTplt = `
-		<div class="title-bar" id="${genWinTitleBarId(win.id)}">
-			<div class="title-bar-text cannot-select" id="${genWinTitleTextId(win.id)}">${win.title}</div>
-			<div class="title-bar-controls">
-				<button aria-label="Minimize"></button>
-				<button aria-label="Maximize"></button>
-				<button aria-label="Close"></button>
-			</div>
-		</div>
-		<div class="window-body">
+
+	function renderTitleBar(win: UIObj): HTMLDivElement {
+		let renderTitleBarText = (win: UIObj): HTMLDivElement => {
+			let titleBarText = document.createElement("div");
+			titleBarText.id = genWinTitleTextId(win.id);
+			titleBarText.classList.add("title-bar-text", "cannot-select");
+			titleBarText.innerHTML = win.title;
+			return titleBarText;
+		}
+		let renderTitleBarControls = (win: UIObj): HTMLDivElement => {
+			let btnMin = document.createElement("button");
+			btnMin.setAttribute("aria-label", "Minimize");
+			let btnMax = document.createElement("button");
+			btnMax.setAttribute("aria-label", "Maximize");
+			let btnClose = document.createElement("button");
+			btnClose.setAttribute("aria-label", "Close");
+			btnClose.onmouseup = (ev) => {
+				win.desktop.closeWindow(win);
+			}
+			//
+			let titleBarCtls = document.createElement("div");
+			titleBarCtls.classList.add("title-bar-controls");
+			titleBarCtls.appendChild(btnMin);
+			titleBarCtls.appendChild(btnMax);
+			titleBarCtls.appendChild(btnClose);
+			return titleBarCtls;
+		}
+		let titleBar = document.createElement("div");
+		titleBar.id = genWinTitleBarId(win.id);
+		titleBar.classList.add("title-bar");
+		titleBar.appendChild(renderTitleBarText(win));
+		titleBar.appendChild(renderTitleBarControls(win));
+		return titleBar;
+	}
+
+	export function renderWindowBody(win: UIObj): HTMLDivElement {
+		let windowBody = document.createElement("div");
+		windowBody.classList.add("window-body");
+		windowBody.innerHTML = `
 			<p> There are just so many possibilities:</p>
 			<ul>
 				<li>A Task Manager</li>
@@ -218,20 +273,30 @@ export namespace JadeWindowUI {
 					</tbody>
 				</table>
 			</div>
+		`;
+		return windowBody;
+	}
 
-		</div>
-		<div class="status-bar">
+	export function renderStatusBar(win: UIObj): HTMLDivElement {
+		let statusBar = document.createElement("div");
+		statusBar.classList.add("status-bar");
+		statusBar.innerHTML= `
 			<p class="status-bar-field">Press F1 for help</p>
 			<p class="status-bar-field">Slide 1</p>
 			<p class="status-bar-field">CPU Usage: 14%</p>
-		</div>`;
-		let div: HTMLDivElement = document.createElement('div');
-		div.id = win.id;
-		div.classList = "window";
-		div.style = "width: 320px"
-		div.innerHTML = winTplt;
+		`;
+		return statusBar;
+	}
 
-		
+	export function renderWindowTplt(win: UIObj): HTMLDivElement {
+		let div: HTMLDivElement = win.windowDiv;
+		div.style = "width: 320px"
+		let titleBar = renderTitleBar(win);
+		let windowBody = renderWindowBody(win);
+		let statusBar = renderStatusBar(win);
+		div.appendChild(titleBar );
+		div.appendChild(windowBody);
+		div.appendChild(statusBar);
 		// 
 		let pos = win.desktop.getNewWindowPosition(div.getBoundingClientRect().width, div.getBoundingClientRect().height);
 		div.style.position = 'absolute';

@@ -37,7 +37,8 @@ export class SimpleMap<K, T> {
 		if (null == this.recs || this.recs.length < 1) {
 			return null;
 		}
-		for (let r of this.recs) {
+		for (let i = 0; i < this.recs.length; i++) {
+			let r = this.recs[i];
 			if (r[0] === key) {
 				return r[1];
 			}
@@ -51,8 +52,9 @@ export class SimpleMap<K, T> {
 	 */
 	remove(key: K): void {
 		let newRecs = new Array();
-		for (let rec in this.recs) {
-			if (key != rec[0]) { newRecs.push(rec); }
+		for (let i = 0; i < this.recs.length; i++) {
+			let r = this.recs[i];
+			if (key != r[0]) { newRecs.push(r); }
 		}
 		this.recs = newRecs;
 	}
@@ -79,7 +81,8 @@ export class SimpleMap<K, T> {
 		if (null == this.recs || this.recs.length < 1) {
 			return false;
 		}
-		for (let r of this.recs) {
+		for (let i = 0; i < this.recs.length; i++) {
+			let r = this.recs[i];
 			if (r[0] === key) {
 				return true;
 			}
@@ -96,7 +99,8 @@ export class SimpleMap<K, T> {
 		if (null == this.recs || this.recs.length < 1) {
 			return false;
 		}
-		for (let r of this.recs) {
+		for (let i = 0; i < this.recs.length; i++) {
+			let r = this.recs[i];
 			if (r[1] === value) {
 				return true;
 			}
@@ -110,7 +114,8 @@ export class SimpleMap<K, T> {
 	 */
 	keys(): Array<K> {
 		let arr: Array<K> = [];
-		for (let r of this.recs) {
+		for (let i = 0; i < this.recs.length; i++) {
+			let r = this.recs[i];
 			arr.push(r[0]);
 		}
 		return arr;
@@ -123,7 +128,8 @@ export class SimpleMap<K, T> {
 	 */
 	values(): Array<T> {
 		let arr: Array<T> = [];
-		for (let r of this.recs) {
+		for (let i = 0; i < this.recs.length; i++) {
+			let r = this.recs[i];
 			arr.push(r[1]);
 		}
 		return arr;

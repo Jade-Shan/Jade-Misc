@@ -14,7 +14,7 @@ export class TestJadeUI {
 
 	static testWindowUI() {
 		let desktop: UIDesktopStatus = new UIDesktopStatus(document.body);
-		for (let i = 0; i < 80; i++) {
+		for (let i = 0; i < 3; i++) {
 			let win = new UIWindow(desktop, `test-win-${i}`, `test win ${i}`);
 			win.renderIn();
 		}
