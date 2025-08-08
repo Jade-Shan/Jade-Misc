@@ -29,20 +29,23 @@ export class UIDesktopStatus {
 		let coverlevel = (this.newWindowPosition.lastPos.y -
 			this.newWindowPosition.lastTopStart.y) / margin;
 		if (coverlevel > maxLevel) { // 叠了几层，换一个位置重新叠
-			newX = this.newWindowPosition.lastTopStart.x + margin;
-			newY = this.newWindowPosition.lastTopStart.y;
-			this.newWindowPosition.lastTopStart = {x: newX, y: newY};
+			newX = this.newWindowPosition.lastTopStart.x + margin + margin;
+			newY = this.newWindowPosition.lastTopStart.y + margin;
+			this.newWindowPosition.lastTopStart.x = newX;
+			this.newWindowPosition.lastTopStart.y = newY;
 		}
 
 		if (((newX + width) > maxWidth)) {// 一行满了，换一行 
 			newX = margin; 
 			newY = this.newWindowPosition.lastTopStart.y + margin;
-			this.newWindowPosition.lastTopStart = {x: newX, y: newY};
+			this.newWindowPosition.lastTopStart.x = newX;
+			this.newWindowPosition.lastTopStart.y = newY;
 		}
 		if ((newY + height) > maxHeigh) { // 纵向满了，回头
 			newX = margin; 
 			newY = margin;
-			this.newWindowPosition.lastTopStart = {x: newX, y: newY};
+			this.newWindowPosition.lastTopStart.x = newX;
+			this.newWindowPosition.lastTopStart.y = newY;
 		}
 
 		let lastPos = { x: newX, y: newY };
