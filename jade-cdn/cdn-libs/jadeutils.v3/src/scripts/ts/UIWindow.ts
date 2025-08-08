@@ -1,6 +1,7 @@
 import { SimpleMap } from "./dataStructure.js";
 import { IPoint2D } from "./geo2d.js";
 
+const WIN_Z_IDX_MIN = 2000;
 
 export class UIDesktopStatus {
 	readonly parentElement: HTMLElement;
@@ -69,7 +70,7 @@ export class UIDesktopStatus {
 				// do nothing
 			} else {
 				w.activeWindow(false);
-				w.setZIndex(500 + i);
+				w.setZIndex(WIN_Z_IDX_MIN + newIndex.length);
 				newIndex.push(w);
 			}
 		}
@@ -78,29 +79,27 @@ export class UIDesktopStatus {
 		if (newIndex.length > 0) {
 			let currWin = newIndex[newIndex.length - 1];
 			currWin.activeWindow(true);
-			currWin.setZIndex(500 + newIndex.length - 1);
+			currWin.setZIndex(WIN_Z_IDX_MIN + newIndex.length);
 		}
 	}
 
-	setCurrentActive(id: string) {
+	setCurrentActive(win: UIObj) {
 		let newIndex: Array<UIObj> = [];
-		let currWin: null | UIObj = null;
 		for (let i = 0; i < this.windowZIndex.length; i++) {
-			let win = this.windowZIndex[i];
-			if (id === win.id) {
-				currWin = win;
+			let w = this.windowZIndex[i];
+			if (w.id === win.id) {
+				// do nothing
 			} else {
-				win.activeWindow(false);
-				win.setZIndex(500 + i);
+				w.activeWindow(false);
+				w.setZIndex(WIN_Z_IDX_MIN + newIndex.length);
+				newIndex.push(w);
 			}
 		}
-		if (currWin == null && newIndex.length > 0) {
-			currWin = newIndex[newIndex.length - 1];
-		}
-		if (currWin) {
-			currWin.activeWindow(true);
-			currWin.setZIndex(500 + newIndex.length - 1);
-		}
+		newIndex.push(win);
+		this.windowZIndex = newIndex;
+		//
+		win.activeWindow(true);
+		win.setZIndex(WIN_Z_IDX_MIN + newIndex.length);
 	}
 
 }
@@ -224,9 +223,7 @@ export namespace JadeWindowUI {
 			btnMax.setAttribute("aria-label", "Maximize");
 			let btnClose = document.createElement("button");
 			btnClose.setAttribute("aria-label", "Close");
-			btnClose.onmouseup = (ev) => {
-				win.desktop.closeWindow(win);
-			}
+			btnClose.onmouseup = (ev) => { win.desktop.closeWindow(win); }
 			//
 			let titleBarCtls = document.createElement("div");
 			titleBarCtls.classList.add("title-bar-controls");
@@ -302,6 +299,7 @@ export namespace JadeWindowUI {
 		div.style.position = 'absolute';
 		div.style.left = `${win.desktop.parentElement.getBoundingClientRect().left + pos.x}px`;
 		div.style.top  = `${win.desktop.parentElement.getBoundingClientRect().top  + pos.y}px`;
+		div.onmousedown = (e) => { win.desktop.setCurrentActive(win); }
 		return div;
 	};
 
