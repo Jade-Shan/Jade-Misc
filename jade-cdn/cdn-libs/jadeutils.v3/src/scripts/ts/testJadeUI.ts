@@ -14,10 +14,12 @@ export class TestJadeUI {
 
 	static testWindowUI() {
 		let desktop: UIDesktopStatus = new UIDesktopStatus();
-		let win1 = new UIWindow("test-ui-window-01");
-		win1.renderIn(desktop, document.body);
-		let win2 = new UIWindow("test-ui-window-01");
-		win2.renderIn(desktop, document.body);
+		let win1 = new UIWindow(desktop, "test-win-01", "test win 01");
+		win1.renderIn(document.body);
+		let win2 = new UIWindow(desktop, "test-win-02", "test win 02" );
+		win2.renderIn(document.body);
+		let win3 = new UIWindow(desktop, "test-win-03", "test win 03" );
+		win3.renderIn(document.body);
 	}
 
 
