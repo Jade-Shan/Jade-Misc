@@ -3,11 +3,52 @@ import { IPoint2D } from "./geo2d.js";
 
 
 export class UIDesktopStatus {
+	readonly parentElement: HTMLElement;
 	private allWindows: SimpleMap<string,UIObj> = new SimpleMap();
 	private windowZIndex: Array<UIObj> = [];
-	newWindowPopPosition: IPoint2D = {x: 20, y: 20};
+	private newWindowPosition = { // 管理新窗口弹出位置
+		lastPos: {x: 0, y: 0}, // 上一次窗口弹出的坐标
+		lastTopStart:{x: 0, y: 0} // 叠完一行以后，下移一行开始重新叠
+	};
 
-	constructor(){}
+	constructor(parentElement: HTMLElement) {
+		this.parentElement = parentElement;
+	}
+
+
+	
+	getNewWindowPosition(width: number, height: number): IPoint2D {
+		let margin = 90; // 新弹出的位置的间隔
+		let maxLevel = 8; // 同一次弹出时叠加几次
+		let maxWidth = this.parentElement.clientWidth - margin;
+		let maxHeigh = this.parentElement.clientHeight - margin;
+
+		let newX = this.newWindowPosition.lastPos.x + margin;
+		let newY = this.newWindowPosition.lastPos.y + margin;
+
+		let coverlevel = (this.newWindowPosition.lastPos.y -
+			this.newWindowPosition.lastTopStart.y) / margin;
+		if (coverlevel > maxLevel) { // 叠了几层，换一个位置重新叠
+			newX = this.newWindowPosition.lastTopStart.x + margin;
+			newY = this.newWindowPosition.lastTopStart.y;
+			this.newWindowPosition.lastTopStart = {x: newX, y: newY};
+		}
+
+		if (((newX + width) > maxWidth)) {// 一行满了，换一行 
+			newX = margin; 
+			newY = this.newWindowPosition.lastTopStart.y + margin;
+			this.newWindowPosition.lastTopStart = {x: newX, y: newY};
+		}
+		if ((newY + height) > maxHeigh) { // 纵向满了，回头
+			newX = margin; 
+			newY = margin;
+			this.newWindowPosition.lastTopStart = {x: newX, y: newY};
+		}
+
+		let lastPos = { x: newX, y: newY };
+		this.newWindowPosition.lastPos = lastPos;
+		return lastPos;
+	}
 
 	addWindow(window: UIObj) {
 		if (this.windowZIndex.length > 0) {
@@ -47,7 +88,7 @@ export interface UIObj {
 	readonly id: string;
 	title: string;
 
-	renderIn(parentElem: HTMLElement): void;
+	renderIn(): void;
 
 	activeWindow(isActive: boolean): void;
 
@@ -69,7 +110,7 @@ export abstract class UIWindowAdptt implements UIObj {
 		this.title = title;
 	}
 
-	abstract renderIn(parentElem: HTMLElement): void;
+	abstract renderIn(): void;
 
 	deactiveWindow() {
 		let tid = JadeWindowUI.genWinTitleBarId(this.id);
@@ -124,10 +165,10 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 		super(desktop, id, title);
 	}
 
-	renderIn(parentElem: HTMLElement): void {
-		let div = JadeWindowUI.renderWindowTplt(parentElem, this);
+	renderIn(): void {
+		let div = JadeWindowUI.renderWindowTplt(this);
 		this.desktop.addWindow(this);
-		parentElem.appendChild(div);
+		this.desktop.parentElement.appendChild(div);
 	}
 
 }
@@ -137,10 +178,10 @@ export namespace JadeWindowUI {
 	export function genWinTitleBarId(id: string): string { return `titBar-${id}`; }
 	export function genWinTitleTextId(id: string): string { return `titText-${id}`; }
 
-	export function renderWindowTplt(parentElem: HTMLElement, win: UIObj): HTMLDivElement {
+	export function renderWindowTplt(win: UIObj): HTMLDivElement {
 		let winTplt = `
 		<div class="title-bar" id="${genWinTitleBarId(win.id)}">
-			<div class="title-bar-text .cannot-select" id="${genWinTitleTextId(win.id)}">${win.title}</div>
+			<div class="title-bar-text cannot-select" id="${genWinTitleTextId(win.id)}">${win.title}</div>
 			<div class="title-bar-controls">
 				<button aria-label="Minimize"></button>
 				<button aria-label="Maximize"></button>
@@ -187,14 +228,12 @@ export namespace JadeWindowUI {
 		div.style = "width: 320px"
 		div.innerHTML = winTplt;
 
+		
 		// 
+		let pos = win.desktop.getNewWindowPosition(div.getBoundingClientRect().width, div.getBoundingClientRect().height);
 		div.style.position = 'absolute';
-		div.style.left = `${win.desktop.newWindowPopPosition.x}px`;
-		div.style.top  = `${win.desktop.newWindowPopPosition.y}px`;
-		win.desktop.newWindowPopPosition = {
-			x: win.desktop.newWindowPopPosition.x + 20,
-			y: win.desktop.newWindowPopPosition.y + 20
-		}
+		div.style.left = `${win.desktop.parentElement.getBoundingClientRect().left + pos.x}px`;
+		div.style.top  = `${win.desktop.parentElement.getBoundingClientRect().top  + pos.y}px`;
 		return div;
 	};
 
