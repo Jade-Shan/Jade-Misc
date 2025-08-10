@@ -75,7 +75,7 @@ export class UIDesktop {
 			}
 		}
 		this.windowZIndex = newIndex;
-		this.parentElement.removeChild(win.windowDiv);
+		this.parentElement.removeChild(win.ui.win);
 		if (newIndex.length > 0) {
 			let currWin = newIndex[newIndex.length - 1];
 			currWin.activeWindow(true);
@@ -104,11 +104,24 @@ export class UIDesktop {
 
 }
 
+type WinStatus = {
+	code: "normal" | "minimize" | "maxmize";
+	readonly lastPos : {x: number, y: number};
+	readonly lastSize: {width: number, height: number};
+};
+
+type WinUIElement = {
+	readonly win: HTMLDivElement;
+	readonly titleBar: HTMLDivElement;
+	readonly windowBody: HTMLDivElement;
+	statusBar?: HTMLDivElement;
+}
 
 export interface UIObj {
 	readonly desktop: UIDesktop;
-	readonly windowDiv: HTMLDivElement;
 	readonly bindWinOpt: IBindWinOpt;
+	readonly ui: WinUIElement;
+	readonly status: WinStatus;
 	readonly id: string;
 	title: string;
 
@@ -125,8 +138,12 @@ export interface UIObj {
 
 export abstract class UIWindowAdptt implements UIObj {
 	readonly desktop: UIDesktop;
-	readonly windowDiv: HTMLDivElement;
+	readonly ui: WinUIElement;
 	readonly bindWinOpt: IBindWinOpt;
+	readonly status: WinStatus = { code: "normal",
+		lastPos: { x: 10, y: 10 },
+		lastSize: { width: 320, height: 250 }
+	};
 	readonly id: string;
 	title: string;
 
@@ -134,9 +151,12 @@ export abstract class UIWindowAdptt implements UIObj {
 		this.title = title;
 		this.desktop = desktop;
 		this.id = JadeWindowUI.genWinId(id);
-		this.windowDiv = document.createElement('div');
-		this.windowDiv.id = this.id;
-		this.windowDiv.classList.add("window");
+		let winDiv = document.createElement('div');
+		winDiv.id = this.id;
+		winDiv.classList.add("window");
+		let titleBar = document.createElement('div');
+		let windowBody = document.createElement('div');
+		this.ui = {win: winDiv, titleBar: titleBar, windowBody: windowBody};
 		this.bindWinOpt = bindWinOpt ? bindWinOpt : defaultWinOption;
 	}
 
@@ -155,7 +175,7 @@ export abstract class UIWindowAdptt implements UIObj {
 	}
 
 	setZIndex(zIndex: number): void {
-		this.windowDiv.style.zIndex = `${zIndex}`;
+		this.ui.win.style.zIndex = `${zIndex}`;
 	}
 
 	minSizeWindow(isMin: boolean): void {
@@ -186,12 +206,60 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
 	renderIn(): void {
 		let div = JadeWindowUI.renderWindowTplt(this);
-		this.desktop.addWindow(this);
 		// this.desktop.parentElement.style.position = 'relative';
 		// this.desktop.parentElement.appendChild(div);
 	}
 
 }
+
+export interface IBindWinOpt {
+	bindWinOptActive:(win: UIObj) => any;
+	bindWinOptClose :(win: UIObj, btn: HTMLButtonElement) => any;
+	bindWinOptMax   :(win: UIObj, btn: HTMLButtonElement) => any;
+}
+
+export class DefaultBindWinOpt implements IBindWinOpt {
+
+	bindWinOptActive(win: UIObj): any {
+		win.ui.win.onmousedown = e => {
+			win.desktop.optWinActive(win);
+		}
+	};
+
+	bindWinOptClose(win: UIObj, btn: HTMLButtonElement): any {
+		btn.onmouseup = e => {
+			win.desktop.optWinClose(win);
+		}
+	};
+
+	bindWinOptMax(win: UIObj, btn: HTMLButtonElement): any {
+		btn.onmousedown = e => {
+			let winDiv = win.ui.win;
+			if ("normal" === win.status.code) {
+				win.status.code = "maxmize";
+				let pElem = win.desktop.parentElement;
+				winDiv.style.left = `0px`;
+				winDiv.style.top = `0px`;
+				winDiv.style.width  = `${pElem.clientWidth}px`;
+				winDiv.style.height = `${pElem.clientHeight}px`;
+			} else if ("maxmize" === win.status.code) {
+				win.status.code = "normal";
+				winDiv.style.left = `${win.status.lastPos.x}px`;
+				winDiv.style.top = `${win.status.lastPos.y}px`;
+				winDiv.style.width  = `${win.status.lastSize.width}px`;
+				winDiv.style.height = `${win.status.lastSize.height}px`;
+			}
+			let height = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
+			if (win.ui.statusBar) {
+				height = height - win.ui.statusBar.clientHeight;
+			}
+			win.ui.windowBody.style.height = `${height - 40}px`;
+		}
+	};
+
+}
+
+export let defaultWinOption = new DefaultBindWinOpt();
 
 export namespace JadeWindowUI {
 
@@ -211,14 +279,17 @@ export namespace JadeWindowUI {
 			return titleBarText;
 		}
 		let renderTitleBarControls = (win: UIObj): HTMLDivElement => {
+			//
 			let btnMin = document.createElement("button");
 			btnMin.setAttribute("aria-label", "Minimize");
+			//
 			let btnMax = document.createElement("button");
 			btnMax.setAttribute("aria-label", "Maximize");
+			win.bindWinOpt.bindWinOptMax(win, btnMax);
+			//
 			let btnClose = document.createElement("button");
 			btnClose.setAttribute("aria-label", "Close");
-			btnClose.onmouseup = (ev) => { win.desktop.optWinClose(win); }
-			win.bindWinOpt.bindWinOptClose(win);
+			win.bindWinOpt.bindWinOptClose(win, btnClose);
 			//
 			let titleBarCtls = document.createElement("div");
 			titleBarCtls.classList.add("title-bar-controls");
@@ -227,7 +298,7 @@ export namespace JadeWindowUI {
 			titleBarCtls.appendChild(btnClose);
 			return titleBarCtls;
 		}
-		let titleBar = document.createElement("div");
+		let titleBar = win.ui.titleBar;
 		titleBar.id = genWinTitleBarId(win.id);
 		titleBar.classList.add("title-bar");
 		titleBar.appendChild(renderTitleBarText(win));
@@ -236,7 +307,7 @@ export namespace JadeWindowUI {
 	}
 
 	export function renderWindowBody(win: UIObj): HTMLDivElement {
-		let windowBody = document.createElement("div");
+		let windowBody = win.ui.windowBody;
 		windowBody.classList.add("window-body");
 		windowBody.innerHTML = `
 			<p> There are just so many possibilities:</p>
@@ -280,49 +351,67 @@ export namespace JadeWindowUI {
 		return statusBar;
 	}
 
+	export function countWindowHeight(divs: Array<HTMLDivElement>): number {
+		let totalHeight = 0;
+		for (let i = 0; i < divs.length; i++) {
+			totalHeight += divs[i].offsetHeight;
+		}
+		return totalHeight;
+	}
+
+	export function countWindowWidth(divs: Array<HTMLDivElement>): number {
+		let totalWidth = 0;
+		for (let i = 0; i < divs.length; i++) {
+			totalWidth += divs[i].offsetWidth;
+		}
+		return totalWidth;
+	}
+
 	export function renderWindowTplt(win: UIObj): HTMLDivElement {
-		let div: HTMLDivElement = win.windowDiv;
+		let parent = win.desktop.parentElement;
+		let winDiv: HTMLDivElement = win.ui.win;
 		let titleBar = renderTitleBar(win);
 		let windowBody = renderWindowBody(win);
 		let statusBar = renderStatusBar(win);
-		div.appendChild(titleBar );
-		div.appendChild(windowBody);
-		div.appendChild(statusBar);
+		winDiv.appendChild(titleBar );
+		winDiv.appendChild(windowBody);
+		winDiv.appendChild(statusBar);
 		// 
-		let pos = win.desktop.getNewWindowPosition(div.getBoundingClientRect().width, div.getBoundingClientRect().height);
-		div.style.position = 'absolute';
-		div.style.left = `${pos.x}px`;
-		div.style.top  = `${pos.y}px`;
-		win.desktop.parentElement.style.position = 'relative';
+		let pos = win.desktop.getNewWindowPosition( //
+			winDiv.getBoundingClientRect().width, //
+			winDiv.getBoundingClientRect().height);
+		win.status.lastPos.x = pos.x;
+		win.status.lastPos.y = pos.y;
+		winDiv.style.position = 'absolute';
+		winDiv.style.left = `${pos.x}px`;
+		winDiv.style.top  = `${pos.y}px`;
+		parent.style.position = 'relative';
 		//
-		div.style = "width: 320px"
-		//
-		win.desktop.parentElement.appendChild(div);
+		parent.appendChild(winDiv);
 		//
 		win.bindWinOpt.bindWinOptActive(win);
-		return div;
-	};
-}
-
-export interface IBindWinOpt {
-	bindWinOptActive:(win: UIObj) => any;
-	bindWinOptClose :(win: UIObj) => any;
-}
-
-export class DefaultBindWinOpt implements IBindWinOpt {
-
-	bindWinOptActive(win: UIObj): any {
-		win.windowDiv.onmousedown = e => {
-			win.desktop.optWinActive(win);
+		//
+		win.desktop.addWindow(win);
+		//计算窗口大小
+		let width = winDiv.offsetWidth;
+		if (width > parent.offsetWidth) {
+			win.status.lastSize.width = width;
+			winDiv.style.left = `0px`;
+			winDiv.style.width = `${width}px`;
+		} else if ((width + win.status.lastPos.x) > parent.offsetWidth) {
+			win.status.lastPos.x = parent.offsetHeight - width;
+			winDiv.style.left = `${win.status.lastPos.x}px`;
 		}
-	};
-
-	bindWinOptClose(win: UIObj): any {
-		win.windowDiv.onmouseup = e => {
-			win.desktop.optWinClose(win);
+		let height = winDiv.offsetHeight;
+		if (height > parent.offsetHeight) {
+			win.status.lastSize.height = height;
+			winDiv.style.top = `0px`;
+			winDiv.style.height = `${height}px`;
+		} else if ((height + win.status.lastPos.y) > parent.offsetHeight) {
+			win.status.lastPos.y = parent.offsetHeight - height;
+			winDiv.style.top = `${win.status.lastPos.y}px`;
 		}
+
+		return winDiv;
 	};
-
 }
-
-export let defaultWinOption = new DefaultBindWinOpt();
