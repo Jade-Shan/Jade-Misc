@@ -93,6 +93,9 @@ export class UIDesktop {
 			currWin.activeWindow(true);
 			currWin.setZIndex(WIN_Z_IDX_MIN + newIndex.length);
 		}
+		if (this.dockBar) {
+			this.dockBar.removeIcon(win);
+		}
 	}
 
 	optWinActive(win: UIObj) {
@@ -296,9 +299,65 @@ export class DockBar {
 
 	constructor(parentElement: HTMLElement) {
 		this.parentElement = parentElement;
-		this.barDiv = document.createElement('div');
-		this.barDiv.classList.add('dock-bar');
+		let barDiv = document.createElement('div');
+		this.barDiv = barDiv;
+		barDiv.classList.add('dock-bar');
 		parentElement.appendChild(this.barDiv);
+		//
+		let range = 300
+		let maxScale = 1.8
+		barDiv.onmousemove = e => {
+			let curve = this.createCurve(range, e.clientX, 1, maxScale);
+			this.layout(curve);
+			let rect = barDiv.getBoundingClientRect();
+			const width = rect.right - rect.left
+			barDiv.style.setProperty('width', `${width}px`);
+		};
+		barDiv.onmouseleave = e => {
+			this.layout(() => 1);
+			barDiv.style.setProperty('width', 'fit-content');
+		};
+		this.barDiv.onmouseenter = e => {
+			let rect = barDiv.getBoundingClientRect();
+			let width = rect.right - rect.left + 80;
+			barDiv.style.setProperty('width', `${width}px`);
+		};
+	}
+
+	// 生成一个曲线函数
+	private createCurve(totalDis: number, topX: number,  //
+		minY: number, maxY: number): (x: number) => number //
+	{
+		let baseCurve = (x: number): number => {
+			return x < 0 || x > 1 ? 0 : Math.sin(x * Math.PI);
+		};
+		let curve = (x: number): number => {
+			let beginX = topX - totalDis / 2
+			let endX = topX + totalDis / 2
+			return x < beginX || x > endX ? minY : //
+				baseCurve((x - beginX) / totalDis) * (maxY - minY) + minY;
+		}
+		return curve;
+	}
+
+	private layout(curve: (x: number) => number) {
+		let items = this.barDiv.children;
+		for (let i=0; i<items.length;i++) {
+			let item: Element|null = items.item(i);
+			if (item != null) {
+				let rect = item.getBoundingClientRect();
+				let x = rect.left + rect.width / 2;
+				let scale = curve(x);
+				let elm: any = item;
+				elm.style.setProperty('--i', scale);
+			}
+		}
+		// Array.from(items).forEach(item => {
+		// 	const rect = item.getBoundingClientRect()
+		// 	const x = rect.left + rect.width / 2
+		// 	const scale = curve(x)
+		// 	item.style.setProperty('--i', scale)
+		// })
 	}
 
 	genAppGrapId(winId: string): string { return `appGrp-${winId}`; };
@@ -317,6 +376,30 @@ export class DockBar {
 		icon.classList.add('menu-item');
 		this.barDiv.appendChild(icon);
 		win.bindWinOpt.bindWinOptMin(win, icon);
+	}
+
+	removeIcon(win: UIObj) {
+		let iconId = this.genAppIconId(win.id);
+		let items = this.barDiv.children;
+		if (items.length > 0) {
+			for (let i = 0; i < items.length; i++) {
+				if (iconId === items.item(i)?.id) {
+					let gap : Element | null = null;
+					let icon: Element | null = items.item(i);
+					if (items.length == 0) {
+						// 最后一个，没有间隔符
+					} else if (i == 0 && items.item(i + 1)?.classList.contains("gap")) {
+						// 如果是第一个元素，删除右边的间隔
+						gap = items.item(i + 1);
+					} else if (items.item(i - 1)?.classList.contains("gap")) {
+						// 其他的元素默认删除左边的间隔
+						gap = items.item(i - 1);
+					}
+					if (icon) { this.barDiv.removeChild(icon); }
+					if (gap ) { this.barDiv.removeChild(gap ); }
+				}
+			}
+		}
 	}
 
 }
