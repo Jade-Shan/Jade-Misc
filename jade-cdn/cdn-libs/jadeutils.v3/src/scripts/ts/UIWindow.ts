@@ -3,7 +3,7 @@ import { IPoint2D } from "./geo2d.js";
 
 const WIN_Z_IDX_MIN = 2000;
 
-export class UIDesktopStatus {
+export class UIDesktop {
 	readonly parentElement: HTMLElement;
 	private allWindows: SimpleMap<string,UIObj> = new SimpleMap();
 	private windowZIndex: Array<UIObj> = [];
@@ -61,7 +61,7 @@ export class UIDesktopStatus {
 		this.windowZIndex.push(window);
 	}
 
-	closeWindow(win: UIObj) {
+	optWinClose(win: UIObj) {
 		this.allWindows.remove(win.id);
 		let newIndex: Array<UIObj> = [];
 		for (let i = 0; i < this.windowZIndex.length; i++) {
@@ -83,7 +83,7 @@ export class UIDesktopStatus {
 		}
 	}
 
-	setCurrentActive(win: UIObj) {
+	optWinActive(win: UIObj) {
 		let newIndex: Array<UIObj> = [];
 		for (let i = 0; i < this.windowZIndex.length; i++) {
 			let w = this.windowZIndex[i];
@@ -106,8 +106,9 @@ export class UIDesktopStatus {
 
 
 export interface UIObj {
-	readonly desktop: UIDesktopStatus;
+	readonly desktop: UIDesktop;
 	readonly windowDiv: HTMLDivElement;
+	readonly bindWinOpt: IBindWinOpt;
 	readonly id: string;
 	title: string;
 
@@ -123,31 +124,23 @@ export interface UIObj {
 }
 
 export abstract class UIWindowAdptt implements UIObj {
-	readonly desktop: UIDesktopStatus;
+	readonly desktop: UIDesktop;
 	readonly windowDiv: HTMLDivElement;
+	readonly bindWinOpt: IBindWinOpt;
 	readonly id: string;
 	title: string;
 
-	constructor(desktop: UIDesktopStatus, id: string, title: string) {
+	constructor(desktop: UIDesktop, id: string, title: string, bindWinOpt?: IBindWinOpt) {
 		this.title = title;
 		this.desktop = desktop;
 		this.id = JadeWindowUI.genWinId(id);
 		this.windowDiv = document.createElement('div');
 		this.windowDiv.id = this.id;
 		this.windowDiv.classList.add("window");
+		this.bindWinOpt = bindWinOpt ? bindWinOpt : defaultWinOption;
 	}
 
 	abstract renderIn(): void;
-
-	deactiveWindow() {
-		let tid = JadeWindowUI.genWinTitleBarId(this.id);
-		let div = document.getElementById(tid);
-		if (div) {
-			if (!div.classList.contains('inactive')) {
-				div.classList.add('inactive');
-			}
-		}
-	}
 
 	activeWindow(isActive: boolean): void {
 		let tid = JadeWindowUI.genWinTitleBarId(this.id);
@@ -187,14 +180,15 @@ export interface ResizeableUI extends UIObj {
 
 export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
-	constructor(desktop: UIDesktopStatus, id: string, title: string) {
-		super(desktop, id, title);
+	constructor(desktop: UIDesktop, id: string, title: string, bindWinOpt?: IBindWinOpt) {
+		super(desktop, id, title, bindWinOpt);
 	}
 
 	renderIn(): void {
 		let div = JadeWindowUI.renderWindowTplt(this);
 		this.desktop.addWindow(this);
-		this.desktop.parentElement.appendChild(div);
+		// this.desktop.parentElement.style.position = 'relative';
+		// this.desktop.parentElement.appendChild(div);
 	}
 
 }
@@ -223,7 +217,8 @@ export namespace JadeWindowUI {
 			btnMax.setAttribute("aria-label", "Maximize");
 			let btnClose = document.createElement("button");
 			btnClose.setAttribute("aria-label", "Close");
-			btnClose.onmouseup = (ev) => { win.desktop.closeWindow(win); }
+			btnClose.onmouseup = (ev) => { win.desktop.optWinClose(win); }
+			win.bindWinOpt.bindWinOptClose(win);
 			//
 			let titleBarCtls = document.createElement("div");
 			titleBarCtls.classList.add("title-bar-controls");
@@ -287,7 +282,6 @@ export namespace JadeWindowUI {
 
 	export function renderWindowTplt(win: UIObj): HTMLDivElement {
 		let div: HTMLDivElement = win.windowDiv;
-		div.style = "width: 320px"
 		let titleBar = renderTitleBar(win);
 		let windowBody = renderWindowBody(win);
 		let statusBar = renderStatusBar(win);
@@ -297,12 +291,38 @@ export namespace JadeWindowUI {
 		// 
 		let pos = win.desktop.getNewWindowPosition(div.getBoundingClientRect().width, div.getBoundingClientRect().height);
 		div.style.position = 'absolute';
-		div.style.left = `${win.desktop.parentElement.getBoundingClientRect().left + pos.x}px`;
-		div.style.top  = `${win.desktop.parentElement.getBoundingClientRect().top  + pos.y}px`;
-		div.onmousedown = (e) => { win.desktop.setCurrentActive(win); }
+		div.style.left = `${pos.x}px`;
+		div.style.top  = `${pos.y}px`;
+		win.desktop.parentElement.style.position = 'relative';
+		//
+		div.style = "width: 320px"
+		//
+		win.desktop.parentElement.appendChild(div);
+		//
+		win.bindWinOpt.bindWinOptActive(win);
 		return div;
+	};
+}
+
+export interface IBindWinOpt {
+	bindWinOptActive:(win: UIObj) => any;
+	bindWinOptClose :(win: UIObj) => any;
+}
+
+export class DefaultBindWinOpt implements IBindWinOpt {
+
+	bindWinOptActive(win: UIObj): any {
+		win.windowDiv.onmousedown = e => {
+			win.desktop.optWinActive(win);
+		}
+	};
+
+	bindWinOptClose(win: UIObj): any {
+		win.windowDiv.onmouseup = e => {
+			win.desktop.optWinClose(win);
+		}
 	};
 
 }
 
-
+export let defaultWinOption = new DefaultBindWinOpt();
