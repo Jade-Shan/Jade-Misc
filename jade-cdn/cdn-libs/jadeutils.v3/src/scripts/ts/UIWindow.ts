@@ -4,7 +4,7 @@ import { IPoint2D } from "./geo2d.js";
 const WIN_Z_IDX_MIN = 2000;
 
 type IDesktopConfig = {
-	dockBar?: {}
+	dockBar?: {range?: number, maxScale: number}
 }
 
 export class UIDesktop {
@@ -21,7 +21,7 @@ export class UIDesktop {
 	constructor(parentElement: HTMLElement, cfg?: IDesktopConfig) {
 		this.parentElement = parentElement;
 		if (cfg && cfg.dockBar) {
-			this.dockBar = new DockBar(parentElement);
+			this.dockBar = new DockBar(parentElement, cfg.dockBar);
 		}
 	}
 	
@@ -297,7 +297,7 @@ export class DockBar {
 	private barDiv: HTMLDivElement;
 	private parentElement: HTMLElement;
 
-	constructor(parentElement: HTMLElement) {
+	constructor(parentElement: HTMLElement, cfg?: {range?: number, maxScale: number}) {
 		this.parentElement = parentElement;
 		let barDiv = document.createElement('div');
 		this.barDiv = barDiv;
@@ -306,6 +306,8 @@ export class DockBar {
 		//
 		let range = 300
 		let maxScale = 1.8
+		if (cfg && cfg.range   ) { range    = cfg.range   ; }
+		if (cfg && cfg.maxScale) { maxScale = cfg.maxScale; }
 		barDiv.onmousemove = e => {
 			let curve = this.createCurve(range, e.clientX, 1, maxScale);
 			this.layout(curve);
