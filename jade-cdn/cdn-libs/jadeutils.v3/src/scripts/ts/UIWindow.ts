@@ -105,7 +105,8 @@ export class UIDesktop {
 }
 
 type WinStatus = {
-	code: "normal" | "minimize" | "maxmize";
+	isMax: boolean; 
+	isMin: boolean;
 	readonly lastPos : {x: number, y: number};
 	readonly lastSize: {width: number, height: number};
 };
@@ -140,7 +141,8 @@ export abstract class UIWindowAdptt implements UIObj {
 	readonly desktop: UIDesktop;
 	readonly ui: WinUIElement;
 	readonly bindWinOpt: IBindWinOpt;
-	readonly status: WinStatus = { code: "normal",
+	readonly status: WinStatus = { 
+		isMin: false, isMax: false,
 		lastPos: { x: 10, y: 10 },
 		lastSize: { width: 320, height: 250 }
 	};
@@ -214,46 +216,61 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
 export interface IBindWinOpt {
 	bindWinOptActive:(win: UIObj) => any;
-	bindWinOptClose :(win: UIObj, btn: HTMLButtonElement) => any;
-	bindWinOptMax   :(win: UIObj, btn: HTMLButtonElement) => any;
+	bindWinOptClose :(win: UIObj, btn: HTMLElement) => any;
+	bindWinOptMax   :(win: UIObj, btn: HTMLElement) => any;
+	bindWinOptMin   :(win: UIObj, btn: HTMLElement) => any;
 }
 
 export class DefaultBindWinOpt implements IBindWinOpt {
 
 	bindWinOptActive(win: UIObj): any {
 		win.ui.win.onmousedown = e => {
+			console.log(`click win ${win.id}`);
 			win.desktop.optWinActive(win);
 		}
 	};
 
-	bindWinOptClose(win: UIObj, btn: HTMLButtonElement): any {
+	bindWinOptClose(win: UIObj, btn: HTMLElement): any {
 		btn.onmouseup = e => {
 			win.desktop.optWinClose(win);
 		}
 	};
 
-	bindWinOptMax(win: UIObj, btn: HTMLButtonElement): any {
+	bindWinOptMax(win: UIObj, btn: HTMLElement): any {
 		btn.onmousedown = e => {
 			let winDiv = win.ui.win;
-			if ("normal" === win.status.code) {
-				win.status.code = "maxmize";
+			if (win.status.isMax) {
+				win.status.isMax = false;
+				winDiv.style.left = `${win.status.lastPos.x}px`;
+				winDiv.style.top = `${win.status.lastPos.y}px`;
+				winDiv.style.width  = `${win.status.lastSize.width}px`;
+				winDiv.style.height = `${win.status.lastSize.height}px`;
+			} else {
+				win.status.isMax = true;
 				let pElem = win.desktop.parentElement;
 				winDiv.style.left = `0px`;
 				winDiv.style.top = `0px`;
 				winDiv.style.width  = `${pElem.clientWidth}px`;
 				winDiv.style.height = `${pElem.clientHeight}px`;
-			} else if ("maxmize" === win.status.code) {
-				win.status.code = "normal";
-				winDiv.style.left = `${win.status.lastPos.x}px`;
-				winDiv.style.top = `${win.status.lastPos.y}px`;
-				winDiv.style.width  = `${win.status.lastSize.width}px`;
-				winDiv.style.height = `${win.status.lastSize.height}px`;
 			}
 			let height = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
 			if (win.ui.statusBar) {
 				height = height - win.ui.statusBar.clientHeight;
 			}
 			win.ui.windowBody.style.height = `${height - 40}px`;
+		}
+	};
+
+	bindWinOptMin(win: UIObj, btn: HTMLElement): any {
+		btn.onmousedown = e => {
+			let winDiv = win.ui.win;
+			if (win.status.isMin) {
+				win.status.isMin = false;
+				win.ui.win.style.visibility = "visible";
+			} else {
+				win.status.isMin = true;
+				win.ui.win.style.visibility = "hidden";
+			}
 		}
 	};
 
@@ -282,6 +299,7 @@ export namespace JadeWindowUI {
 			//
 			let btnMin = document.createElement("button");
 			btnMin.setAttribute("aria-label", "Minimize");
+			win.bindWinOpt.bindWinOptMin(win, btnMin);
 			//
 			let btnMax = document.createElement("button");
 			btnMax.setAttribute("aria-label", "Maximize");

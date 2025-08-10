@@ -166,6 +166,29 @@ export class NumUtil {
 		return value / 10;
 	}
 
+	/**
+	 * 曲线函数，x在0到1之间，Y向上凸出的曲线。
+	 * @param x 
+	 * @returns 
+	 */
+	static baseCurve(x: number): number {
+		return (x < 0) || (x > 1) ? 0 : Math.sin(x * Math.PI);
+	}
+
+	static createCurve(totalXDis: number, topX: number, minY: number, maxY: number): (x: number) => number {
+		let curve = (x: number): number => {
+			const beginX = topX - totalXDis / 2;
+			const endX = topX + totalXDis / 2;
+			if (x < beginX || x > endX) {
+				return minY;
+			} else {
+				const yDis = maxY - minY;
+				return this.baseCurve((x - beginX) / totalXDis) * yDis + minY;
+			}
+		}
+		return curve;
+	}
+
 }
 
 

@@ -6,6 +6,7 @@
 //import { CanvasCircle2D, CanvasLine2D, CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
 //import { Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
 
+import { NumUtil } from "./basic.js";
 import { UIDesktop, UIWindow } from "./UIWindow.js";
 
 
