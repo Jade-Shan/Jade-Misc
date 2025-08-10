@@ -309,9 +309,9 @@ export class DockBar {
 		barDiv.onmousemove = e => {
 			let curve = this.createCurve(range, e.clientX, 1, maxScale);
 			this.layout(curve);
-			let rect = barDiv.getBoundingClientRect();
-			const width = rect.right - rect.left
-			barDiv.style.setProperty('width', `${width}px`);
+			// let rect = barDiv.getBoundingClientRect();
+			// const width = rect.right - rect.left
+			// barDiv.style.setProperty('width', `${width}px`);
 		};
 		barDiv.onmouseleave = e => {
 			this.layout(() => 1);

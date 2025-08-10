@@ -26,7 +26,9 @@ export class TestJadeUI {
 		//
 		let desktop01 = document.getElementById(`test-desktop-01`);
 		if (desktop01) {
-			let desktop: UIDesktop = new UIDesktop(desktop01, {dockBar:{}});
+			let desktop: UIDesktop = new UIDesktop(desktop01, {
+				dockBar: { range: 300, maxScale: 1.8 }
+			});
 			for (let j = 0; j < 3; j++) {
 				let win = new UIWindow(desktop, `test-win-01-${j}`, `test win 01-${j}`);
 				win.renderIn();
