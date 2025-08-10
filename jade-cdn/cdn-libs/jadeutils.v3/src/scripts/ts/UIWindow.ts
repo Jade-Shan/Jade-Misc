@@ -3,17 +3,26 @@ import { IPoint2D } from "./geo2d.js";
 
 const WIN_Z_IDX_MIN = 2000;
 
+type IDesktopConfig = {
+	dockBar?: {}
+}
+
 export class UIDesktop {
 	readonly parentElement: HTMLElement;
 	private allWindows: SimpleMap<string,UIObj> = new SimpleMap();
 	private windowZIndex: Array<UIObj> = [];
+	private dockBar?: DockBar;
+
 	private newWindowPosition = { // 管理新窗口弹出位置
 		lastPos: {x: 0, y: 0}, // 上一次窗口弹出的坐标
 		lastTopStart:{x: 0, y: 0} // 叠完一行以后，下移一行开始重新叠
 	};
 
-	constructor(parentElement: HTMLElement) {
+	constructor(parentElement: HTMLElement, cfg?: IDesktopConfig) {
 		this.parentElement = parentElement;
+		if (cfg && cfg.dockBar) {
+			this.dockBar = new DockBar(parentElement);
+		}
 	}
 	
 	getNewWindowPosition(width: number, height: number): IPoint2D {
@@ -59,6 +68,9 @@ export class UIDesktop {
 		}
 		this.allWindows.put(window.id, window);
 		this.windowZIndex.push(window);
+		if (this.dockBar) {
+			this.dockBar.addIcon(window);
+		}
 	}
 
 	optWinClose(win: UIObj) {
@@ -208,8 +220,6 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
 	renderIn(): void {
 		let div = JadeWindowUI.renderWindowTplt(this);
-		// this.desktop.parentElement.style.position = 'relative';
-		// this.desktop.parentElement.appendChild(div);
 	}
 
 }
@@ -277,6 +287,40 @@ export class DefaultBindWinOpt implements IBindWinOpt {
 }
 
 export let defaultWinOption = new DefaultBindWinOpt();
+
+
+export class DockBar {
+
+	private barDiv: HTMLDivElement;
+	private parentElement: HTMLElement;
+
+	constructor(parentElement: HTMLElement) {
+		this.parentElement = parentElement;
+		this.barDiv = document.createElement('div');
+		this.barDiv.classList.add('dock-bar');
+		parentElement.appendChild(this.barDiv);
+	}
+
+	genAppGrapId(winId: string): string { return `appGrp-${winId}`; };
+	genAppIconId(winId: string): string { return `appIco-${winId}`; };
+
+	addIcon(win: UIObj) {
+		let items = this.barDiv.children;
+		if (items.length > 0) {
+			let gap = document.createElement('div');
+			gap.id = this.genAppGrapId(win.id);
+			gap.classList.add('gap');
+			this.barDiv.appendChild(gap);
+		}
+		let icon = document.createElement('div');
+		icon.id = this.genAppIconId(win.id);
+		icon.classList.add('menu-item');
+		this.barDiv.appendChild(icon);
+		win.bindWinOpt.bindWinOptMin(win, icon);
+	}
+
+}
+
 
 export namespace JadeWindowUI {
 

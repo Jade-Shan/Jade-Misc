@@ -14,14 +14,31 @@ export class TestJadeUI {
 
 
 	static testWindowUI() {
-		for (let i = 0; i < 5; i++) {
-			let ddiv = document.getElementById(`test-desktop-${i}`);
-			if (ddiv) {
-				let desktop: UIDesktop = new UIDesktop(ddiv);
-				for (let j = 0; j < 3; j++) {
-					let win = new UIWindow(desktop, `test-win-${i}-${j}`, `test win ${i}-${j}`);
-					win.renderIn();
-				}
+		//
+		let desktop00 = document.getElementById(`test-desktop-00`);
+		if (desktop00) {
+			let desktop: UIDesktop = new UIDesktop(desktop00);
+			for (let j = 0; j < 3; j++) {
+				let win = new UIWindow(desktop, `test-win-00-${j}`, `test win 00-${j}`);
+				win.renderIn();
+			}
+		}
+		//
+		let desktop01 = document.getElementById(`test-desktop-01`);
+		if (desktop01) {
+			let desktop: UIDesktop = new UIDesktop(desktop01, {dockBar:{}});
+			for (let j = 0; j < 3; j++) {
+				let win = new UIWindow(desktop, `test-win-01-${j}`, `test win 01-${j}`);
+				win.renderIn();
+			}
+		}
+		//
+		let desktop02 = document.getElementById(`test-desktop-02`);
+		if (desktop02) {
+			let desktop: UIDesktop = new UIDesktop(desktop02);
+			for (let j = 0; j < 3; j++) {
+				let win = new UIWindow(desktop, `test-win-02-${j}`, `test win 02-${j}`);
+				win.renderIn();
 			}
 		}
 	}
