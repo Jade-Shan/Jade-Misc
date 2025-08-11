@@ -39,8 +39,20 @@ export class UIDesktop {
 		desktopDiv.style.backgroundImage = cfg?.desktop?.backgroundImage ? // 
 			cfg?.desktop?.backgroundImage : //
 			`url('data:image/jpeg;base64, ${JadeUIResource.imgDesktopBg}')`;
-		this.dockBar = cfg?.dockBar ? new DockBar(desktopDiv, cfg.dockBar) : undefined;
+		this.dockBar = cfg?.dockBar ? new DockBar(this, cfg.dockBar) : undefined;
 	}
+
+	/**
+	 * 桌面上有没有docker
+	 * @returns 是否有
+	 */
+	hasDockBar(): boolean { return this.dockBar ? true : false; }
+
+	/**
+	 * 取得桌面上窗口的最大层数
+	 * @returns 窗口的最大层数
+	 */
+	getMaxWindowIndex(): number { return this.windowZIndex.length + WIN_Z_IDX_MIN; }
 
 	/**
 	 * 通过新窗口的大小计算新窗口弹出的坐标
@@ -154,6 +166,7 @@ export class UIDesktop {
 		//
 		win.activeWindow(true);
 		win.setZIndex(WIN_Z_IDX_MIN + newIndex.length);
+		console.log(`winddow z-idx is ${WIN_Z_IDX_MIN + newIndex.length}`);
 	}
 
 }
@@ -376,8 +389,10 @@ export class DefaultBindWinOpt implements IBindWinOpt {
 				let pElem = win.desktop.desktopDiv;
 				winDiv.style.left = `0px`;
 				winDiv.style.top = `0px`;
-				winDiv.style.width  = `${pElem.clientWidth}px`;
-				winDiv.style.height = `${pElem.clientHeight}px`;
+				winDiv.style.width  = `${pElem.clientWidth - 6}px`;
+				winDiv.style.height = `${win.desktop.hasDockBar() ? 
+					// 如果桌面上有dock，留几个像素让dock可以响应鼠标
+					pElem.clientHeight - 10 : pElem.clientHeight - 6}px`;
 			}
 			let height = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
 			if (win.ui.statusBar) {
@@ -417,12 +432,12 @@ export class DockBar {
 	private barDiv: HTMLDivElement;
 	private parentElement: HTMLElement;
 
-	constructor(parentElement: HTMLElement, cfg?: {range?: number, maxScale: number}) {
-		this.parentElement = parentElement;
+	constructor(desktop: UIDesktop, cfg?: {range?: number, maxScale: number}) {
+		this.parentElement = desktop.desktopDiv;
 		let barDiv = document.createElement('div');
 		this.barDiv = barDiv;
 		barDiv.classList.add('dock-bar');
-		parentElement.appendChild(this.barDiv);
+		this.parentElement.appendChild(this.barDiv);
 		//
 		let range = 300
 		let maxScale = 1.8
@@ -438,11 +453,15 @@ export class DockBar {
 		barDiv.onmouseleave = e => {
 			this.layout(() => 1);
 			barDiv.style.setProperty('width', 'fit-content');
+			barDiv.style.zIndex = `${WIN_Z_IDX_MIN - 1}`; // 下到最低层
+			console.log(`dock z-idx is ${barDiv.style.zIndex}`)
 		};
 		this.barDiv.onmouseenter = e => {
+			barDiv.style.zIndex = `${desktop.getMaxWindowIndex() + 10}`;// 提到最上层
 			let rect = barDiv.getBoundingClientRect();
 			let width = rect.right - rect.left + 80;
 			barDiv.style.setProperty('width', `${width}px`);
+			console.log(`dock z-idx is ${barDiv.style.zIndex}`)
 		};
 	}
 
