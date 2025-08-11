@@ -1,5 +1,6 @@
 import { SimpleMap } from "./dataStructure.js";
 import { IPoint2D } from "./geo2d.js";
+import { JadeUIResource } from "./resource.js";
 
 const WIN_Z_IDX_MIN = 2000;
 
@@ -7,6 +8,7 @@ const WIN_Z_IDX_MIN = 2000;
  * 桌面环境的参数配置
  */
 type IDesktopConfig = {
+	desktop?: { backgroundImage?: string, width: string, height: string },
 	dockBar?: { range?: number, maxScale: number }
 }
 
@@ -32,9 +34,12 @@ export class UIDesktop {
 	 */
 	constructor(desktopDiv: HTMLElement, cfg?: IDesktopConfig) {
 		this.desktopDiv = desktopDiv;
-		if (cfg && cfg.dockBar) {
-			this.dockBar = new DockBar(desktopDiv, cfg.dockBar);
-		}
+		desktopDiv.style.height = cfg?.desktop?.height ? cfg.desktop.height : "100%";
+		desktopDiv.style.width  = cfg?.desktop?.width  ? cfg.desktop.width  : "100%";
+		desktopDiv.style.backgroundImage = cfg?.desktop?.backgroundImage ? // 
+			cfg?.desktop?.backgroundImage : //
+			`url('data:image/jpeg;base64, ${JadeUIResource.imgDesktopBg}')`;
+		this.dockBar = cfg?.dockBar ? new DockBar(desktopDiv, cfg.dockBar) : undefined;
 	}
 
 	/**
