@@ -3,33 +3,52 @@ import { IPoint2D } from "./geo2d.js";
 
 const WIN_Z_IDX_MIN = 2000;
 
+/**
+ * 桌面环境的参数配置
+ */
 type IDesktopConfig = {
-	dockBar?: {range?: number, maxScale: number}
+	dockBar?: { range?: number, maxScale: number }
 }
 
+/**
+ * 桌面环境
+ */
 export class UIDesktop {
-	readonly parentElement: HTMLElement;
-	private allWindows: SimpleMap<string,UIObj> = new SimpleMap();
-	private windowZIndex: Array<UIObj> = [];
-	private dockBar?: DockBar;
+	readonly desktopDiv: HTMLElement; // 窗口在上一级HTML元素
+	private allWindows: SimpleMap<string, UIObj> = new SimpleMap(); // 全部窗口的索引
+	private windowZIndex: Array<UIObj> = []; // 窗口的z-index序列
+	private dockBar?: DockBar; // 程序栏
 
 	private newWindowPosition = { // 管理新窗口弹出位置
-		lastPos: {x: 0, y: 0}, // 上一次窗口弹出的坐标
-		lastTopStart:{x: 0, y: 0} // 叠完一行以后，下移一行开始重新叠
+		lastPos: { x: 0, y: 0 }, // 上一次窗口弹出的坐标
+		lastTopStart: { x: 0, y: 0 } // 叠完一行以后，下移一行开始重新叠
 	};
 
-	constructor(parentElement: HTMLElement, cfg?: IDesktopConfig) {
-		this.parentElement = parentElement;
+	/**
+	 * 创建一个桌面环境
+	 * 
+	 * @param parentElement 上一级元素
+	 * @param cfg 配置参数
+	 */
+	constructor(desktopDiv: HTMLElement, cfg?: IDesktopConfig) {
+		this.desktopDiv = desktopDiv;
 		if (cfg && cfg.dockBar) {
-			this.dockBar = new DockBar(parentElement, cfg.dockBar);
+			this.dockBar = new DockBar(desktopDiv, cfg.dockBar);
 		}
 	}
-	
+
+	/**
+	 * 通过新窗口的大小计算新窗口弹出的坐标
+	 * 
+	 * @param width 新窗口的宽度
+	 * @param height 新窗口的高度
+	 * @returns 新窗口弹出的坐标
+	 */
 	getNewWindowPosition(width: number, height: number): IPoint2D {
 		let margin = 90; // 新弹出的位置的间隔
 		let maxLevel = 8; // 同一次弹出时叠加几次
-		let maxWidth = this.parentElement.clientWidth - margin;
-		let maxHeigh = this.parentElement.clientHeight - margin;
+		let maxWidth = this.desktopDiv.clientWidth - margin;
+		let maxHeigh = this.desktopDiv.clientHeight - margin;
 
 		let newX = this.newWindowPosition.lastPos.x + margin;
 		let newY = this.newWindowPosition.lastPos.y + margin;
@@ -44,13 +63,13 @@ export class UIDesktop {
 		}
 
 		if (((newX + width) > maxWidth)) {// 一行满了，换一行 
-			newX = margin; 
+			newX = margin;
 			newY = this.newWindowPosition.lastTopStart.y + margin;
 			this.newWindowPosition.lastTopStart.x = newX;
 			this.newWindowPosition.lastTopStart.y = newY;
 		}
 		if ((newY + height) > maxHeigh) { // 纵向满了，回头
-			newX = margin; 
+			newX = margin;
 			newY = margin;
 			this.newWindowPosition.lastTopStart.x = newX;
 			this.newWindowPosition.lastTopStart.y = newY;
@@ -61,9 +80,14 @@ export class UIDesktop {
 		return lastPos;
 	}
 
+	/**
+	 * 在桌面上添加一个新窗口
+	 * 
+	 * @param window 新的窗口
+	 */
 	addWindow(window: UIObj) {
 		if (this.windowZIndex.length > 0) {
-			let last = this.windowZIndex[this.windowZIndex.length -1];
+			let last = this.windowZIndex[this.windowZIndex.length - 1];
 			last.activeWindow(false);
 		}
 		this.allWindows.put(window.id, window);
@@ -73,6 +97,11 @@ export class UIDesktop {
 		}
 	}
 
+	/**
+	 * 关闭一个窗口
+	 * 
+	 * @param win 要关闭的窗口
+	 */
 	optWinClose(win: UIObj) {
 		this.allWindows.remove(win.id);
 		let newIndex: Array<UIObj> = [];
@@ -87,7 +116,7 @@ export class UIDesktop {
 			}
 		}
 		this.windowZIndex = newIndex;
-		this.parentElement.removeChild(win.ui.win);
+		this.desktopDiv.removeChild(win.ui.win);
 		if (newIndex.length > 0) {
 			let currWin = newIndex[newIndex.length - 1];
 			currWin.activeWindow(true);
@@ -98,6 +127,11 @@ export class UIDesktop {
 		}
 	}
 
+	/**
+	 * 指定一个窗口为当前活动窗口
+	 * 
+	 * @param win 指定的窗口
+	 */
 	optWinActive(win: UIObj) {
 		let newIndex: Array<UIObj> = [];
 		for (let i = 0; i < this.windowZIndex.length; i++) {
@@ -227,15 +261,47 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
 }
 
+/**
+ * 绑定窗口操作
+ */
 export interface IBindWinOpt {
-	bindWinOptActive:(win: UIObj) => any;
-	bindWinOptClose :(win: UIObj, btn: HTMLElement) => any;
-	bindWinOptMax   :(win: UIObj, btn: HTMLElement) => any;
-	bindWinOptMin   :(win: UIObj, btn: HTMLElement) => any;
+	/**
+	 * 绑定窗口的关闭操作
+	 * @param win 窗口
+	 */
+	bindWinOptActive: (win: UIObj) => any;
+	/**
+	 * 绑定窗口的关闭操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptClose: (win: UIObj, btn: HTMLElement) => any;
+	/**
+	 * 绑定窗口的最大化操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptMax: (win: UIObj, btn: HTMLElement) => any;
+	/**
+	 * 绑定窗口的最小化操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptMin: (win: UIObj, btn: HTMLElement) => any;
 }
 
+/**
+ * 默认的窗口操作绑定
+ */
 export class DefaultBindWinOpt implements IBindWinOpt {
 
+	/**
+	 * 绑定窗口的关闭操作
+	 * @param win 窗口
+	 */
 	bindWinOptActive(win: UIObj): any {
 		win.ui.win.onmousedown = e => {
 			console.log(`click win ${win.id}`);
@@ -243,12 +309,24 @@ export class DefaultBindWinOpt implements IBindWinOpt {
 		}
 	};
 
+	/**
+	 * 绑定窗口的关闭操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
 	bindWinOptClose(win: UIObj, btn: HTMLElement): any {
 		btn.onmouseup = e => {
 			win.desktop.optWinClose(win);
 		}
 	};
 
+	/**
+	 * 绑定窗口的最大化操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
 	bindWinOptMax(win: UIObj, btn: HTMLElement): any {
 		btn.onmousedown = e => {
 			let winDiv = win.ui.win;
@@ -260,7 +338,7 @@ export class DefaultBindWinOpt implements IBindWinOpt {
 				winDiv.style.height = `${win.status.lastSize.height}px`;
 			} else {
 				win.status.isMax = true;
-				let pElem = win.desktop.parentElement;
+				let pElem = win.desktop.desktopDiv;
 				winDiv.style.left = `0px`;
 				winDiv.style.top = `0px`;
 				winDiv.style.width  = `${pElem.clientWidth}px`;
@@ -274,12 +352,19 @@ export class DefaultBindWinOpt implements IBindWinOpt {
 		}
 	};
 
+	/**
+	 * 绑定窗口的最小化操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
 	bindWinOptMin(win: UIObj, btn: HTMLElement): any {
 		btn.onmousedown = e => {
 			let winDiv = win.ui.win;
 			if (win.status.isMin) {
 				win.status.isMin = false;
 				win.ui.win.style.visibility = "visible";
+				win.desktop.optWinActive(win); // 恢复的窗口为顶层
 			} else {
 				win.status.isMin = true;
 				win.ui.win.style.visibility = "hidden";
@@ -515,7 +600,7 @@ export namespace JadeWindowUI {
 	}
 
 	export function renderWindowTplt(win: UIObj): HTMLDivElement {
-		let parent = win.desktop.parentElement;
+		let parent = win.desktop.desktopDiv;
 		let winDiv: HTMLDivElement = win.ui.win;
 		let titleBar = renderTitleBar(win);
 		let windowBody = renderWindowBody(win);
