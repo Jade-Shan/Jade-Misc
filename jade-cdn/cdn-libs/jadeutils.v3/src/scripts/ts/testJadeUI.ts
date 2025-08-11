@@ -7,6 +7,7 @@
 //import { Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
 
 import { NumUtil } from "./basic.js";
+import { JadeUIResource } from "./resource.js";
 import { UIDesktop, UIWindow } from "./UIWindow.js";
 
 
@@ -35,14 +36,19 @@ export class TestJadeUI {
 			}
 		}
 		//
-		let desktop02 = document.getElementById(`test-desktop-02`);
-		if (desktop02) {
-			let desktop: UIDesktop = new UIDesktop(desktop02);
-			for (let j = 0; j < 3; j++) {
-				let win = new UIWindow(desktop, `test-win-02-${j}`, `test win 02-${j}`);
-				win.renderIn();
-			}
-		}
+		let icon01 = JadeUIResource.getDefaultIcon(JadeUIResource.DefaultIconGroup.ELEC_FACE, JadeUIResource.IconSize.x24);
+		console.log(icon01);
+		let icon02 = JadeUIResource.getDefaultIcon(JadeUIResource.DefaultIconGroup.ELEC_BUG , JadeUIResource.IconSize.x24);
+		console.log(icon02);
+		//
+		//let desktop02 = document.getElementById(`test-desktop-02`);
+		//if (desktop02) {
+		//	let desktop: UIDesktop = new UIDesktop(desktop02);
+		//	for (let j = 0; j < 3; j++) {
+		//		let win = new UIWindow(desktop, `test-win-02-${j}`, `test win 02-${j}`);
+		//		win.renderIn();
+		//	}
+		//}
 	}
 
 
