@@ -1,6 +1,6 @@
 import { SimpleMap } from "./dataStructure.js";
 import { IPoint2D } from "./geo2d.js";
-import { JadeUIResource } from "./resource.js";
+import { JadeUIResource, IconGroup, DefaultIconGroup, IconSize } from "./resource.js";
 
 const WIN_Z_IDX_MIN = 2000;
 
@@ -172,6 +172,132 @@ export class UIDesktop {
 }
 
 /**
+ * 绑定窗口操作
+ */
+export type IBindWinOpt = {
+	/**
+	 * 绑定窗口的关闭操作
+	 * @param win 窗口
+	 */
+	bindWinOptActive: (win: UIObj) => any;
+	/**
+	 * 绑定窗口的关闭操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptClose: (win: UIObj, btn: HTMLElement) => any;
+	/**
+	 * 绑定窗口的最大化操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptMax: (win: UIObj, btn: HTMLElement) => any;
+	/**
+	 * 绑定窗口的最小化操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptMin: (win: UIObj, btn: HTMLElement) => any;
+}
+
+/**
+ * 默认的窗口操作绑定
+ */
+export let defaultWinOption = {
+
+	/**
+	 * 绑定窗口的关闭操作
+	 * @param win 窗口
+	 */
+	bindWinOptActive: (win: UIObj): any => {
+		win.ui.win.onmousedown = e => {
+			console.log(`click win ${win.id}`);
+			win.desktop.optWinActive(win);
+		}
+	},
+
+	/**
+	 * 绑定窗口的关闭操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptClose: (win: UIObj, btn: HTMLElement): any => {
+		btn.onmouseup = e => {
+			win.desktop.optWinClose(win);
+		}
+	},
+
+	/**
+	 * 绑定窗口的最大化操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptMax: (win: UIObj, btn: HTMLElement): any => {
+		btn.onmousedown = e => {
+			let winDiv = win.ui.win;
+			if (win.status.isMax) {
+				win.status.isMax = false;
+				winDiv.style.left = `${win.status.lastPos.x}px`;
+				winDiv.style.top = `${win.status.lastPos.y}px`;
+				winDiv.style.width = `${win.status.lastSize.width}px`;
+				winDiv.style.height = `${win.status.lastSize.height}px`;
+			} else {
+				win.status.isMax = true;
+				let pElem = win.desktop.desktopDiv;
+				winDiv.style.left = `0px`;
+				winDiv.style.top = `0px`;
+				winDiv.style.width = `${pElem.clientWidth - 6}px`;
+				winDiv.style.height = `${win.desktop.hasDockBar() ?
+					// 如果桌面上有dock，留几个像素让dock可以响应鼠标
+					pElem.clientHeight - 10 : pElem.clientHeight - 6}px`;
+			}
+			let height = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
+			if (win.ui.statusBar) {
+				height = height - win.ui.statusBar.clientHeight;
+			}
+			win.ui.windowBody.style.height = `${height - 40}px`;
+		}
+	},
+
+	/**
+	 * 绑定窗口的最小化操作
+	 * 
+	 * @param win 窗口
+	 * @param btn 绑定的按键 
+	 */
+	bindWinOptMin: (win: UIObj, btn: HTMLElement): any => {
+		btn.onmousedown = e => {
+			let winDiv = win.ui.win;
+			if (win.status.isMin) {
+				win.status.isMin = false;
+				win.ui.win.style.visibility = "visible";
+				win.desktop.optWinActive(win); // 恢复的窗口为顶层
+			} else {
+				win.status.isMin = true;
+				win.ui.win.style.visibility = "hidden";
+			}
+		}
+	},
+};
+
+/**
+ * 窗口配置
+ */
+type WinCfgParam = {
+	icons?: IconGroup, // 窗口的图标
+	bindWinOpt?: IBindWinOpt, // 绑定窗口的操作
+};
+type WinCfg = {
+	icons: IconGroup, // 窗口的图标
+	bindWinOpt: IBindWinOpt, // 绑定窗口的操作
+};
+
+/**
  * 窗口状态
  */
 type WinStatus = {
@@ -196,11 +322,11 @@ type WinUIElement = {
  */
 export interface UIObj {
 	readonly desktop: UIDesktop;      // 桌面实例
-	readonly bindWinOpt: IBindWinOpt; // 绑定的窗口操作
 	readonly ui: WinUIElement;        // 窗口中用到的HTML元素
 	readonly status: WinStatus;       // 窗口的状态
 	readonly id: string;              // 窗口的ID
 	title: string;                    // 窗口的标题
+	cfg: WinCfg;
 
 	/**
 	 * 在桌面上渲染窗口
@@ -227,7 +353,6 @@ export interface UIObj {
 export abstract class UIWindowAdptt implements UIObj {
 	readonly desktop: UIDesktop;
 	readonly ui: WinUIElement;
-	readonly bindWinOpt: IBindWinOpt;
 	readonly status: WinStatus = { 
 		isMin: false, isMax: false,
 		lastPos: { x: 10, y: 10 },
@@ -235,6 +360,10 @@ export abstract class UIWindowAdptt implements UIObj {
 	};
 	readonly id: string;
 	title: string;
+	cfg: WinCfg = {
+		icons: 	JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
+		bindWinOpt: defaultWinOption
+	};
 
 	/**
 	 * 创建窗口对象 
@@ -243,7 +372,7 @@ export abstract class UIWindowAdptt implements UIObj {
 	 * @param title 窗口标题
 	 * @param bindWinOpt 绑定窗口的操作 
 	 */
-	constructor(desktop: UIDesktop, id: string, title: string, bindWinOpt?: IBindWinOpt) {
+	constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinCfgParam) {
 		this.title = title;
 		this.desktop = desktop;
 		this.id = JadeWindowUI.genWinId(id);
@@ -252,8 +381,11 @@ export abstract class UIWindowAdptt implements UIObj {
 		winDiv.classList.add("window");
 		let titleBar = document.createElement('div');
 		let windowBody = document.createElement('div');
-		this.ui = {win: winDiv, titleBar: titleBar, windowBody: windowBody};
-		this.bindWinOpt = bindWinOpt ? bindWinOpt : defaultWinOption;
+		this.ui = { win: winDiv, titleBar: titleBar, windowBody: windowBody };
+		if (cfg) {
+			if (cfg.bindWinOpt) { this.cfg.bindWinOpt = cfg.bindWinOpt; }
+			if (cfg.icons) { this.cfg.icons = cfg.icons; }
+		}
 	}
 
 	/**
@@ -299,8 +431,8 @@ export interface ResizeableUI extends UIObj {
 
 export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
-	constructor(desktop: UIDesktop, id: string, title: string, bindWinOpt?: IBindWinOpt) {
-		super(desktop, id, title, bindWinOpt);
+	constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinCfg) {
+		super(desktop, id, title, cfg);
 	}
 
 	renderIn(): void {
@@ -309,122 +441,6 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
 }
 
-/**
- * 绑定窗口操作
- */
-export interface IBindWinOpt {
-	/**
-	 * 绑定窗口的关闭操作
-	 * @param win 窗口
-	 */
-	bindWinOptActive: (win: UIObj) => any;
-	/**
-	 * 绑定窗口的关闭操作
-	 * 
-	 * @param win 窗口
-	 * @param btn 绑定的按键 
-	 */
-	bindWinOptClose: (win: UIObj, btn: HTMLElement) => any;
-	/**
-	 * 绑定窗口的最大化操作
-	 * 
-	 * @param win 窗口
-	 * @param btn 绑定的按键 
-	 */
-	bindWinOptMax: (win: UIObj, btn: HTMLElement) => any;
-	/**
-	 * 绑定窗口的最小化操作
-	 * 
-	 * @param win 窗口
-	 * @param btn 绑定的按键 
-	 */
-	bindWinOptMin: (win: UIObj, btn: HTMLElement) => any;
-}
-
-/**
- * 默认的窗口操作绑定
- */
-export class DefaultBindWinOpt implements IBindWinOpt {
-
-	/**
-	 * 绑定窗口的关闭操作
-	 * @param win 窗口
-	 */
-	bindWinOptActive(win: UIObj): any {
-		win.ui.win.onmousedown = e => {
-			console.log(`click win ${win.id}`);
-			win.desktop.optWinActive(win);
-		}
-	};
-
-	/**
-	 * 绑定窗口的关闭操作
-	 * 
-	 * @param win 窗口
-	 * @param btn 绑定的按键 
-	 */
-	bindWinOptClose(win: UIObj, btn: HTMLElement): any {
-		btn.onmouseup = e => {
-			win.desktop.optWinClose(win);
-		}
-	};
-
-	/**
-	 * 绑定窗口的最大化操作
-	 * 
-	 * @param win 窗口
-	 * @param btn 绑定的按键 
-	 */
-	bindWinOptMax(win: UIObj, btn: HTMLElement): any {
-		btn.onmousedown = e => {
-			let winDiv = win.ui.win;
-			if (win.status.isMax) {
-				win.status.isMax = false;
-				winDiv.style.left = `${win.status.lastPos.x}px`;
-				winDiv.style.top = `${win.status.lastPos.y}px`;
-				winDiv.style.width  = `${win.status.lastSize.width}px`;
-				winDiv.style.height = `${win.status.lastSize.height}px`;
-			} else {
-				win.status.isMax = true;
-				let pElem = win.desktop.desktopDiv;
-				winDiv.style.left = `0px`;
-				winDiv.style.top = `0px`;
-				winDiv.style.width  = `${pElem.clientWidth - 6}px`;
-				winDiv.style.height = `${win.desktop.hasDockBar() ? 
-					// 如果桌面上有dock，留几个像素让dock可以响应鼠标
-					pElem.clientHeight - 10 : pElem.clientHeight - 6}px`;
-			}
-			let height = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
-			if (win.ui.statusBar) {
-				height = height - win.ui.statusBar.clientHeight;
-			}
-			win.ui.windowBody.style.height = `${height - 40}px`;
-		}
-	};
-
-	/**
-	 * 绑定窗口的最小化操作
-	 * 
-	 * @param win 窗口
-	 * @param btn 绑定的按键 
-	 */
-	bindWinOptMin(win: UIObj, btn: HTMLElement): any {
-		btn.onmousedown = e => {
-			let winDiv = win.ui.win;
-			if (win.status.isMin) {
-				win.status.isMin = false;
-				win.ui.win.style.visibility = "visible";
-				win.desktop.optWinActive(win); // 恢复的窗口为顶层
-			} else {
-				win.status.isMin = true;
-				win.ui.win.style.visibility = "hidden";
-			}
-		}
-	};
-
-}
-
-export let defaultWinOption = new DefaultBindWinOpt();
 
 
 export class DockBar {
@@ -516,7 +532,7 @@ export class DockBar {
 		icon.id = this.genAppIconId(win.id);
 		icon.classList.add('menu-item');
 		this.barDiv.appendChild(icon);
-		win.bindWinOpt.bindWinOptMin(win, icon);
+		win.cfg.bindWinOpt.bindWinOptMin(win, icon);
 	}
 
 	removeIcon(win: UIObj) {
@@ -552,10 +568,21 @@ export namespace JadeWindowUI {
 
 	export function genWinTitleBarId(id: string): string { return `titBar-${id}`; }
 
+	export function genWinTitleIconId(id: string): string { return `titIcon-${id}`; }
+
 	export function genWinTitleTextId(id: string): string { return `titText-${id}`; }
 
 
 	function renderTitleBar(win: UIObj): HTMLDivElement {
+		let renderTitleBarIcon = (win: UIObj): HTMLDivElement => {
+			//
+			let titleBarIcon = document.createElement("img");
+			titleBarIcon.id = genWinTitleIconId(win.id);
+			titleBarIcon.src = `${JadeUIResource.getDefaultIconBase64( //
+				DefaultIconGroup.ELEC_FACE, IconSize.x12)}`;
+			// titleBarIcon.classList.add("title-bar-icon", "cannot-select");
+			return titleBarIcon;
+		}
 		let renderTitleBarText = (win: UIObj): HTMLDivElement => {
 			let titleBarText = document.createElement("div");
 			titleBarText.id = genWinTitleTextId(win.id);
@@ -567,15 +594,15 @@ export namespace JadeWindowUI {
 			//
 			let btnMin = document.createElement("button");
 			btnMin.setAttribute("aria-label", "Minimize");
-			win.bindWinOpt.bindWinOptMin(win, btnMin);
+			win.cfg.bindWinOpt.bindWinOptMin(win, btnMin);
 			//
 			let btnMax = document.createElement("button");
 			btnMax.setAttribute("aria-label", "Maximize");
-			win.bindWinOpt.bindWinOptMax(win, btnMax);
+			win.cfg.bindWinOpt.bindWinOptMax(win, btnMax);
 			//
 			let btnClose = document.createElement("button");
 			btnClose.setAttribute("aria-label", "Close");
-			win.bindWinOpt.bindWinOptClose(win, btnClose);
+			win.cfg.bindWinOpt.bindWinOptClose(win, btnClose);
 			//
 			let titleBarCtls = document.createElement("div");
 			titleBarCtls.classList.add("title-bar-controls");
@@ -587,6 +614,7 @@ export namespace JadeWindowUI {
 		let titleBar = win.ui.titleBar;
 		titleBar.id = genWinTitleBarId(win.id);
 		titleBar.classList.add("title-bar");
+		titleBar.appendChild(renderTitleBarIcon(win));
 		titleBar.appendChild(renderTitleBarText(win));
 		titleBar.appendChild(renderTitleBarControls(win));
 		return titleBar;
@@ -675,7 +703,7 @@ export namespace JadeWindowUI {
 		//
 		parent.appendChild(winDiv);
 		//
-		win.bindWinOpt.bindWinOptActive(win);
+		win.cfg.bindWinOpt.bindWinOptActive(win);
 		//
 		win.desktop.addWindow(win);
 		//计算窗口大小

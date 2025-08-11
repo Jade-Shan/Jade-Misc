@@ -7,7 +7,7 @@
 //import { Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
 
 import { NumUtil } from "./basic.js";
-import { JadeUIResource } from "./resource.js";
+import { JadeUIResource, DefaultIconGroup, IconSize } from "./resource.js";
 import { UIDesktop, UIWindow } from "./UIWindow.js";
 
 
@@ -27,18 +27,16 @@ export class TestJadeUI {
 		//
 		let desktop01 = document.getElementById(`test-desktop-01`);
 		if (desktop01) {
-			let desktop: UIDesktop = new UIDesktop(desktop01, {
-				dockBar: { range: 300, maxScale: 1.8 }
-			});
+			let desktop: UIDesktop = new UIDesktop(desktop01, { dockBar: { range: 300, maxScale: 1.8 } });
 			for (let j = 0; j < 3; j++) {
 				let win = new UIWindow(desktop, `test-win-01-${j}`, `test win 01-${j}`);
 				win.renderIn();
 			}
 		}
 		//
-		let icon01 = JadeUIResource.getDefaultIcon(JadeUIResource.DefaultIconGroup.ELEC_FACE, JadeUIResource.IconSize.x24);
+		let icon01 = JadeUIResource.getDefaultIconBase64(DefaultIconGroup.ELEC_FACE, IconSize.x24);
 		console.log(icon01);
-		let icon02 = JadeUIResource.getDefaultIcon(JadeUIResource.DefaultIconGroup.ELEC_BUG , JadeUIResource.IconSize.x24);
+		let icon02 = JadeUIResource.getDefaultIconBase64(DefaultIconGroup.ELEC_BUG , IconSize.x24);
 		console.log(icon02);
 		//
 		//let desktop02 = document.getElementById(`test-desktop-02`);

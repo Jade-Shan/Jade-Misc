@@ -1,22 +1,19 @@
 import { SimpleMap } from "./dataStructure.js";
 
+export enum ImageType {
+	BASE64_JPG = "data:image/jpeg;base64",
+	BASE64_PNG = "data:image/png;base64",
+};
+export enum IconSize { x12, x16, x24, x32, x48 };
+export enum DefaultIconGroup { ELEC_FACE, ELEC_BUG };
+
+export type IPixelIcon = { format: ImageType, data: string };
+
+export type IconGroup = { x12: IPixelIcon, x16: IPixelIcon, x24: IPixelIcon, x32: IPixelIcon, x48: IPixelIcon };
+
 export namespace JadeUIResource {
 
-	export enum ImageType {
-		BASE64_JPG = "data:image/jpeg;base64",
-		BASE64_PNG = "data:image/png;base64",
-	}
-	export enum IconSize { x12, x16, x24, x32, x48 }
-	export enum DefaultIconGroup {
-		ELEC_FACE, ELEC_BUG
-	}
-
-	export type IPixelIcon = { format: ImageType, data: string }
-
-	export type IconGroup = {x12: IPixelIcon, x16:IPixelIcon, x24: IPixelIcon, x32: IPixelIcon, x48:IPixelIcon};
-
-	let iconGroupMap = new SimpleMap<string, IconGroup>();
-	iconGroupMap.put(DefaultIconGroup.ELEC_FACE.toString(), {
+	let iconDefault01 = {
 		x12: {
 			format: ImageType.BASE64_PNG, data:
 				"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAA+ElEQVR4AYXBTWoacRwA0PfXCVgr" +
@@ -80,8 +77,8 @@ export namespace JadeUIResource {
 				"L8NIkJIMHE5SRbP98O4Jlvz4jiWSKtrZUOxsoJXEgtl+cHk4UshgGxIL0qMKu5IUqWmElojAjmoa" +
 				"OUFSJBCFQBTHMHC4nylFx/LNPXJ1AAAAAElFTkSuQmCC"
 		}
-	});
-	iconGroupMap.put(DefaultIconGroup.ELEC_BUG.toString(), {
+	};
+	let iconDefault02 = {
 		x12: {
 			format: ImageType.BASE64_PNG, data:
 				"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAA9klEQVR4AYXBMStEcQAA8N//PHVJ" +
@@ -153,19 +150,26 @@ export namespace JadeUIResource {
 				"YS0K/5ygRaKh9ETRCYcFxWEBQ6cVQdVxCQ4yCl0Si3j0NWzEYH+TlkgsYntZ0Q5Jg34v+EMCK+r3" +
 				"coakwcVpuDhNz7DR4/4FQUoK6fDKXzYAAAAASUVORK5CYII="
 		}
-	});
+	};
 
-	export let getDefaultIcon = (name: DefaultIconGroup, size: IconSize): string => {
-		// let result = "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
-		let result = "";
+	let iconGroupMap = new SimpleMap<string, IconGroup>();
+	iconGroupMap.put(DefaultIconGroup.ELEC_FACE.toString(), iconDefault01);
+	iconGroupMap.put(DefaultIconGroup.ELEC_BUG .toString(), iconDefault02);
+
+	export let getDefaultIcon = (name: DefaultIconGroup): IconGroup => {
 		let grp = iconGroupMap.get(name.toString());
-		if (grp) {
-			if (size == IconSize.x12) { result = `url('${grp.x12.format}, ${grp.x12.data}')`; }
-			if (size == IconSize.x16) { result = `url('${grp.x16.format}, ${grp.x16.data}')`; }
-			if (size == IconSize.x24) { result = `url('${grp.x24.format}, ${grp.x24.data}')`; }
-			if (size == IconSize.x32) { result = `url('${grp.x32.format}, ${grp.x32.data}')`; }
-			if (size == IconSize.x48) { result = `url('${grp.x48.format}, ${grp.x48.data}')`; }
-		}
+		return grp ? grp : iconDefault01;
+	}
+
+
+	export let getDefaultIconBase64 = (name: DefaultIconGroup, size: IconSize): string => {
+		let result = "";
+		let grp = getDefaultIcon(name);
+		if (size == IconSize.x12) { result = `${grp.x12.format}, ${grp.x12.data}`; }
+		if (size == IconSize.x16) { result = `${grp.x16.format}, ${grp.x16.data}`; }
+		if (size == IconSize.x24) { result = `${grp.x24.format}, ${grp.x24.data}`; }
+		if (size == IconSize.x32) { result = `${grp.x32.format}, ${grp.x32.data}`; }
+		if (size == IconSize.x48) { result = `${grp.x48.format}, ${grp.x48.data}`; }
 		return result;
 	}
 
