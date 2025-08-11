@@ -1,7 +1,7 @@
 import { SimpleMap } from "./dataStructure.js";
 import {IconSize, IBase64Img, Base64ImgType } from "./web.js";
 
-export enum DefaultIconGroup { ELEC_FACE, ELEC_BUG };
+export enum DefaultIconGroup { ELEC_FACE, ELEC_BUG, CAMERA };
 
 export type IconGroup = { x12: IBase64Img, x16: IBase64Img, x24: IBase64Img, x32: IBase64Img, x48: IBase64Img };
 
@@ -144,6 +144,63 @@ let iconDefault02 = {
 			"coakwcVpuDhNz7DR4/4FQUoK6fDKXzYAAAAASUVORK5CYII="
 	}
 };
+let iconDefault03 = {
+	x12: {
+		format: Base64ImgType.BASE64_PNG, data:
+			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAwElEQVR4AZXBoUoDARgA4O/OCwMZ" +
+			"yLhwQcPGkBX7wHLRJ7BYho8jRuPJlsW4ZLoi+ggrYlm4MMQwEOQQhT/oFIR9n20lNo2FRxQY+dZg" +
+			"kQk5TtAVhjjAAwp00MfHDnKc4w0tWqS4QgdHeEeGsxSXuECJOW6FCZbYRYnKlwRzrIQ9vOBGOEUP" +
+			"r0KeYYWJUKLAFNe4Q4NamKX+WuMJJdZ+SW2qMUCFCgPUfkhwiGM8Cxn2hSVaoY/7RBih8L8GC9v6" +
+			"BM5PJu3o31T+AAAAAElFTkSuQmCC"
+	},
+	x16: {
+		format: Base64ImgType.BASE64_PNG, data:
+			"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA50lEQVR4AcXBIUsDYQAA0HdyYWFh" +
+			"0SJ+cU2jwbCkxsVpcaBBk4aBSdAoCwoyLAO3ZlwS1vYHBC0y2+KCwTDEpsIXDrxbMO09C5fIu8Ea" +
+			"+uhhHdfydjFNRCVs4AxDPGMfLwg4FdVEY5zjNhHtYUuxpmgHDdErHtFKcYhPdHGAK4wV+/ZHik10" +
+			"8YG+KKCOumiAAfqid1T8StBDGTOZbRzjS1TCHYYyZcxSUQsTmZHoHleY4A1NmYCLJfMFVHCCYI5U" +
+			"sSeMcCkaYUWBVLE2jrAqKqFtjio68gJqqCHI66CaiJbx4H8amFq4Hxk7LeEATNaSAAAAAElFTkSu" +
+			"QmCC"
+	},
+	x24: {
+		format: Base64ImgType.BASE64_PNG, data:
+			"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA50lEQVR4AcXBIUsDYQAA0HdyYWFh" +
+			"0SJ+cU2jwbCkxsVpcaBBk4aBSdAoCwoyLAO3ZlwS1vYHBC0y2+KCwTDEpsIXDrxbMO09C5fIu8Ea" +
+			"+uhhHdfydjFNRCVs4AxDPGMfLwg4FdVEY5zjNhHtYUuxpmgHDdErHtFKcYhPdHGAK4wV+/ZHik10" +
+			"8YG+KKCOumiAAfqid1T8StBDGTOZbRzjS1TCHYYyZcxSUQsTmZHoHleY4A1NmYCLJfMFVHCCYI5U" +
+			"sSeMcCkaYUWBVLE2jrAqKqFtjio68gJqqCHI66CaiJbx4H8amFq4Hxk7LeEATNaSAAAAAElFTkSu" +
+			"QmCC"
+	},
+	x32: {
+		format: Base64ImgType.BASE64_PNG, data:
+			"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB60lEQVR4Ae3BMWsTYQAA0HflpA4O" +
+			"DhZuEIxQoYuQyUnoZZGMDiLt1BT6B0RBN0crUqq/oMlkR8fgkgQzCC4Flw6FZlGC7ZChkw618AXO" +
+			"wyu5RDrZ91z670Umu49FeU15VVSV08bQWGyyDazJa8p7iJfKqWFoLHK+m/iEV/gor4N3eItDtNBU" +
+			"zhZ+YcWZWF6CuuAGKriHn/IqWMYIPexhIO8RrskcoI8vWEAD7Uheio7pRIoNcEumhYYgRQe1WGYX" +
+			"V3Dbv3mEN3iMHzIPcIhVf4iRoI5vOMIA97Eo6ONAeUP0UMVPmevoYYTEWIwl7KCGrmADa4J1HCiv" +
+			"jz4GuCXTQkOQGIsV20RTsO9vHcVqMiu4KjNUIJapKraEJXmRYqnzJUgEVWOxzLbyIsVOTSmWeYI9" +
+			"xRK8x2u0BQ2sCVpoooY6nmMVQ8Wq2HYmltlDV7GKYB9dpFhGih4qSNFFRfAZAxPMmU0HDUEq6JhB" +
+			"7N91UDGjObPpYSBIBT0zmDObFC2ZFlIziJVzjHXcwQ7W8QEDwZ5gB9+xjmMlzCnnBE3Mo4YKRuii" +
+			"ixEqqGEeTZwoITadZ3iGU8UiU4qQoI67OMKmyRqKNU32Agv4inYks4sreOpibeEXVpyJ5KXouFg1" +
+			"dI1F8hLUXaw2hi5dGvsNLDttMFUBaagAAAAASUVORK5CYII="
+	},
+	x48: {
+		format: Base64ImgType.BASE64_PNG, data:
+			"iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACgUlEQVR4Ae3BsWtcdQAA4O8dv+Gg" +
+			"HQo5woMKuULAOAkudjjo3WQQnOyQre/oLg4Ri39BxAr+B5dsHdJV4pQLZKiDorh0EPJuaLkhgYIZ" +
+			"MhSq8AskLz4vl8s7zMF9n7m5ubn/VeLqbqOh3CGOlUtRN7khTlwQXN1D9JTrYlO5Z3hgch30XVAz" +
+			"4xLje4aP8SO+U+4rfIqfsSY6EH2BP0zue3yE51h3KhhfiiZuIVfuFpoYONMU/YXc5BbQRMM5iXIr" +
+			"+FrRKlL8iX3lWljGEDuiPdEOhso9xYJyXdEqUiziAxxhPSiXIlNuGctGS5GJui73EEvKdUU7ogzf" +
+			"YoD1oGgFKd7Dnumq477oF+TKtUW/4Y0LgqIneIQ9tE1Xil3RPeTKvRN10HdBzYwLohxL6CJT9E7R" +
+			"FjLXlyMR5VhSLjFCzYwLLtdRNPTfnuATo/2EDUVrqJtAcLm+8a2gbbSBf3thQkFRy/W8xpbRXiMz" +
+			"uZZzgqLHeGxyXXxjtAw9FQmKjnBsPAF3Ra/wFseiOlJFQ5zgGAME3BW9wlvjuY0Fp4KidWwaTxMH" +
+			"ohZyZ+5jV1EHfWxjG00ciFrIjSdDz6maGRdU6yk+R92Ze6If0MNzrKtIUK0Gmopy0R000VChYPp6" +
+			"ovdNQTB9mSkKqvUSe7iDDxX9jjd4qUJBtTawgTZ2FX2JvorVzLhgcjkSUY4ldLGJPhLlMvQwQOKa" +
+			"amZcUI011PEZdo32Kzo4UYGgGi9EGdpGG6CvIkG0jQYWkWGIHVe373L7JrOKFIvYwqF/JIo28Qh7" +
+			"aLtZ+niALWROBUWHGOAITTfLEQY4dE6iXBu7bpYO+i6omXGJcnWkbpYhTszNzc3dKH8DGAWCj3Dn" +
+			"EmUAAAAASUVORK5CYII="
+	}
+};
 
 let imgDesktopBg = {
 	format: Base64ImgType.BASE64_JPG, data:
@@ -201,6 +258,7 @@ export namespace JadeUIResource {
 	let iconGroupMap = new SimpleMap<string, IconGroup>();
 	iconGroupMap.put(DefaultIconGroup.ELEC_FACE.toString(), iconDefault01);
 	iconGroupMap.put(DefaultIconGroup.ELEC_BUG.toString(), iconDefault02);
+	iconGroupMap.put(DefaultIconGroup.CAMERA.toString(), iconDefault03);
 
 	export let getDefaultIcon = (name: DefaultIconGroup): IconGroup => {
 		let grp = iconGroupMap.get(name.toString());

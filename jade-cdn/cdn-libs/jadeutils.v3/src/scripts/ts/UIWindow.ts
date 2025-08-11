@@ -294,6 +294,10 @@ type WinCfg = {
 	bindWinOpt: IBindWinOpt, // 绑定窗口的操作
 };
 
+type WinParam = {
+	icons?: IconGroup, // 窗口的图标
+	bindWinOpt?: IBindWinOpt, // 绑定窗口的操作
+};
 /**
  * 窗口状态
  */
@@ -369,9 +373,7 @@ export abstract class UIWindowAdptt implements UIObj {
 	 * @param title 窗口标题
 	 * @param bindWinOpt 绑定窗口的操作 
 	 */
-	constructor(desktop: UIDesktop, id: string, title: string, //
-		cfg?: {icons?: IconGroup, bindWinOpt?: IBindWinOpt}) //
-	{
+	constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinParam) {
 		this.title = title;
 		this.desktop = desktop;
 		this.id = JadeWindowUI.genWinId(id);
@@ -430,7 +432,7 @@ export interface ResizeableUI extends UIObj {
 
 export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
-	constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinCfg) {
+	constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinParam) {
 		super(desktop, id, title, cfg);
 	}
 
