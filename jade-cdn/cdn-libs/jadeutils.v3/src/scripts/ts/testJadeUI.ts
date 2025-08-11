@@ -7,8 +7,9 @@
 //import { Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
 
 import { NumUtil } from "./basic.js";
-import { JadeUIResource, DefaultIconGroup, IconSize } from "./resource.js";
+import { JadeUIResource, DefaultIconGroup} from "./resource.js";
 import { UIDesktop, UIWindow } from "./UIWindow.js";
+import { IconSize } from "./web.js";
 
 
 export class TestJadeUI {
@@ -34,10 +35,10 @@ export class TestJadeUI {
 			}
 		}
 		//
-		let icon01 = JadeUIResource.getDefaultIconBase64(DefaultIconGroup.ELEC_FACE, IconSize.x24);
-		console.log(icon01);
-		let icon02 = JadeUIResource.getDefaultIconBase64(DefaultIconGroup.ELEC_BUG , IconSize.x24);
-		console.log(icon02);
+		let icon01 = JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE);
+		console.log(icon01.x12);
+		let icon02 = JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_BUG);
+		console.log(icon02.x12);
 		//
 		//let desktop02 = document.getElementById(`test-desktop-02`);
 		//if (desktop02) {

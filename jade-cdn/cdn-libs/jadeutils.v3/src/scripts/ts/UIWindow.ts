@@ -1,6 +1,7 @@
 import { SimpleMap } from "./dataStructure.js";
 import { IPoint2D } from "./geo2d.js";
-import { JadeUIResource, IconGroup, DefaultIconGroup, IconSize } from "./resource.js";
+import { JadeUIResource, IconGroup, DefaultIconGroup } from "./resource.js";
+import { IconSize, WebUtil } from "./web.js";
 
 const WIN_Z_IDX_MIN = 2000;
 
@@ -9,7 +10,7 @@ const WIN_Z_IDX_MIN = 2000;
  */
 type IDesktopConfig = {
 	desktop?: { backgroundImage?: string, width: string, height: string },
-	dockBar?: { range?: number, maxScale: number }
+	dockBar?: DockBarParam
 }
 
 /**
@@ -36,9 +37,9 @@ export class UIDesktop {
 		this.desktopDiv = desktopDiv;
 		desktopDiv.style.height = cfg?.desktop?.height ? cfg.desktop.height : "100%";
 		desktopDiv.style.width  = cfg?.desktop?.width  ? cfg.desktop.width  : "100%";
-		desktopDiv.style.backgroundImage = cfg?.desktop?.backgroundImage ? // 
-			cfg?.desktop?.backgroundImage : //
-			`url('data:image/jpeg;base64, ${JadeUIResource.imgDesktopBg}')`;
+		desktopDiv.style.backgroundImage = cfg?.desktop?.backgroundImage ? //
+			cfg?.desktop?.backgroundImage :  //
+			WebUtil.transBase64ImgURL(JadeUIResource.defaultDesktopBackground);
 		this.dockBar = cfg?.dockBar ? new DockBar(this, cfg.dockBar) : undefined;
 	}
 
@@ -288,10 +289,6 @@ export let defaultWinOption = {
 /**
  * 窗口配置
  */
-type WinCfgParam = {
-	icons?: IconGroup, // 窗口的图标
-	bindWinOpt?: IBindWinOpt, // 绑定窗口的操作
-};
 type WinCfg = {
 	icons: IconGroup, // 窗口的图标
 	bindWinOpt: IBindWinOpt, // 绑定窗口的操作
@@ -372,7 +369,9 @@ export abstract class UIWindowAdptt implements UIObj {
 	 * @param title 窗口标题
 	 * @param bindWinOpt 绑定窗口的操作 
 	 */
-	constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinCfgParam) {
+	constructor(desktop: UIDesktop, id: string, title: string, //
+		cfg?: {icons?: IconGroup, bindWinOpt?: IBindWinOpt}) //
+	{
 		this.title = title;
 		this.desktop = desktop;
 		this.id = JadeWindowUI.genWinId(id);
@@ -441,30 +440,59 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 
 }
 
+type DockBarCfg = {
+	dockColor: string, 
+	iconColor: string,
+	opacity: number,
+	range: number, 
+	maxScale: number,
+};
 
+type DockBarParam = {
+	dockColor?: string, 
+	iconColor?: string,
+	opacity?: number,
+	range?: number, 
+	maxScale?: number,
+};
 
 export class DockBar {
 
 	private barDiv: HTMLDivElement;
 	private parentElement: HTMLElement;
+	cfg: DockBarCfg = {
+		dockColor: "rgb(100, 100, 100)",
+		iconColor: "rgb(34, 199, 158)",
+		opacity: 70,
+		range: 300,
+		maxScale: 1.8
+	};
 
-	constructor(desktop: UIDesktop, cfg?: {range?: number, maxScale: number}) {
+
+	constructor(desktop: UIDesktop, cfg?: DockBarParam) //
+	{
+		if (cfg) {
+			if (cfg.dockColor  ) { this.cfg.dockColor = cfg.dockColor; }
+			if (cfg.iconColor  ) { this.cfg.iconColor = cfg.iconColor; }
+			if (cfg.opacity    ) { this.cfg.opacity   = cfg.opacity  ; }
+			if (cfg.range      ) { this.cfg.range     = cfg.range    ; }
+			if (cfg.maxScale   ) { this.cfg.maxScale  = cfg.maxScale ; }
+		}
+		//let range = cfg?.color ? cfg.color : 300;
+		//let maxScale = cfg?.maxScale ? cfg.maxScale : 1.8;
+		//if (cfg && cfg.range   ) { range    = cfg.range   ; }
+		//if (cfg && cfg.maxScale) { maxScale = cfg.maxScale; }
+		//
 		this.parentElement = desktop.desktopDiv;
 		let barDiv = document.createElement('div');
 		this.barDiv = barDiv;
 		barDiv.classList.add('dock-bar');
+		barDiv.style.backgroundColor = this.cfg.dockColor;
+		barDiv.style.opacity = `${this.cfg.opacity}%`;
 		this.parentElement.appendChild(this.barDiv);
-		//
-		let range = 300
-		let maxScale = 1.8
-		if (cfg && cfg.range   ) { range    = cfg.range   ; }
-		if (cfg && cfg.maxScale) { maxScale = cfg.maxScale; }
 		barDiv.onmousemove = e => {
-			let curve = this.createCurve(range, e.clientX, 1, maxScale);
+			let curve = this.createCurve(this.cfg.range, e.clientX, 1, this.cfg.maxScale);
 			this.layout(curve);
-			// let rect = barDiv.getBoundingClientRect();
-			// const width = rect.right - rect.left
-			// barDiv.style.setProperty('width', `${width}px`);
 		};
 		barDiv.onmouseleave = e => {
 			this.layout(() => 1);
@@ -509,12 +537,6 @@ export class DockBar {
 				elm.style.setProperty('--i', scale);
 			}
 		}
-		// Array.from(items).forEach(item => {
-		// 	const rect = item.getBoundingClientRect()
-		// 	const x = rect.left + rect.width / 2
-		// 	const scale = curve(x)
-		// 	item.style.setProperty('--i', scale)
-		// })
 	}
 
 	genAppGrapId(winId: string): string { return `appGrp-${winId}`; };
@@ -528,9 +550,13 @@ export class DockBar {
 			gap.classList.add('gap');
 			this.barDiv.appendChild(gap);
 		}
+		//
 		let icon = document.createElement('div');
 		icon.id = this.genAppIconId(win.id);
 		icon.classList.add('menu-item');
+		icon.style.backgroundImage = WebUtil.transBase64ImgURL(win.cfg.icons.x32);
+		icon.style.backgroundSize = "100%";
+		icon.style.opacity = `${this.cfg.opacity}%`;
 		this.barDiv.appendChild(icon);
 		win.cfg.bindWinOpt.bindWinOptMin(win, icon);
 	}
@@ -575,12 +601,9 @@ export namespace JadeWindowUI {
 
 	function renderTitleBar(win: UIObj): HTMLDivElement {
 		let renderTitleBarIcon = (win: UIObj): HTMLDivElement => {
-			//
 			let titleBarIcon = document.createElement("img");
 			titleBarIcon.id = genWinTitleIconId(win.id);
-			titleBarIcon.src = `${JadeUIResource.getDefaultIconBase64( //
-				DefaultIconGroup.ELEC_FACE, IconSize.x12)}`;
-			// titleBarIcon.classList.add("title-bar-icon", "cannot-select");
+			titleBarIcon.src = WebUtil.transBase64ImgSrc(win.cfg.icons.x12);
 			return titleBarIcon;
 		}
 		let renderTitleBarText = (win: UIObj): HTMLDivElement => {

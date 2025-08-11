@@ -13,6 +13,22 @@ export class EscapeUnicode extends HTMLElement {
 	}
 }
 
+/**
+ * 规范可以使用的图标大小
+ */
+export enum IconSize { x12, x16, x24, x32, x48 };
+/**
+ * Base64图片的类型
+ */
+export enum Base64ImgType {
+	BASE64_JPG = "data:image/jpeg;base64",
+	BASE64_PNG = "data:image/png;base64",
+};
+/**
+ * Base64格式的图片
+ */
+export type IBase64Img = { format: Base64ImgType, data: string };
+
 export interface HttpRequestOption {
 	ingoreCache?: boolean;
 	headers?: SimpleMap<string, string>;
@@ -125,6 +141,19 @@ export class WebUtil {
 		return "<esp-unicode>&#" + c.charCodeAt(0) + ";</esp-unicode>";
 	}
 
+	/**
+	 * 图像Base64转为html img 的src
+	 * @param base64Img 图像的Base64
+	 * @returns src格式
+	 */
+	static transBase64ImgSrc(base64Img: IBase64Img): string { return `${base64Img.format}, ${base64Img.data}` }
+
+	/**
+	 * 图像Base64转为html 的URL
+	 * @param base64Img 图像的Base64
+	 * @returns src格式
+	 */
+	static transBase64ImgURL(base64Img: IBase64Img): string { return `url('${this.transBase64ImgSrc(base64Img)}')` }
 
 	/**
 	 * 
