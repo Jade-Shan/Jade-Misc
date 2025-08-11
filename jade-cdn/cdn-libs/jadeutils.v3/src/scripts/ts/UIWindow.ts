@@ -153,39 +153,59 @@ export class UIDesktop {
 
 }
 
+/**
+ * 窗口状态
+ */
 type WinStatus = {
-	isMax: boolean; 
-	isMin: boolean;
-	readonly lastPos : {x: number, y: number};
-	readonly lastSize: {width: number, height: number};
+	isMax: boolean; // 是否最大化
+	isMin: boolean; // 是否最小化
+	readonly lastPos : {x: number, y: number}; // 正常状态时最后状态
+	readonly lastSize: {width: number, height: number}; // 正常状态时最后的大小
 };
 
+/**
+ * 窗口要用的HTML元素
+ */
 type WinUIElement = {
-	readonly win: HTMLDivElement;
-	readonly titleBar: HTMLDivElement;
-	readonly windowBody: HTMLDivElement;
-	statusBar?: HTMLDivElement;
+	readonly win: HTMLDivElement;        // 窗口
+	readonly titleBar: HTMLDivElement;   // 标题栏
+	readonly windowBody: HTMLDivElement; // 窗口主体
+	statusBar?: HTMLDivElement;          // 窗口状态栏
 }
 
+/**
+ * 窗口元素的接口
+ */
 export interface UIObj {
-	readonly desktop: UIDesktop;
-	readonly bindWinOpt: IBindWinOpt;
-	readonly ui: WinUIElement;
-	readonly status: WinStatus;
-	readonly id: string;
-	title: string;
+	readonly desktop: UIDesktop;      // 桌面实例
+	readonly bindWinOpt: IBindWinOpt; // 绑定的窗口操作
+	readonly ui: WinUIElement;        // 窗口中用到的HTML元素
+	readonly status: WinStatus;       // 窗口的状态
+	readonly id: string;              // 窗口的ID
+	title: string;                    // 窗口的标题
 
+	/**
+	 * 在桌面上渲染窗口
+	 */
 	renderIn(): void;
 
+	/**
+	 * 设置窗口为当前窗口
+	 * @param isActive 是否是当前窗口
+	 */
 	activeWindow(isActive: boolean): void;
 
+	/**
+	 * 设置窗口的层级
+	 * @param zIdx 设置层级
+	 */
 	setZIndex(zIdx: number): void;
 
-	minSizeWindow(isMin: boolean): void;
-
-	closeWindow(): void;
 }
 
+/**
+ * 窗口的部分实现
+ */
 export abstract class UIWindowAdptt implements UIObj {
 	readonly desktop: UIDesktop;
 	readonly ui: WinUIElement;
@@ -198,6 +218,13 @@ export abstract class UIWindowAdptt implements UIObj {
 	readonly id: string;
 	title: string;
 
+	/**
+	 * 创建窗口对象 
+	 * @param desktop 所在的桌面
+	 * @param id  窗口ID
+	 * @param title 窗口标题
+	 * @param bindWinOpt 绑定窗口的操作 
+	 */
 	constructor(desktop: UIDesktop, id: string, title: string, bindWinOpt?: IBindWinOpt) {
 		this.title = title;
 		this.desktop = desktop;
@@ -211,8 +238,15 @@ export abstract class UIWindowAdptt implements UIObj {
 		this.bindWinOpt = bindWinOpt ? bindWinOpt : defaultWinOption;
 	}
 
+	/**
+	 * 渲染窗口
+	 */
 	abstract renderIn(): void;
 
+	/**
+	 * 设置窗口为当前窗口
+	 * @param isActive 是否是当前窗口
+	 */
 	activeWindow(isActive: boolean): void {
 		let tid = JadeWindowUI.genWinTitleBarId(this.id);
 		let div = document.getElementById(tid);
@@ -225,16 +259,12 @@ export abstract class UIWindowAdptt implements UIObj {
 		}
 	}
 
+	/**
+	 * 设置窗口的层级
+	 * @param zIdx 设置层级
+	 */
 	setZIndex(zIndex: number): void {
 		this.ui.win.style.zIndex = `${zIndex}`;
-	}
-
-	minSizeWindow(isMin: boolean): void {
-		throw new Error("Method not implemented.");
-	}
-
-	closeWindow(): void {
-		throw new Error("Method not implemented.");
 	}
 
 } 

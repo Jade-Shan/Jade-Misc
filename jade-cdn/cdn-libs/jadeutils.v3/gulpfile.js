@@ -113,6 +113,7 @@ gulp.task('clean-typescript', () => {
 gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 	return gulp.src([
 		scriptTsRef + 'refTypes.d.ts',
+		scriptTsSrc + 'resource.ts',
 		scriptTsSrc + 'basic.ts',
 		scriptTsSrc + 'dataStructure.ts',
 		scriptTsSrc + 'geo2d.ts',
@@ -143,6 +144,7 @@ themeTasks.push('process-typescript');
 
 gulp.task('compress-typescript', gulp.series('process-typescript', () => {
 	return gulp.src([
+		scriptTsTag + 'resource.js',
 		scriptTsTag + 'basic.js',
 		scriptTsTag + 'dataStructure.js',
 		scriptTsTag + 'geo2d.js',
