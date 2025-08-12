@@ -310,6 +310,7 @@ type WinParam = {
 type WinStatus = {
 	isMax: boolean; // 是否最大化
 	isMin: boolean; // 是否最小化
+	isDragging: boolean; // 是否在拖动状态
 	readonly lastPos : {x: number, y: number}; // 正常状态时最后状态
 	readonly lastSize: {width: number, height: number}; // 正常状态时最后的大小
 };
@@ -361,7 +362,7 @@ export abstract class UIWindowAdptt implements UIObj {
 	readonly desktop: UIDesktop;
 	readonly ui: WinUIElement;
 	readonly status: WinStatus = { 
-		isMin: false, isMax: false,
+		isMin: false, isMax: false, isDragging: false,
 		lastPos: { x: 10, y: 10 },
 		lastSize: { width: 320, height: 250 }
 	};
@@ -608,47 +609,44 @@ export namespace JadeWindowUI {
 
 
 	function renderTitleBar(win: UIObj): HTMLDivElement {
-		let renderTitleBarIcon = (win: UIObj): HTMLDivElement => {
-			let titleBarIcon = document.createElement("img");
-			titleBarIcon.id = genWinTitleIconId(win.id);
-			titleBarIcon.src = WebUtil.transBase64ImgSrc(win.cfg.icons.x12);
-			return titleBarIcon;
-		}
-		let renderTitleBarText = (win: UIObj): HTMLDivElement => {
-			let titleBarText = document.createElement("div");
-			titleBarText.id = genWinTitleTextId(win.id);
-			titleBarText.classList.add("title-bar-text", "cannot-select");
-			titleBarText.innerHTML = win.title;
-			return titleBarText;
-		}
-		let renderTitleBarControls = (win: UIObj): HTMLDivElement => {
-			//
-			let btnMin = document.createElement("button");
-			btnMin.setAttribute("aria-label", "Minimize");
-			win.cfg.bindWinOpt.bindWinOptMin(win, btnMin);
-			//
-			let btnMax = document.createElement("button");
-			btnMax.setAttribute("aria-label", "Maximize");
-			win.cfg.bindWinOpt.bindWinOptMax(win, btnMax);
-			//
-			let btnClose = document.createElement("button");
-			btnClose.setAttribute("aria-label", "Close");
-			win.cfg.bindWinOpt.bindWinOptClose(win, btnClose);
-			//
-			let titleBarCtls = document.createElement("div");
-			titleBarCtls.classList.add("title-bar-controls");
-			titleBarCtls.appendChild(btnMin);
-			titleBarCtls.appendChild(btnMax);
-			titleBarCtls.appendChild(btnClose);
-			return titleBarCtls;
-		}
 		let titleBar = win.ui.titleBar;
 		titleBar.id = genWinTitleBarId(win.id);
 		titleBar.classList.add("title-bar");
-		titleBar.appendChild(renderTitleBarIcon(win));
-		titleBar.appendChild(renderTitleBarText(win));
-		titleBar.appendChild(renderTitleBarControls(win));
 		return titleBar;
+	}
+	let renderTitleBarIcon = (win: UIObj): HTMLDivElement => {
+		let titleBarIcon = document.createElement("img");
+		titleBarIcon.id = genWinTitleIconId(win.id);
+		titleBarIcon.src = WebUtil.transBase64ImgSrc(win.cfg.icons.x12);
+		return titleBarIcon;
+	}
+	let renderTitleBarText = (win: UIObj): HTMLDivElement => {
+		let titleBarText = document.createElement("div");
+		titleBarText.id = genWinTitleTextId(win.id);
+		titleBarText.classList.add("title-bar-text", "cannot-select");
+		titleBarText.innerHTML = win.title;
+		return titleBarText;
+	}
+	let renderTitleBarControls = (win: UIObj): HTMLDivElement => {
+		//
+		let btnMin = document.createElement("button");
+		btnMin.setAttribute("aria-label", "Minimize");
+		win.cfg.bindWinOpt.bindWinOptMin(win, btnMin);
+		//
+		let btnMax = document.createElement("button");
+		btnMax.setAttribute("aria-label", "Maximize");
+		win.cfg.bindWinOpt.bindWinOptMax(win, btnMax);
+		//
+		let btnClose = document.createElement("button");
+		btnClose.setAttribute("aria-label", "Close");
+		win.cfg.bindWinOpt.bindWinOptClose(win, btnClose);
+		//
+		let titleBarCtls = document.createElement("div");
+		titleBarCtls.classList.add("title-bar-controls");
+		titleBarCtls.appendChild(btnMin);
+		titleBarCtls.appendChild(btnMax);
+		titleBarCtls.appendChild(btnClose);
+		return titleBarCtls;
 	}
 
 	export function renderWindowBody(win: UIObj): HTMLDivElement {
@@ -715,7 +713,13 @@ export namespace JadeWindowUI {
 	export function renderWindowTplt(win: UIObj): HTMLDivElement {
 		let parent = win.desktop.desktopDiv;
 		let winDiv: HTMLDivElement = win.ui.win;
+		let titleBarIcon = renderTitleBarIcon(win);
+		let titleBarText = renderTitleBarText(win);
+		let titleBarControl = renderTitleBarControls(win);
 		let titleBar = renderTitleBar(win);
+		titleBar.appendChild(titleBarIcon);
+		titleBar.appendChild(titleBarText);
+		titleBar.appendChild(titleBarControl);
 		let windowBody = renderWindowBody(win);
 		let statusBar = renderStatusBar(win);
 		winDiv.appendChild(titleBar );
@@ -755,6 +759,30 @@ export namespace JadeWindowUI {
 		} else if ((height + win.status.lastPos.y) > parent.offsetHeight) {
 			win.status.lastPos.y = parent.offsetHeight - height;
 			winDiv.style.top = `${win.status.lastPos.y}px`;
+		}
+
+		{
+			titleBar.style.cursor = "move";
+			titleBarControl.style.cursor = "pointer";
+			let dargStart = {x: 0, y: 0}, dargDistance = {left:0, top:0};
+			titleBar.onmouseleave = (e) => { win.status.isDragging = false; }; 
+			titleBar.onmouseup = (e) => { win.status.isDragging = false; };
+			titleBar.onmousedown = (e) => {
+				win.status.isDragging = true;
+				dargStart.x = e.clientX;
+				dargStart.y = e.clientY;
+				dargDistance.left = parseInt(winDiv.style.left) || 0;
+				dargDistance.top  = parseInt(winDiv.style.top ) || 0;
+				e.preventDefault();
+			};
+			document.onmousemove = (e) => {
+				if (win.status.isDragging) {
+					let dx = e.clientX - dargStart.x;
+					let dy = e.clientY - dargStart.y;
+					winDiv.style.left =  `${dargDistance.left + dx}px`;
+					winDiv.style.top  =  `${dargDistance.top  + dy}px`;
+				}
+			}
 		}
 
 		return winDiv;
