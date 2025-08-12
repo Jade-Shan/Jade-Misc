@@ -761,7 +761,7 @@ export namespace JadeWindowUI {
 			winDiv.style.top = `${win.status.lastPos.y}px`;
 		}
 
-		{
+		{ /* 拖动窗口 */
 			titleBar.style.cursor = "move";
 			titleBarControl.style.cursor = "pointer";
 			let dargStart = {x: 0, y: 0}, dargDistance = {left:0, top:0};
