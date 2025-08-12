@@ -246,9 +246,43 @@ export let defaultWinOption = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptMax: (win: UIObj, btn: HTMLElement): any => {
+		let showWinMaxAnima = (
+			start: {left: number, top: number, width: number, height: number},
+			end  : {left: number, top: number, width: number, height: number}
+		) => {
+				let zoomMilSec = 200;
+				let deleMilSec = 100;
+				let transSec = (zoomMilSec / 1000);
+				let winDiv = win.ui.win;
+				let pElem = win.desktop.desktopDiv;
+                let newDiv = document.createElement('div');
+				newDiv.style.zIndex = `${win.status.lastPos.zIdx + 2500}`;
+                newDiv.style.left   = `${start.left  }px`;
+                newDiv.style.top    = `${start.top   }px`;
+                newDiv.style.width  = `${start.width }px`;
+                newDiv.style.height = `${start.height}px`;
+                newDiv.style.backgroundColor = 'white';
+                newDiv.style.border   = '3px solid black';
+                newDiv.style.position = 'absolute';
+				newDiv.style.opacity  = '30%';
+				pElem.appendChild(newDiv);
+				newDiv.style.transition = `left ${transSec}s ease, top ${transSec}s ease, width ${transSec}s ease, height ${transSec}s ease`;
+				setTimeout(() => {
+					newDiv.style.left = `${end.left}px`;
+					newDiv.style.top = `${end.top}px`;
+					newDiv.style.width = `${end.width}px`;
+					newDiv.style.height = `${end.height}px`;
+					setTimeout(() => { pElem.removeChild(newDiv); }, zoomMilSec + deleMilSec);
+				}, 100);
+		};
 		btn.onmousedown = e => {
 			let winDiv = win.ui.win;
+			let pElem = win.desktop.desktopDiv;
 			let start = {
+				//left  : parseInt(winDiv.style.left  ) || 0 , 
+				//top   : parseInt(winDiv.style.top   ) || 0 ,
+				//width : parseInt(winDiv.style.width ) || winDiv.offsetWidth , 
+				//height: parseInt(winDiv.style.height) || winDiv.offsetHeight,
 				left: winDiv.offsetLeft, top: winDiv.offsetTop,
 				width: winDiv.offsetWidth, height: winDiv.offsetHeight,
 			};
@@ -270,7 +304,6 @@ export let defaultWinOption = {
 				win.status.lastSize.width  = start.width ;
 				win.status.lastSize.height = start.height;
 				//
-				let pElem = win.desktop.desktopDiv;
 				end.left   = 0;
 				end.top    = 0;
 				end.width  = pElem.clientWidth - 6;
@@ -286,8 +319,9 @@ export let defaultWinOption = {
 			if (win.ui.statusBar) {
 				bodyHeight = bodyHeight - win.ui.statusBar.clientHeight;
 			}
-			win.ui.windowBody.style.height = `${bodyHeight - 40}px`;
-		}
+			win.ui.windowBody.style.height = `${bodyHeight - 25}px`;
+			showWinMaxAnima(start, end);
+		};
 	},
 
 	/**
@@ -365,7 +399,7 @@ type WinStatus = {
 	isMax: boolean; // 是否最大化
 	isMin: boolean; // 是否最小化
 	isDragging: boolean; // 是否在拖动状态
-	readonly lastPos : {x: number, y: number}; // 正常状态时最后状态
+	readonly lastPos : {x: number, y: number, zIdx: number}; // 正常状态时最后状态
 	readonly lastSize: {width: number, height: number}; // 正常状态时最后的大小
 };
 
@@ -421,7 +455,7 @@ export abstract class UIWindowAdptt implements UIObj {
 	readonly ui: WinUIElement;
 	readonly status: WinStatus = { 
 		isMin: false, isMax: false, isDragging: false,
-		lastPos: { x: 10, y: 10 },
+		lastPos: { x: 10, y: 10, zIdx: 100 },
 		lastSize: { width: 320, height: 250 }
 	};
 	readonly id: string;
@@ -480,6 +514,7 @@ export abstract class UIWindowAdptt implements UIObj {
 	 * @param zIdx 设置层级
 	 */
 	setZIndex(zIndex: number): void {
+		this.status.lastPos.zIdx = zIndex; 
 		this.ui.win.style.zIndex = `${zIndex}`;
 	}
 
@@ -790,6 +825,7 @@ export namespace JadeWindowUI {
 		winDiv.appendChild(titleBar );
 		winDiv.appendChild(windowBody);
 		winDiv.appendChild(statusBar);
+		win.ui.statusBar = statusBar;
 		// 
 		let pos = win.desktop.getNewWindowPosition( //
 			winDiv.getBoundingClientRect().width, //

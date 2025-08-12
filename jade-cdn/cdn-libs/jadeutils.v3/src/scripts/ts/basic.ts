@@ -434,6 +434,10 @@ export class TimeUtil {
 	static readonly UNIT_HUR: number = 1000 * 60 * 60;
 	static readonly UNIT_DAY: number = 1000 * 60 * 60 * 24;
 
+	static async sleep(milSecs: number): Promise<any> {
+		return new Promise((resolve) => {setTimeout(() => { /* do nothing */}, milSecs);})
+	}
+
 	/**
 	 * JS时间Date格式化参数
 	 *
