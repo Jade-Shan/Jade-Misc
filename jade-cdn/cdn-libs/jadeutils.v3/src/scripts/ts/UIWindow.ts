@@ -13,6 +13,20 @@ type IDesktopConfig = {
 	dockBar?: DockBarParam
 }
 
+type CurrentWindow = {
+	top?: UIObj,
+	dragging: {
+		win?: UIObj,
+		start?: { x: number, y: number },
+		distance?: { left: number, top: number };
+	},
+	scaling: {
+		win?: UIObj,
+		start?: { x: number, y: number },
+		distance?: { left: number, top: number };
+	},
+}
+
 /**
  * 桌面环境
  */
@@ -21,6 +35,7 @@ export class UIDesktop {
 	private allWindows: SimpleMap<string, UIObj> = new SimpleMap(); // 全部窗口的索引
 	private windowZIndex: Array<UIObj> = []; // 窗口的z-index序列
 	private dockBar?: DockBar; // 程序栏
+	readonly currWin: CurrentWindow = {dragging:{}, scaling:{}};
 
 	private newWindowPosition = { // 管理新窗口弹出位置
 		lastPos: { x: 0, y: 0 }, // 上一次窗口弹出的坐标
@@ -335,27 +350,41 @@ export let defaultWinOption = {
 
 	bindWindowDrag: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement): any => { /* 拖动窗口 */
 		let winDiv = win.ui.win;
+		let desktop = win.desktop;
 		titleBar.style.cursor = "move";
 		titleBarControl.style.cursor = "pointer";
-		let dargStart = { x: 0, y: 0 }, dargDistance = { left: 0, top: 0 };
-		titleBar.addEventListener("mouseleave", (e) => { win.setDragging(false); });
-		titleBar.addEventListener("mouseup"   , (e) => { win.setDragging(false); });
 		titleBar.addEventListener("mousedown" , (e) => {
-			console.log(`mouse-click: win:${win.ui.win.id} title: ${titleBar.id}`);
-			win.setDragging(true);
-			dargStart.x = e.clientX;
-			dargStart.y = e.clientY;
-			dargDistance.left = parseInt(winDiv.style.left) || 0;
-			dargDistance.top = parseInt(winDiv.style.top) || 0;
-			e.preventDefault();
+			desktop.currWin.dragging.win = win;
+			// console.log(`mouse-click: win:${win.ui.win.id}`);
 		});
-		titleBar.addEventListener("mousemove", (e) => {
-			console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
-			if (win.checkDragging()) {
-				let dx = e.clientX - dargStart.x;
-				let dy = e.clientY - dargStart.y;
-				winDiv.style.left = `${dargDistance.left + dx}px`;
-				winDiv.style.top = `${dargDistance.top + dy}px`;
+		// 窗口的拖动要监控整个桌面
+		desktop.desktopDiv.addEventListener("mousedown" , (e) => {
+			//console.log(`mouse-click: win:${win.ui.win.id} title: ${titleBar.id}`);
+			if (desktop.currWin.dragging.win) {
+				let currDiv = desktop.currWin.dragging.win.ui.win;
+				setTimeout(() => {
+					let start = { x: e.clientX, y: e.clientY };
+					let distance = {
+						left: parseInt(currDiv.style.left) || 0,
+						top : parseInt(currDiv.style.top ) || 0
+					};
+					desktop.currWin.dragging.start = start;
+					desktop.currWin.dragging.distance = distance;
+					// console.log(`drag-start: win:${win.ui.win.id}, (${start.x}, ${start.y}) , ${distance.left}, ${distance.top}`);
+				}, 50);
+			}
+		});
+		desktop.desktopDiv.addEventListener("mouseup"   , (e) => { 
+			desktop.currWin.dragging = {};
+		});
+		desktop.desktopDiv.addEventListener("mousemove", (e) => {
+			// console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
+			if (desktop.currWin.dragging.win && desktop.currWin.dragging.start && desktop.currWin.dragging.distance) {
+				let currDiv = desktop.currWin.dragging.win.ui.win;
+				let dx = e.clientX - desktop.currWin.dragging.start.x;
+				let dy = e.clientY - desktop.currWin.dragging.start.y;
+				currDiv.style.left = `${desktop.currWin.dragging.distance.left + dx}px`;
+				currDiv.style.top  = `${desktop.currWin.dragging.distance.top  + dy}px`;
 			}
 		});
 	},
@@ -426,8 +455,6 @@ export interface UIObj {
 	 */
 	setZIndex(zIdx: number): void;
 
-	setDragging(isDragging: boolean): void;
-
 	checkDragging(): boolean;
 
 }
@@ -486,8 +513,11 @@ export abstract class UIWindowAdptt implements UIObj {
 		let tid = JadeWindowUI.genWinTitleBarId(this.id);
 		let div = document.getElementById(tid);
 		if (div != null) {
-			if (isActive && div.classList.contains('inactive')) {
-				div.classList.remove('inactive');
+			if (isActive ) {
+				this.desktop.currWin.top = this;
+				if (div.classList.contains('inactive')) {
+					div.classList.remove('inactive');
+				}
 			} else if (!isActive && !div.classList.contains('inactive')) {
 				div.classList.add('inactive');
 			} 
@@ -501,11 +531,6 @@ export abstract class UIWindowAdptt implements UIObj {
 	setZIndex(zIndex: number): void {
 		this.status.lastPos.zIdx = zIndex; 
 		this.ui.win.style.zIndex = `${zIndex}`;
-	}
-
-	setDragging(isDragging: boolean): void {
-		this.status.isDragging = isDragging;
-		console.log(`win dragging: ${this.id} , ${this.status.isDragging}`);
 	}
 
 	checkDragging(): boolean { return this.status.isDragging; }
