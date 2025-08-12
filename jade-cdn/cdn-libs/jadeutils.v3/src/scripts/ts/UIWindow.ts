@@ -246,35 +246,6 @@ export let defaultWinOption = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptMax: (win: UIObj, btn: HTMLElement): any => {
-		let showWinMaxAnima = (
-			start: {left: number, top: number, width: number, height: number},
-			end  : {left: number, top: number, width: number, height: number}
-		) => {
-				let zoomMilSec = 200;
-				let deleMilSec = 100;
-				let transSec = (zoomMilSec / 1000);
-				let winDiv = win.ui.win;
-				let pElem = win.desktop.desktopDiv;
-                let newDiv = document.createElement('div');
-				newDiv.style.zIndex = `${win.status.lastPos.zIdx + 2500}`;
-                newDiv.style.left   = `${start.left  }px`;
-                newDiv.style.top    = `${start.top   }px`;
-                newDiv.style.width  = `${start.width }px`;
-                newDiv.style.height = `${start.height}px`;
-                newDiv.style.backgroundColor = 'white';
-                newDiv.style.border   = '3px solid black';
-                newDiv.style.position = 'absolute';
-				newDiv.style.opacity  = '30%';
-				pElem.appendChild(newDiv);
-				newDiv.style.transition = `left ${transSec}s ease, top ${transSec}s ease, width ${transSec}s ease, height ${transSec}s ease`;
-				setTimeout(() => {
-					newDiv.style.left = `${end.left}px`;
-					newDiv.style.top = `${end.top}px`;
-					newDiv.style.width = `${end.width}px`;
-					newDiv.style.height = `${end.height}px`;
-					setTimeout(() => { pElem.removeChild(newDiv); }, zoomMilSec + deleMilSec);
-				}, 100);
-		};
 		btn.onmousedown = e => {
 			let winDiv = win.ui.win;
 			let pElem = win.desktop.desktopDiv;
@@ -320,9 +291,13 @@ export let defaultWinOption = {
 				bodyHeight = bodyHeight - win.ui.statusBar.clientHeight;
 			}
 			win.ui.windowBody.style.height = `${bodyHeight - 25}px`;
-			showWinMaxAnima(start, end);
+			JadeWindowUI.showWinMaxAnima(win, 300, 100, start, end);
 		};
 	},
+
+
+
+
 
 	/**
 	 * 绑定窗口的最小化操作
@@ -333,13 +308,26 @@ export let defaultWinOption = {
 	bindWinOptMin: (win: UIObj, btn: HTMLElement): any => {
 		btn.onmousedown = e => {
 			let winDiv = win.ui.win;
+			let min = {
+				left: win.desktop.desktopDiv.offsetWidth / 2,
+				top: win.desktop.desktopDiv.offsetHeight + 50,
+				width: 100, height: 50
+			}
+			let ori = {
+				left: winDiv.offsetLeft, top: winDiv.offsetTop,
+				width: winDiv.offsetWidth, height: winDiv.offsetHeight
+			}
 			if (win.status.isMin) {
-				win.status.isMin = false;
-				win.ui.win.style.visibility = "visible";
-				win.desktop.optWinActive(win); // 恢复的窗口为顶层
+				JadeWindowUI.showWinMaxAnima(win, 300, 100, min, ori);
+				setTimeout(() => {
+					win.status.isMin = false;
+					win.ui.win.style.visibility = "visible";
+					win.desktop.optWinActive(win); // 恢复的窗口为顶层
+				}, 500);
 			} else {
 				win.status.isMin = true;
 				win.ui.win.style.visibility = "hidden";
+				JadeWindowUI.showWinMaxAnima(win, 300, 100, ori, min);
 			}
 		}
 	},
@@ -864,5 +852,33 @@ export namespace JadeWindowUI {
 		win.cfg.bindWinOpt.bindWindowDrag(win, titleBar, titleBarControl);
 
 		return winDiv;
+	};
+
+	export function showWinMaxAnima(win: UIObj, zoomMilSec: number, deleMilSec: number,
+		start: { left: number, top: number, width: number, height: number },
+		end  : { left: number, top: number, width: number, height: number }) //
+	{
+		let transSec = (zoomMilSec / 1000);
+		// let winDiv = win.ui.win;
+		let pElem = win.desktop.desktopDiv;
+		let newDiv = document.createElement('div');
+		newDiv.style.zIndex = `${win.status.lastPos.zIdx + 2500}`;
+		newDiv.style.left = `${start.left}px`;
+		newDiv.style.top = `${start.top}px`;
+		newDiv.style.width = `${start.width}px`;
+		newDiv.style.height = `${start.height}px`;
+		newDiv.style.backgroundColor = 'white';
+		newDiv.style.border = '3px solid black';
+		newDiv.style.position = 'absolute';
+		newDiv.style.opacity = '30%';
+		pElem.appendChild(newDiv);
+		newDiv.style.transition = `left ${transSec}s ease, top ${transSec}s ease, width ${transSec}s ease, height ${transSec}s ease`;
+		setTimeout(() => {
+			newDiv.style.left = `${end.left}px`;
+			newDiv.style.top = `${end.top}px`;
+			newDiv.style.width = `${end.width}px`;
+			newDiv.style.height = `${end.height}px`;
+			setTimeout(() => { pElem.removeChild(newDiv); }, zoomMilSec + deleMilSec);
+		}, 10);
 	};
 }
