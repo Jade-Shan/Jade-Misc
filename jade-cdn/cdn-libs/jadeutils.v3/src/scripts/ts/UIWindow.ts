@@ -207,6 +207,8 @@ export type IBindWinOpt = {
 	 */
 	bindWinOptMin: (win: UIObj, btn: HTMLElement) => any;
 
+	/* 拖动窗口 */
+	bindWindowDrag: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement) => any;
 }
 
 /**
@@ -290,7 +292,41 @@ export let defaultWinOption = {
 		}
 	},
 
+	bindWindowDrag: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement): any => { /* 拖动窗口 */
+		let winDiv = win.ui.win;
+		titleBar.style.cursor = "move";
+		titleBarControl.style.cursor = "pointer";
+		let dargStart = { x: 0, y: 0 }, dargDistance = { left: 0, top: 0 };
+		titleBar.onmouseleave = (e) => {
+			win.setDragging(false);
+		};
+		titleBar.onmouseup = (e) => {
+			win.setDragging(false);
+		};
+		titleBar.onmousedown = (e) => {
+			console.log(`mouse-click: win:${win.ui.win.id} title: ${titleBar.id}`);
+			win.setDragging(true);
+			dargStart.x = e.clientX;
+			dargStart.y = e.clientY;
+			dargDistance.left = parseInt(winDiv.style.left) || 0;
+			dargDistance.top = parseInt(winDiv.style.top) || 0;
+			e.preventDefault();
+		};
+		winDiv.onmousemove = (e) => {
+			console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
+			if (win.checkDragging()) {
+				let dx = e.clientX - dargStart.x;
+				let dy = e.clientY - dargStart.y;
+				winDiv.style.left = `${dargDistance.left + dx}px`;
+				winDiv.style.top = `${dargDistance.top + dy}px`;
+			}
+		}
+	},
+
 };
+
+
+
 
 /**
  * 窗口配置
@@ -352,6 +388,10 @@ export interface UIObj {
 	 * @param zIdx 设置层级
 	 */
 	setZIndex(zIdx: number): void;
+
+	setDragging(isDragging: boolean): void;
+
+	checkDragging(): boolean;
 
 }
 
@@ -424,6 +464,13 @@ export abstract class UIWindowAdptt implements UIObj {
 	setZIndex(zIndex: number): void {
 		this.ui.win.style.zIndex = `${zIndex}`;
 	}
+
+	setDragging(isDragging: boolean): void {
+		this.status.isDragging = isDragging;
+		console.log(`win dragging: ${this.id} , ${this.status.isDragging}`);
+	}
+
+	checkDragging(): boolean { return this.status.isDragging; }
 
 } 
 
@@ -760,30 +807,7 @@ export namespace JadeWindowUI {
 			win.status.lastPos.y = parent.offsetHeight - height;
 			winDiv.style.top = `${win.status.lastPos.y}px`;
 		}
-
-		{ /* 拖动窗口 */
-			titleBar.style.cursor = "move";
-			titleBarControl.style.cursor = "pointer";
-			let dargStart = {x: 0, y: 0}, dargDistance = {left:0, top:0};
-			titleBar.onmouseleave = (e) => { win.status.isDragging = false; }; 
-			titleBar.onmouseup = (e) => { win.status.isDragging = false; };
-			titleBar.onmousedown = (e) => {
-				win.status.isDragging = true;
-				dargStart.x = e.clientX;
-				dargStart.y = e.clientY;
-				dargDistance.left = parseInt(winDiv.style.left) || 0;
-				dargDistance.top  = parseInt(winDiv.style.top ) || 0;
-				e.preventDefault();
-			};
-			document.onmousemove = (e) => {
-				if (win.status.isDragging) {
-					let dx = e.clientX - dargStart.x;
-					let dy = e.clientY - dargStart.y;
-					winDiv.style.left =  `${dargDistance.left + dx}px`;
-					winDiv.style.top  =  `${dargDistance.top  + dy}px`;
-				}
-			}
-		}
+		win.cfg.bindWinOpt.bindWindowDrag(win, titleBar, titleBarControl);
 
 		return winDiv;
 	};
