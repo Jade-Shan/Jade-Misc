@@ -1,16 +1,16 @@
-import { NumUtil } from './basic.js';
-import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, IGeo2D, GeoCurve2D, IRevolveOption, ICircle2D, Circle2D } from './geo2d.js';
-
+import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, 
+	IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, IGeo2D, GeoCurve2D, 
+	IRevolveOption, ICircle2D, Circle2D } from './geo2d.js';
 
 export interface ICanvasStyle {
 	lineWidth?: number;
 	strokeStyle?: string;
 	fillStyle?: string;
- }
+}
 
 export namespace CanvasUtils {
 
-	function drawWithCanvas(cvsCtx: CanvasRenderingContext2D, func: (cvs: CanvasRenderingContext2D) => void, style?: ICanvasStyle) {
+	function drawWithCanvas(cvsCtx: CanvasRenderingContext2D, func: (cvs: CanvasRenderingContext2D) => void, style?: ICanvasStyle): void {
 		cvsCtx.save();
 		if (style?.lineWidth) { cvsCtx.lineWidth = style.lineWidth; }
 		if (style?.strokeStyle) { cvsCtx.strokeStyle = style.strokeStyle; }
@@ -22,9 +22,7 @@ export namespace CanvasUtils {
 		cvsCtx.restore();
 	}
 
-
-
-	export function drawArc(cvsCtx: CanvasRenderingContext2D, center: IPoint2D, radius: number, revole: IRevolveOption, style?: ICanvasStyle) {
+	export function drawArc(cvsCtx: CanvasRenderingContext2D, center: IPoint2D, radius: number, revole: IRevolveOption, style?: ICanvasStyle): void {
 		//drawWithCanvas(cvsCtx, (cvsCtx) => {
 		//	// 因为Canvas的原点坐标是在左上角，所以顺时钟和逆时钟的方向和笛卡尔坐标系是反的
 		//	cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
@@ -48,7 +46,7 @@ export namespace CanvasUtils {
 	 * @param width 
 	 * @param style 
 	 */
-	export function drawLine(cvsCtx: CanvasRenderingContext2D, line: ICanvasLine2D) {
+	export function drawLine(cvsCtx: CanvasRenderingContext2D, line: ICanvasLine2D): void {
 		cvsCtx.save();
 		cvsCtx.strokeStyle = line.strokeStyle;
 		cvsCtx.lineWidth = line.lineWidth;
@@ -64,7 +62,7 @@ export namespace CanvasUtils {
 	 * @param cvsCtx 
 	 * @param lines 
 	 */
-	export function drawLines(cvsCtx: CanvasRenderingContext2D, lines: Array<ICanvasLine2D>) {
+	export function drawLines(cvsCtx: CanvasRenderingContext2D, lines: Array<ICanvasLine2D>): void {
 		if (lines && lines.length > 0) {
 			for (let i = 0; i < lines.length; i++) {
 				drawLine(cvsCtx, lines[i]);
@@ -72,7 +70,7 @@ export namespace CanvasUtils {
 		}
 	}
 
-	export function drawRay(cvsCtx: CanvasRenderingContext2D, ray: ICanvasRay2D) {
+	export function drawRay(cvsCtx: CanvasRenderingContext2D, ray: ICanvasRay2D): void {
 		drawLine(cvsCtx, {
 			a: ray.start, b: ray.mid, // 
 			lineWidth: ray.lineWidth, strokeStyle: ray.strokeStyle, //
@@ -80,7 +78,7 @@ export namespace CanvasUtils {
 		})
 	}
 
-	export function drawRays(cvsCtx: CanvasRenderingContext2D, rays: Array<ICanvasRay2D>) {
+	export function drawRays(cvsCtx: CanvasRenderingContext2D, rays: Array<ICanvasRay2D>): void {
 		if (rays && rays.length > 0) {
 			for (let i = 0; i < rays.length; i++) {
 				drawRay(cvsCtx, rays[i]);
@@ -88,7 +86,7 @@ export namespace CanvasUtils {
 		}
 	}
 
-	export function drawPoint(cvsCtx: CanvasRenderingContext2D, point: ICanvasPoint2D) {
+	export function drawPoint(cvsCtx: CanvasRenderingContext2D, point: ICanvasPoint2D): void {
 		cvsCtx.save();
 		cvsCtx.fillStyle = point.fillStyle;
 		cvsCtx.beginPath();
@@ -97,7 +95,7 @@ export namespace CanvasUtils {
 		cvsCtx.restore();
 	}
 
-	export function drawPoints(cvsCtx: CanvasRenderingContext2D, points: Array<ICanvasPoint2D>) {
+	export function drawPoints(cvsCtx: CanvasRenderingContext2D, points: Array<ICanvasPoint2D>): void  {
 		if (points && points.length > 0) {
 			for (let i = 0; i < points.length; i++) {
 				drawPoint(cvsCtx, points[i]);
@@ -105,7 +103,7 @@ export namespace CanvasUtils {
 		}
 	}
 
-	export function drawRectangle(cvsCtx: CanvasRenderingContext2D, rect: ICanvasRectangle2D) {
+	export function drawRectangle(cvsCtx: CanvasRenderingContext2D, rect: ICanvasRectangle2D): void {
 		cvsCtx.save();
 		if (rect.fillStyle && rect.fillStyle.length > 0) {
 			cvsCtx.beginPath();
@@ -120,7 +118,7 @@ export namespace CanvasUtils {
 		cvsCtx.restore();
 	}
 
-	export function drawCircle(cvsCtx: CanvasRenderingContext2D, circle: ICanvasCircle2D) {
+	export function drawCircle(cvsCtx: CanvasRenderingContext2D, circle: ICanvasCircle2D): void {
 		cvsCtx.save();
 		if (circle.fillStyle && circle.fillStyle.length > 0) {
 			cvsCtx.beginPath();
@@ -149,7 +147,7 @@ export namespace CanvasUtils {
 		return result;
 	}
 
-	export function drawShapeVertexes(cvsCtx: CanvasRenderingContext2D, shape: CanvasPolygon2D, radius: number, fillStyle: string) {
+	export function drawShapeVertexes(cvsCtx: CanvasRenderingContext2D, shape: CanvasPolygon2D, radius: number, fillStyle: string): void {
 		let vtxs: Array<CanvasPoint2D> = genVertexes(shape, radius, fillStyle);
 		drawPoints(cvsCtx, vtxs);
 	}
@@ -161,8 +159,10 @@ export namespace CanvasUtils {
 		if (vtxRays && vtxRays.length > 0) {
 			for (let i = 0; i < vtxRays.length; i++) {
 				let ray = vtxRays[i].ray;
-				drawLine(cvsCtx, { a: { x: ray.start.x, y: ray.start.y }, b: { x: ray.mid.x, y: ray.mid.y },  //
-					lineWidth, strokeStyle });
+				drawLine(cvsCtx, {
+					a: { x: ray.start.x, y: ray.start.y }, b: { x: ray.mid.x, y: ray.mid.y },  //
+					lineWidth, strokeStyle
+				});
 			}
 		}
 	}

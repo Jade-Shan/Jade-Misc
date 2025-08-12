@@ -9,7 +9,6 @@ export class NumUtil {
 		return Math.floor(n * m + 0.50000000001) / m;
 	}
 
-
 	/**
 	 * 以可读的形式格式化数字
 	 *
@@ -29,14 +28,14 @@ export class NumUtil {
 				let pArr = s1.split(",");
 				if (pArr.length > 0) {
 					for (let pt of pArr) {
-						if (pt.length > p) { p = pt.length; } 
+						if (pt.length > p) { p = pt.length; }
 					}
 				}
 			}
 			let s2 = sArr[1]; // 小数格式
 			if (s2.length > 0) {
 				for (let ms of s2) {
-					if ("#" == ms) { m = m + 1;}
+					if ("#" == ms) { m = m + 1; }
 				}
 			}
 		}
@@ -48,10 +47,10 @@ export class NumUtil {
 			let num: number = Math.abs(n);
 			let sign = num == n;
 			let sArr = this.toFixed(num, m).toString().split(".");
-			let s1 = sArr[0] ? sArr[0] : "" ; // 整数字符串
-			let s2 = sArr[1] ? sArr[1] : "" ; // 小数字符串
+			let s1 = sArr[0] ? sArr[0] : ""; // 整数字符串
+			let s2 = sArr[1] ? sArr[1] : ""; // 小数字符串
 			if (s2.length < m) {
-				for (let i = s2.length; i < m ; i++) {
+				for (let i = s2.length; i < m; i++) {
 					s2 = s2 + '0';
 				}
 			}
@@ -198,20 +197,20 @@ export class NumUtil {
 export class StrUtil {
 
 	static trim(s: string): string {
-		return s.replace(/(^\s*)|(\s*$)/g, ""); 
+		return s.replace(/(^\s*)|(\s*$)/g, "");
 	}
 
 	static trimLeft(s: string): string {
-		return s.replace(/(^\s*)/g, ""); 
+		return s.replace(/(^\s*)/g, "");
 	}
 
 	static trimRight(s: string): string {
-		return s.replace(/(\s*$)/g, ""); 
+		return s.replace(/(\s*$)/g, "");
 	}
 
 	static leftPad(str: string, max: number, place?: string): string {
 		place = place ? place : " ";
-		while(str.length < max) {
+		while (str.length < max) {
 			str = place + str;
 		}
 		return str;
@@ -219,7 +218,7 @@ export class StrUtil {
 
 	static rightPad(str: string, max: number, place?: string): string {
 		place = place ? place : " ";
-		while(str.length < max) {
+		while (str.length < max) {
 			str = str + place;
 		}
 		return str;
@@ -258,22 +257,22 @@ export class StrUtil {
 	}
 
 
-// 	/**
-// 	 * 
-// 	 * @param num 
-// 	 * @param scale 
-// 	 * @returns 
-// 	 */
-// 	static formatNumber(num: number, scale: number) {
-// 		scale = scale > 0 && scale <= 20 ? scale : 2;
-// 		let numStr = num.toFixed(scale) + "";
-// 		let l = numStr.split(".")[0].split("").reverse(), r = numStr.split(".")[1];
-// 		let t = "";
-// 		for (var i = 0; i < l.length; i++) {
-// 			t += l[i] + ((i + 1) % 3 === 0 && (i + 1) != l.length ? "," : "");
-// 		}
-// 		return t.split("").reverse().join("") + "." + r;
-// 	}
+	// 	/**
+	// 	 * 
+	// 	 * @param num 
+	// 	 * @param scale 
+	// 	 * @returns 
+	// 	 */
+	// 	static formatNumber(num: number, scale: number) {
+	// 		scale = scale > 0 && scale <= 20 ? scale : 2;
+	// 		let numStr = num.toFixed(scale) + "";
+	// 		let l = numStr.split(".")[0].split("").reverse(), r = numStr.split(".")[1];
+	// 		let t = "";
+	// 		for (var i = 0; i < l.length; i++) {
+	// 			t += l[i] + ((i + 1) % 3 === 0 && (i + 1) != l.length ? "," : "");
+	// 		}
+	// 		return t.split("").reverse().join("") + "." + r;
+	// 	}
 
 	/**
 	 * 
@@ -289,11 +288,11 @@ export class StrUtil {
 				out += str.charAt(i);
 			} else if (c > 0x07FF) {
 				out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
-				out += String.fromCharCode(0x80 | ((c >>  6) & 0x3F));
-				out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));
+				out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+				out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
 			} else {
-				out += String.fromCharCode(0xC0 | ((c >>  6) & 0x1F));
-				out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));
+				out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+				out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
 			}
 		}
 		return out;
@@ -308,7 +307,7 @@ export class StrUtil {
 		let out = "";
 		let len = str.length;
 		let i = 0;
-		let char2, char3;
+		let char2: number, char3: number;
 		while (i < len) {
 			let c = str.charCodeAt(i++);
 			switch (c >> 4) {
@@ -451,15 +450,15 @@ export class TimeUtil {
 				let text = `${num}`;
 				result = result.replace(mark, StrUtil.leftPad(text, mark.length, '0'));
 			}
-		} 
+		}
 		processPart("y+", d.getFullYear());
 		processPart("M+", d.getMonth() + 1);
-		processPart("d+", d.getDate()     );
-		processPart("H+", d.getHours()    );
-		processPart("m+", d.getMinutes()  );
-		processPart("s+", d.getSeconds()  );
+		processPart("d+", d.getDate());
+		processPart("H+", d.getHours());
+		processPart("m+", d.getMinutes());
+		processPart("s+", d.getSeconds());
 		processPart("q+", Math.floor((d.getMonth() + 3) / 3));
-		processPart("S+" , d.getMilliseconds());
+		processPart("S+", d.getMilliseconds());
 		return result;
 	}
 
@@ -555,7 +554,7 @@ export class TimeUtil {
 	 * @param days 
 	 * @returns 
 	 */
-	static getTimeArea(date: Date, days: number): {floor: Date, ceil: Date} {
+	static getTimeArea(date: Date, days: number): { floor: Date, ceil: Date } {
 		var d1 = TimeUtil.cleanDay(date);
 		var d2 = TimeUtil.cleanDay(TimeUtil.addDays(d1, days));
 		if (d1 < d2) {
@@ -572,7 +571,7 @@ export class TimeUtil {
 	 * @param days 
 	 * @returns 
 	 */
-	static getDateArea(date: Date, ms: number): {floor: Date, ceil: Date} {
+	static getDateArea(date: Date, ms: number): { floor: Date, ceil: Date } {
 		var d1 = date;
 		var d2 = TimeUtil.cleanDay(TimeUtil.addMilliseconds(d1, ms));
 		if (d1 < d2) {
@@ -589,7 +588,7 @@ export class TimeUtil {
 	 */
 	static getLocalTimeZone(): string {
 		var d = new Date();
-		return ("GMT" + d.getTimezoneOffset() / 60);
+		return (`GMT${d.getTimezoneOffset() / 60}`);
 	}
 
 	/**

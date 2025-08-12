@@ -1,7 +1,6 @@
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
-import { ShowdownUtils, SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
-
-import { WebUtil, HttpRequest, HttpRequestHandler, HttpResponse } from "./web.js"
+import { ShowdownUtils, BootStrapHelper } from './3rdLibTool.js';
+import { WebUtil, HttpResponse } from "./web.js"
 
 
 interface UserInfoResp {
@@ -159,9 +158,9 @@ export class BlogPage {
 		tk?.appendChild(pagging);
 
 		let br = document.createElement("br");
-		pagging = WebHtmlPage.renderPaging(1, 20); tk?.appendChild(pagging);tk?.appendChild(br);
-		pagging = WebHtmlPage.renderPaging(7, 20); tk?.appendChild(pagging);tk?.appendChild(br);
-		pagging = WebHtmlPage.renderPaging(8, 20); tk?.appendChild(pagging);tk?.appendChild(br);
+		pagging = WebHtmlPage.renderPaging( 1, 20); tk?.appendChild(pagging);tk?.appendChild(br);
+		pagging = WebHtmlPage.renderPaging( 7, 20); tk?.appendChild(pagging);tk?.appendChild(br);
+		pagging = WebHtmlPage.renderPaging( 8, 20); tk?.appendChild(pagging);tk?.appendChild(br);
 		pagging = WebHtmlPage.renderPaging(13, 20); tk?.appendChild(pagging);tk?.appendChild(br);
 		pagging = WebHtmlPage.renderPaging(14, 20); tk?.appendChild(pagging);tk?.appendChild(br);
 		pagging = WebHtmlPage.renderPaging(20, 20); tk?.appendChild(pagging);tk?.appendChild(br);
@@ -200,8 +199,8 @@ export class BlogPage {
 
 		page.initUITheme();
 		let themes = [
-			{ elemSlt: "#switch-theme-hobbit"     , themeName: "hobbit" },
-			{ elemSlt: "#switch-theme-lo-fi"      , themeName: "lo-fi"  },
+			{ elemSlt: "#switch-theme-hobbit"     , themeName: "hobbit"      },
+			{ elemSlt: "#switch-theme-lo-fi"      , themeName: "lo-fi"       },
 			{ elemSlt: "#switch-theme-paper-print", themeName: "paper-print" },
 		]
 		page.bindChangeTheme(themes);

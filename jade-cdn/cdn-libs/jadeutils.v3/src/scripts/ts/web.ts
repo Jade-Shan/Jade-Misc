@@ -40,7 +40,7 @@ export interface HttpRequest<T extends any> {
 	method?: ("GET" | "POST");
 	url: string;
 	opt?: HttpRequestOption;
-	body?: T ;
+	body?: T;
 }
 
 export interface HttpResponse<T extends any> {
@@ -51,11 +51,11 @@ export interface HttpResponse<T extends any> {
 }
 
 export interface HttpRequestHandler<T extends any, R extends any> {
-		onLoad    ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
-		onProgress?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
-		onTimeout ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
-		onAbort   ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
-		onError   ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+	onLoad    ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+	onProgress?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+	onTimeout ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+	onAbort   ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
+	onError   ?: (evt: ProgressEvent, xhr: XMLHttpRequest, req: HttpRequest<T>) => HttpResponse<R>;
 }
 
 
@@ -86,11 +86,11 @@ async function doHttp<T extends any, R extends any>(req: HttpRequest<T>, //
 		let ontimeout = hdl?.onTimeout;
 		let onabort = hdl?.onAbort;
 
-		if (onload    ) { xhr.onload     = (evt: ProgressEvent) => { resolve(  onload(evt, xhr, req)); }; }
-		if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => {       onprogress(evt, xhr, req) ; }; }
-		if (onerror   ) { xhr.onerror    = (evt: ProgressEvent) => { reject(  onerror(evt, xhr, req)); }; }
-		if (ontimeout ) { xhr.ontimeout  = (evt: ProgressEvent) => { reject(ontimeout(evt, xhr, req)); }; }
-		if (onabort   ) { xhr.onabort    = (evt: ProgressEvent) => { reject(  onabort(evt, xhr, req)); }; }
+		if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => { onprogress(evt, xhr, req); }; }
+		if (onload    ) { xhr.onload     = (evt: ProgressEvent) => { resolve(onload   (evt, xhr, req)); }; }
+		if (onerror   ) { xhr.onerror    = (evt: ProgressEvent) => { reject (onerror  (evt, xhr, req)); }; }
+		if (ontimeout ) { xhr.ontimeout  = (evt: ProgressEvent) => { reject (ontimeout(evt, xhr, req)); }; }
+		if (onabort   ) { xhr.onabort    = (evt: ProgressEvent) => { reject (onabort  (evt, xhr, req)); }; }
 
 		xhr.send();
 	});
@@ -105,9 +105,9 @@ export class WebUtil {
 	 * @returns 
 	 */
 	static async requestHttp<T extends any, R extends any>(req: HttpRequest<T>, //
-			hdl?: HttpRequestHandler<T, R>): Promise<HttpResponse<R>> // 
+		hdl?: HttpRequestHandler<T, R>): Promise<HttpResponse<R>> // 
 	{
-		return await doHttp<T,R>(req, hdl).then(resp => resp).catch(resp => resp);
+		return await doHttp<T, R>(req, hdl).then(resp => resp).catch(resp => resp);
 	}
 
 
@@ -207,8 +207,8 @@ export class WebUtil {
 	 * @returns 
 	 */
 	static webAuthBasic(username: string, password: string): string {
-		let auth = 'Basic ' + StrUtil.base64encode(StrUtil.utf16to8(username + ':' + password));
-		return auth;
+		let encodeStr = StrUtil.base64encode(StrUtil.utf16to8(`${username}:${password}`));
+		return `Basic ${encodeStr}`;
 	}
 
 
@@ -246,17 +246,18 @@ export class WebUtil {
 	 * @param rec 
 	 * @returns 
 	 */
-	static setCookieValue(name: string,  value: string, rec: {expireDays?: number, 
-		path?: string, domain?: string, secure?: boolean, sameSite?: string}): void 
-	{
+	static setCookieValue(name: string, value: string, rec: {
+		expireDays?: number,
+		path?: string, domain?: string, secure?: boolean, sameSite?: string
+	}): void {
 		if (!value) {
 			return;
 		}
-		rec.expireDays  = rec.expireDays  ? rec.expireDays  : 30;
-		rec.path        = rec.path        ? rec.path        : "";
-		rec.domain      = rec.domain      ? rec.domain      : "";
-		rec.sameSite    = rec.sameSite    ? rec.sameSite    : "Lax";
-		rec.secure      = rec.secure      ? rec.secure      : false;
+		rec.expireDays = rec.expireDays ? rec.expireDays : 30   ;
+		rec.path       = rec.path       ? rec.path       : ""   ;
+		rec.domain     = rec.domain     ? rec.domain     : ""   ;
+		rec.sameSite   = rec.sameSite   ? rec.sameSite   : "Lax";
+		rec.secure     = rec.secure     ? rec.secure     : false;
 
 		if ("None" === rec.sameSite) {
 			rec.secure = true;
@@ -265,8 +266,8 @@ export class WebUtil {
 		}
 		//
 		let expireStr   = `;expires=${(new Date((new Date()).getTime() + (rec.expireDays * TimeUtil.UNIT_DAY))).toUTCString()}`;
-		let pathStr     = rec.path     ? `;path=${    rec.path    }` : '';
-		let domainStr   = rec.domain   ? `;domain=${  rec.domain  }` : '';
+		let pathStr     = rec.path     ? `;path=${rec.path}`         : '';
+		let domainStr   = rec.domain   ? `;domain=${rec.domain}`     : '';
 		let sameSiteStr = rec.sameSite ? `;SameSite=${rec.sameSite}` : '';
 		let secureStr   = rec.secure   ? `;secure`                   : '';
 		document.cookie = `${name}=${encodeURIComponent(value)}${expireStr}${pathStr}${domainStr}${sameSiteStr}${secureStr}`;
@@ -302,10 +303,7 @@ export class WebUtil {
 	 * @returns 
 	 */
 	static checkImageFilePostfix(postfix: string): boolean {
-		if (!postfix.match(/.jpg|.gif|.png|.bmp/i)) {
-			return false;
-		}
-		return true;
+		return postfix.match(/.jpg|.gif|.png|.bmp/i) ? true : false;
 	}
 
 

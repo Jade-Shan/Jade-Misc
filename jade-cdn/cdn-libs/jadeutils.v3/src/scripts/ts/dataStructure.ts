@@ -1,4 +1,3 @@
-
 /**
  * 
  */
@@ -33,7 +32,7 @@ export class SimpleMap<K, T> {
 	/**
 	 * 
 	 */
-	get(key: K): (T | null) { 
+	get(key: K): (T | null) {
 		if (null == this.recs || this.recs.length < 1) {
 			return null;
 		}

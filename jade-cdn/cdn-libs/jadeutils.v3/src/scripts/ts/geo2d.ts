@@ -1,8 +1,6 @@
 import { NumUtil } from "./basic.js";
 
-export interface IGeo2D {
-
-}
+export interface IGeo2D { }
 
 export interface GeoShape2D extends IGeo2D {
 
@@ -35,9 +33,7 @@ export interface GeoShape2D extends IGeo2D {
 
 }
 
-export interface GeoCurve2D extends GeoShape2D {
-
-}
+export interface GeoCurve2D extends GeoShape2D { }
 
 
 export interface GeoPolygon2D extends GeoShape2D {

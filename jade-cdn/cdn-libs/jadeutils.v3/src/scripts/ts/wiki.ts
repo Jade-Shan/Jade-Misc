@@ -65,8 +65,8 @@ export class WikiPage {
 
 		page.initUITheme();
 		let themes = [
-			{ elemSlt: "#switch-theme-hobbit"     , themeName: "hobbit" },
-			{ elemSlt: "#switch-theme-lo-fi"      , themeName: "lo-fi"  },
+			{ elemSlt: "#switch-theme-hobbit"     , themeName: "hobbit"      },
+			{ elemSlt: "#switch-theme-lo-fi"      , themeName: "lo-fi"       },
 			{ elemSlt: "#switch-theme-paper-print", themeName: "paper-print" },
 		]
 		page.bindChangeTheme(themes);

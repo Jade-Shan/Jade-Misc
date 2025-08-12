@@ -1,7 +1,7 @@
 import { SimpleMap } from "./dataStructure.js";
 import { IPoint2D } from "./geo2d.js";
 import { JadeUIResource, IconGroup, DefaultIconGroup } from "./resource.js";
-import { IconSize, WebUtil } from "./web.js";
+import { WebUtil } from "./web.js";
 
 const WIN_Z_IDX_MIN = 2000;
 
@@ -176,11 +176,13 @@ export class UIDesktop {
  * 绑定窗口操作
  */
 export type IBindWinOpt = {
+
 	/**
 	 * 绑定窗口的关闭操作
 	 * @param win 窗口
 	 */
 	bindWinOptActive: (win: UIObj) => any;
+
 	/**
 	 * 绑定窗口的关闭操作
 	 * 
@@ -188,6 +190,7 @@ export type IBindWinOpt = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptClose: (win: UIObj, btn: HTMLElement) => any;
+
 	/**
 	 * 绑定窗口的最大化操作
 	 * 
@@ -195,6 +198,7 @@ export type IBindWinOpt = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptMax: (win: UIObj, btn: HTMLElement) => any;
+
 	/**
 	 * 绑定窗口的最小化操作
 	 * 
@@ -202,6 +206,7 @@ export type IBindWinOpt = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptMin: (win: UIObj, btn: HTMLElement) => any;
+
 }
 
 /**
@@ -284,6 +289,7 @@ export let defaultWinOption = {
 			}
 		}
 	},
+
 };
 
 /**
@@ -471,8 +477,7 @@ export class DockBar {
 	};
 
 
-	constructor(desktop: UIDesktop, cfg?: DockBarParam) //
-	{
+	constructor(desktop: UIDesktop, cfg?: DockBarParam) {
 		if (cfg) {
 			if (cfg.dockColor  ) { this.cfg.dockColor = cfg.dockColor; }
 			if (cfg.iconColor  ) { this.cfg.iconColor = cfg.iconColor; }
@@ -542,6 +547,7 @@ export class DockBar {
 	}
 
 	genAppGrapId(winId: string): string { return `appGrp-${winId}`; };
+
 	genAppIconId(winId: string): string { return `appIco-${winId}`; };
 
 	addIcon(win: UIObj) {

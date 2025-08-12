@@ -1,10 +1,9 @@
 import { SimpleMap } from "./dataStructure.js";
-import {IconSize, IBase64Img, Base64ImgType } from "./web.js";
+import { IconSize, IBase64Img, Base64ImgType } from "./web.js";
 
 export enum DefaultIconGroup { ELEC_FACE, ELEC_BUG, CAMERA };
 
 export type IconGroup = { x12: IBase64Img, x16: IBase64Img, x24: IBase64Img, x32: IBase64Img, x48: IBase64Img };
-
 
 let iconDefault01 = {
 	x12: {
@@ -280,5 +279,4 @@ export namespace JadeUIResource {
 	export let defaultDesktopBackground = imgDesktopBg;
 
 }
-
 
