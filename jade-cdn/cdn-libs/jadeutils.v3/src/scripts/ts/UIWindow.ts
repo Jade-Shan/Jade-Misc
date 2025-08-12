@@ -27,6 +27,12 @@ export class UIDesktop {
 		lastTopStart: { x: 0, y: 0 } // 叠完一行以后，下移一行开始重新叠
 	};
 
+	// 记录鼠标状态	
+	readonly mouseEvtStatus = {
+		currPos: {x: 0, y: 0}, 
+		btnPress: {left: false, right: false}
+	}
+
 	/**
 	 * 创建一个桌面环境
 	 * 
@@ -41,6 +47,9 @@ export class UIDesktop {
 			cfg?.desktop?.backgroundImage :  //
 			WebUtil.transBase64ImgURL(JadeUIResource.defaultDesktopBackground);
 		this.dockBar = cfg?.dockBar ? new DockBar(this, cfg.dockBar) : undefined;
+
+		desktopDiv.addEventListener("click", (e) => { console.log(`desk clieck event 01`)});
+		desktopDiv.addEventListener("click", (e) => { console.log(`desk clieck event 02`)});
 	}
 
 	/**
@@ -221,10 +230,10 @@ export let defaultWinOption = {
 	 * @param win 窗口
 	 */
 	bindWinOptActive: (win: UIObj): any => {
-		win.ui.win.onmousedown = e => {
+		win.ui.win.addEventListener("mousedown", e => {
 			console.log(`click win ${win.id}`);
 			win.desktop.optWinActive(win);
-		}
+		});
 	},
 
 	/**
@@ -234,9 +243,9 @@ export let defaultWinOption = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptClose: (win: UIObj, btn: HTMLElement): any => {
-		btn.onmouseup = e => {
+		btn.addEventListener("mouseup", e => {
 			win.desktop.optWinClose(win);
-		}
+		});
 	},
 
 	/**
@@ -246,14 +255,10 @@ export let defaultWinOption = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptMax: (win: UIObj, btn: HTMLElement): any => {
-		btn.onmousedown = e => {
+		btn.addEventListener("mousedown", e => {
 			let winDiv = win.ui.win;
 			let pElem = win.desktop.desktopDiv;
 			let start = {
-				//left  : parseInt(winDiv.style.left  ) || 0 , 
-				//top   : parseInt(winDiv.style.top   ) || 0 ,
-				//width : parseInt(winDiv.style.width ) || winDiv.offsetWidth , 
-				//height: parseInt(winDiv.style.height) || winDiv.offsetHeight,
 				left: winDiv.offsetLeft, top: winDiv.offsetTop,
 				width: winDiv.offsetWidth, height: winDiv.offsetHeight,
 			};
@@ -291,13 +296,9 @@ export let defaultWinOption = {
 				bodyHeight = bodyHeight - win.ui.statusBar.clientHeight;
 			}
 			win.ui.windowBody.style.height = `${bodyHeight - 25}px`;
-			JadeWindowUI.showWinMaxAnima(win, 300, 100, start, end);
-		};
+			JadeWindowUI.showWinMaxMinAnima(win, 300, 100, start, end);
+		});
 	},
-
-
-
-
 
 	/**
 	 * 绑定窗口的最小化操作
@@ -306,7 +307,7 @@ export let defaultWinOption = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptMin: (win: UIObj, btn: HTMLElement): any => {
-		btn.onmousedown = e => {
+		btn.addEventListener("mousedown", e => {
 			let winDiv = win.ui.win;
 			let min = {
 				left: win.desktop.desktopDiv.offsetWidth / 2,
@@ -318,18 +319,18 @@ export let defaultWinOption = {
 				width: winDiv.offsetWidth, height: winDiv.offsetHeight
 			}
 			if (win.status.isMin) {
-				JadeWindowUI.showWinMaxAnima(win, 300, 100, min, ori);
+				JadeWindowUI.showWinMaxMinAnima(win, 300, 100, min, ori);
 				setTimeout(() => {
 					win.status.isMin = false;
 					win.ui.win.style.visibility = "visible";
 					win.desktop.optWinActive(win); // 恢复的窗口为顶层
-				}, 500);
+				}, 400);
 			} else {
 				win.status.isMin = true;
 				win.ui.win.style.visibility = "hidden";
-				JadeWindowUI.showWinMaxAnima(win, 300, 100, ori, min);
+				JadeWindowUI.showWinMaxMinAnima(win, 300, 100, ori, min);
 			}
-		}
+		})
 	},
 
 	bindWindowDrag: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement): any => { /* 拖动窗口 */
@@ -337,13 +338,9 @@ export let defaultWinOption = {
 		titleBar.style.cursor = "move";
 		titleBarControl.style.cursor = "pointer";
 		let dargStart = { x: 0, y: 0 }, dargDistance = { left: 0, top: 0 };
-		titleBar.onmouseleave = (e) => {
-			win.setDragging(false);
-		};
-		titleBar.onmouseup = (e) => {
-			win.setDragging(false);
-		};
-		titleBar.onmousedown = (e) => {
+		titleBar.addEventListener("mouseleave", (e) => { win.setDragging(false); });
+		titleBar.addEventListener("mouseup"   , (e) => { win.setDragging(false); });
+		titleBar.addEventListener("mousedown" , (e) => {
 			console.log(`mouse-click: win:${win.ui.win.id} title: ${titleBar.id}`);
 			win.setDragging(true);
 			dargStart.x = e.clientX;
@@ -351,8 +348,8 @@ export let defaultWinOption = {
 			dargDistance.left = parseInt(winDiv.style.left) || 0;
 			dargDistance.top = parseInt(winDiv.style.top) || 0;
 			e.preventDefault();
-		};
-		winDiv.onmousemove = (e) => {
+		});
+		titleBar.addEventListener("mousemove", (e) => {
 			console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
 			if (win.checkDragging()) {
 				let dx = e.clientX - dargStart.x;
@@ -360,7 +357,7 @@ export let defaultWinOption = {
 				winDiv.style.left = `${dargDistance.left + dx}px`;
 				winDiv.style.top = `${dargDistance.top + dy}px`;
 			}
-		}
+		});
 	},
 
 };
@@ -586,23 +583,23 @@ export class DockBar {
 		barDiv.style.backgroundColor = this.cfg.dockColor;
 		barDiv.style.opacity = `${this.cfg.opacity}%`;
 		this.parentElement.appendChild(this.barDiv);
-		barDiv.onmousemove = e => {
+		barDiv.addEventListener("mousemove", e => {
 			let curve = this.createCurve(this.cfg.range, e.clientX, 1, this.cfg.maxScale);
 			this.layout(curve);
-		};
-		barDiv.onmouseleave = e => {
+		});
+		barDiv.addEventListener("mouseleave", e => {
 			this.layout(() => 1);
 			barDiv.style.setProperty('width', 'fit-content');
 			barDiv.style.zIndex = `${WIN_Z_IDX_MIN - 1}`; // 下到最低层
 			console.log(`dock z-idx is ${barDiv.style.zIndex}`)
-		};
-		this.barDiv.onmouseenter = e => {
-			barDiv.style.zIndex = `${desktop.getMaxWindowIndex() + 10}`;// 提到最上层
+		});
+		barDiv.addEventListener("mouseenter", e => {
+			barDiv.style.zIndex = `${desktop.getMaxWindowIndex() + 100}`;// 提到最上层
 			let rect = barDiv.getBoundingClientRect();
 			let width = rect.right - rect.left + 80;
 			barDiv.style.setProperty('width', `${width}px`);
 			console.log(`dock z-idx is ${barDiv.style.zIndex}`)
-		};
+		});
 	}
 
 	// 生成一个曲线函数
@@ -854,7 +851,7 @@ export namespace JadeWindowUI {
 		return winDiv;
 	};
 
-	export function showWinMaxAnima(win: UIObj, zoomMilSec: number, deleMilSec: number,
+	export function showWinMaxMinAnima(win: UIObj, zoomMilSec: number, deleMilSec: number,
 		start: { left: number, top: number, width: number, height: number },
 		end  : { left: number, top: number, width: number, height: number }) //
 	{
@@ -862,7 +859,7 @@ export namespace JadeWindowUI {
 		// let winDiv = win.ui.win;
 		let pElem = win.desktop.desktopDiv;
 		let newDiv = document.createElement('div');
-		newDiv.style.zIndex = `${win.status.lastPos.zIdx + 2500}`;
+		newDiv.style.zIndex = `${win.status.lastPos.zIdx + 10}`;
 		newDiv.style.left = `${start.left}px`;
 		newDiv.style.top = `${start.top}px`;
 		newDiv.style.width = `${start.width}px`;
