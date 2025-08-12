@@ -248,27 +248,45 @@ export let defaultWinOption = {
 	bindWinOptMax: (win: UIObj, btn: HTMLElement): any => {
 		btn.onmousedown = e => {
 			let winDiv = win.ui.win;
+			let start = {
+				left: winDiv.offsetLeft, top: winDiv.offsetTop,
+				width: winDiv.offsetWidth, height: winDiv.offsetHeight,
+			};
+			let end = {
+				left: winDiv.offsetLeft, top: winDiv.offsetTop,
+				width: winDiv.offsetWidth, height: winDiv.offsetHeight,
+			};
 			if (win.status.isMax) {
 				win.status.isMax = false;
-				winDiv.style.left = `${win.status.lastPos.x}px`;
-				winDiv.style.top = `${win.status.lastPos.y}px`;
-				winDiv.style.width = `${win.status.lastSize.width}px`;
-				winDiv.style.height = `${win.status.lastSize.height}px`;
+				end.left   = win.status.lastPos.x;
+				end.top    = win.status.lastPos.y;
+				end.width  = win.status.lastSize.width;
+				end.height = win.status.lastSize.height;
 			} else {
 				win.status.isMax = true;
+				// 保存之前的位置与大小
+				win.status.lastPos.x       = start.left  ;
+				win.status.lastPos.y       = start.top   ;
+				win.status.lastSize.width  = start.width ;
+				win.status.lastSize.height = start.height;
+				//
 				let pElem = win.desktop.desktopDiv;
-				winDiv.style.left = `0px`;
-				winDiv.style.top = `0px`;
-				winDiv.style.width = `${pElem.clientWidth - 6}px`;
-				winDiv.style.height = `${win.desktop.hasDockBar() ?
-					// 如果桌面上有dock，留几个像素让dock可以响应鼠标
-					pElem.clientHeight - 10 : pElem.clientHeight - 6}px`;
+				end.left   = 0;
+				end.top    = 0;
+				end.width  = pElem.clientWidth - 6;
+				// 如果桌面上有dock，留几个像素让dock可以响应鼠标
+				end.height = win.desktop.hasDockBar() ?
+						pElem.clientHeight - 10 : pElem.clientHeight - 6;
 			}
-			let height = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
+			winDiv.style.left   = `${end.left  }px`;
+			winDiv.style.top    = `${end.top   }px`;
+			winDiv.style.width  = `${end.width }px`;
+			winDiv.style.height = `${end.height}px`;
+			let bodyHeight = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
 			if (win.ui.statusBar) {
-				height = height - win.ui.statusBar.clientHeight;
+				bodyHeight = bodyHeight - win.ui.statusBar.clientHeight;
 			}
-			win.ui.windowBody.style.height = `${height - 40}px`;
+			win.ui.windowBody.style.height = `${bodyHeight - 40}px`;
 		}
 	},
 
