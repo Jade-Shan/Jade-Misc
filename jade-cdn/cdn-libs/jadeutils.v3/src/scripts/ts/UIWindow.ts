@@ -47,13 +47,11 @@ export class UIDesktop {
 
 	getCurrDragging() { return this.currWin.dragging;};
 	setCurrDragging(dragging: DraggingWindow) {
-		// console.log(`Dragging-win: ${dragging.win?.id}`);
 		this.currWin.dragging = dragging;
 	}
 
 	getCurrScaling() { return this.currWin.scaling;};
 	setCurrScaling(scaling: ScalingWindow) {
-		// console.log(`Scaling-win: ${scaling.win?.id}`);
 		this.currWin.scaling= scaling;
 	}
 
@@ -85,8 +83,6 @@ export class UIDesktop {
 
 		defaultWinOption.bindWindowDragMoving(this); // 绑定拖动窗口的事件
 		defaultWinOption.bindWindowScaleMoving(this); // 绑定缩放窗口的事件
-		// desktopDiv.addEventListener("click", (e) => { console.log(`desk clieck event 01`)});
-		// desktopDiv.addEventListener("click", (e) => { console.log(`desk clieck event 02`)});
 	}
 
 	/**
@@ -213,7 +209,6 @@ export class UIDesktop {
 		//
 		win.activeWindow(true);
 		win.setZIndex(WIN_Z_IDX_MIN + newIndex.length);
-		// console.log(`winddow z-idx is ${WIN_Z_IDX_MIN + newIndex.length}`);
 	}
 
 }
@@ -416,28 +411,23 @@ export let defaultWinOption = {
 							((cPoint.x < effSize) ? 1 : (distance.x < effSize) ? 3 : 2) : //
 							((cPoint.x < effSize) ? 4 : (distance.x < effSize) ? 6 : 5)));
 			}
-			// console.log(`win-scaling: (${width},${height}) , (${cPoint.x}, ${cPoint.y}), ${direction}`);
 			return direction;
 		};
-		winDiv.addEventListener("mousedown" , (e) => {
+		winDiv.addEventListener("mousedown", (e) => {
 			let desktop = win.desktop;
 			let desktopDiv = desktop.desktopDiv;
 			let direction = checkScaleStart(winDiv, e);
 			if (5 != direction) {
 				desktop.setCurrScaling({ win: win, direction: direction });
-					if (2 === direction || 8 === direction) {
-						desktopDiv.style.cursor = "ns-resize";
-					} else if (4 === direction || 6 === direction) {
-						desktopDiv.style.cursor = "ew-resize";
-					} else if (7 === direction || 3 === direction) {
-						desktopDiv.style.cursor = "nwse-resize";
-					} else if (1 === direction || 9 === direction) {
-						desktopDiv.style.cursor = "nesw-resize";
-					// } else {
-					// 	cleanScaling(desktop);
-					}
-			// } else {
-			// 	cleanScaling(desktop);
+				if (2 === direction || 8 === direction) {
+					desktopDiv.style.cursor = "ns-resize";
+				} else if (4 === direction || 6 === direction) {
+					desktopDiv.style.cursor = "ew-resize";
+				} else if (7 === direction || 3 === direction) {
+					desktopDiv.style.cursor = "nwse-resize";
+				} else if (1 === direction || 9 === direction) {
+					desktopDiv.style.cursor = "nesw-resize";
+				}
 			}
 		});
 	},
@@ -446,7 +436,6 @@ export let defaultWinOption = {
 	bindWindowScaleMoving: (desktop: UIDesktop): any => {
 		let desktopDiv = desktop.desktopDiv;
 		//
-		// desktopDiv.addEventListener("mouseleave", (e) => { cleanScaling(desktop); })
 		desktopDiv.addEventListener("mouseup"   , (e) => { cleanScaling(desktop); })
 		desktopDiv.addEventListener("mouseleave", (e) => { cleanScaling(desktop); })
 		desktopDiv.addEventListener("mousedown" , (e) => {
@@ -464,10 +453,6 @@ export let defaultWinOption = {
 					desktop.getCurrScaling().direction = direction;
 					desktop.getCurrScaling().moveStart = moveStart;
 					desktop.getCurrScaling().winStart  = winStart;
-
-
-				// } else {
-				// 	cleanScaling(desktop);
 				}
 			}, 10);
 		});
@@ -484,30 +469,34 @@ export let defaultWinOption = {
 					left: winStart.left, top: winStart.top,
 					width: winStart.width, height: winStart.height,
 				};
-				/*  */ if (2 === direction) {
-					end.height = winStart.height + dy - 6;
-				} else if (6 === direction) {
+				if (1 === direction || 2 === direction || 3 === direction) {
+					end.height = winStart.height + dy;
+				} 
+				if (3 === direction || 6 === direction || 9 === direction) {
 					end.width = winStart.width + dx;
-					end.height = winStart.height - 6;
-				} else if (8 === direction) {
+				} 
+				if (7 === direction || 8 === direction || 9 === direction) {
 					end.top = winStart.top + dy;
-					end.height = winStart.height - dy - 6;
-				} else if (4 === direction) {
+					end.height = winStart.height - dy;
+				} 
+				if (1 === direction || 4 === direction || 7 === direction) {
 					end.left = winStart.left + dx;
 					end.width = winStart.width - dx;
-					end.height = winStart.height - 6;
+				}
+				if (5 != direction) {
+					end.height = end.height - 6;
+				}
+
+				let bodyHeight = winDiv.offsetHeight - currWin.ui.titleBar.clientHeight;
+				if (currWin.ui.statusBar) {
+					bodyHeight = bodyHeight - currWin.ui.statusBar.clientHeight;
 				}
 				//
-				// winDiv.style.width  = `${winStart.width + dx }px`;
-				// winDiv.style.height = `${winStart.height + dy }px`;
 				winDiv.style.left   = `${end.left  }px`;
 				winDiv.style.top    = `${end.top   }px`;
 				winDiv.style.width  = `${end.width }px`;
 				winDiv.style.height = `${end.height}px`;
-				console.log(`mouse-move: scaling: ${direction} ,(${dx}, ${dy})`);
-				console.log(`win: (${winDiv.style.left},${winDiv.style.top}) , (${winDiv.style.width}, ${winDiv.style.height})`);
-			} else {
-				// cleanScaling(desktop);
+				currWin.ui.windowBody.style.height = `${bodyHeight - 25}px`;
 			}
 		});
 	},
@@ -517,9 +506,7 @@ export let defaultWinOption = {
 		titleBar.addEventListener("mousedown" , (e) => {
 			if (!win.status.isMax) {
 				titleBar.style.cursor = "move";
-				// titleBarControl.style.cursor = "pointer";
 				desktop.setCurrDragging({win:win});
-				// console.log(`mouse-click: win:${win.ui.win.id}`);
 			}
 		});
 	},
@@ -538,25 +525,20 @@ export let defaultWinOption = {
 		desktopDiv.addEventListener("mouseleave", (e) => { cleanDragging() });
 		// 窗口的拖动要监控整个桌面
 		desktopDiv.addEventListener("mousedown", (e) => {
-			//console.log(`mouse-click: win:${win.ui.win.id} title: ${titleBar.id}`);
 			setTimeout(() => {
 				if (desktop.getCurrDragging().win) {
 					let currDiv = desktop.getCurrDragging().win!.ui.win;
 					let moveStart = { x: e.clientX, y: e.clientY };
-					let winStart  = {
+					let winStart = {
 						left: currDiv.offsetLeft,
 						top: currDiv.offsetTop
 					};
 					desktop.getCurrDragging().moveStart = moveStart;
-					desktop.getCurrDragging().winStart  = winStart;
-
-
-					// console.log(`drag-start: win:${win.ui.win.id}, (${start.x}, ${start.y}) , ${distance.left}, ${distance.top}`);
+					desktop.getCurrDragging().winStart = winStart;
 				}
 			}, 10);
 		});
 		desktopDiv.addEventListener("mousemove", (e) => {
-			// console.log(`mouse-move: dragging: ${e.clientX}, ${e.clientY}`);
 			let dRct = desktop.desktopDiv.getBoundingClientRect();
 			if (e.clientX < dRct.left || e.clientX > dRct.right || e.clientY < dRct.top || e.clientY > dRct.bottom) {
 				cleanDragging();
@@ -581,11 +563,13 @@ export let defaultWinOption = {
 type WinCfg = {
 	icons: IconGroup, // 窗口的图标
 	bindWinOpt: IBindWinOpt, // 绑定窗口的操作
+	body: { overflow: string },
 };
 
 type WinParam = {
 	icons?: IconGroup, // 窗口的图标
 	bindWinOpt?: IBindWinOpt, // 绑定窗口的操作
+	body?: { overflow?: string },
 };
 /**
  * 窗口状态
@@ -656,7 +640,8 @@ export abstract class UIWindowAdptt implements UIObj {
 	title: string;
 	cfg: WinCfg = {
 		icons: 	JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
-		bindWinOpt: defaultWinOption
+		bindWinOpt: defaultWinOption,
+		body: { overflow: "hidden", }
 	};
 
 	/**
@@ -679,6 +664,11 @@ export abstract class UIWindowAdptt implements UIObj {
 		if (cfg) {
 			if (cfg.bindWinOpt) { this.cfg.bindWinOpt = cfg.bindWinOpt; }
 			if (cfg.icons) { this.cfg.icons = cfg.icons; }
+			if (cfg.body) { 
+				if (cfg.body.overflow) {
+					this.cfg.body.overflow = cfg.body.overflow;
+				}
+			 }
 		}
 	}
 
@@ -692,8 +682,7 @@ export abstract class UIWindowAdptt implements UIObj {
 	 * @param isActive 是否是当前窗口
 	 */
 	activeWindow(isActive: boolean): void {
-		// let tid = JadeWindowUI.genWinTitleBarId(this.id);
-		let div = this.ui.titleBar; // document.getElementById(tid);
+		let div = this.ui.titleBar;
 		if (div != null) {
 			if (isActive) {
 				this.status.isTop = isActive;
@@ -781,10 +770,6 @@ export class DockBar {
 			if (cfg.opacity?.normal) { this.cfg.opacity.normal = cfg.opacity.normal; }
 			if (cfg.opacity?.hover ) { this.cfg.opacity.hover  = cfg.opacity.hover ; }
 		}
-		//let range = cfg?.color ? cfg.color : 300;
-		//let maxScale = cfg?.maxScale ? cfg.maxScale : 1.8;
-		//if (cfg && cfg.range   ) { range    = cfg.range   ; }
-		//if (cfg && cfg.maxScale) { maxScale = cfg.maxScale; }
 		//
 		this.parentElement = desktop.desktopDiv;
 		let barDiv = document.createElement('div');
@@ -796,8 +781,6 @@ export class DockBar {
 		barDiv.addEventListener("mousemove", e => {
 			let sizeCurve    = this.createCurve(this.cfg.range, e.clientX, 1, this.cfg.maxScale);
 			let opacityCurve = (x: number) => { return this.cfg.opacity.hover; };
-			// this.createCurve(0.5, e.clientX, 
-			// 	this.cfg.opacity.normal, this.cfg.opacity.hover);
 			this.layout(sizeCurve, opacityCurve);
 		});
 		barDiv.addEventListener("mouseleave", e => {
@@ -805,7 +788,6 @@ export class DockBar {
 			barDiv.style.opacity = `${this.cfg.opacity.normal}%`;
 			barDiv.style.setProperty('width', 'fit-content');
 			barDiv.style.zIndex = `${WIN_Z_IDX_MIN - 1}`; // 下到最低层
-			// console.log(`dock z-idx is ${barDiv.style.zIndex}`)
 		});
 		barDiv.addEventListener("mouseenter", e => {
 			barDiv.style.opacity = `${this.cfg.opacity.hover}%`;
@@ -813,7 +795,6 @@ export class DockBar {
 			let rect = barDiv.getBoundingClientRect();
 			let width = rect.right - rect.left + 80;
 			barDiv.style.setProperty('width', `${width}px`);
-			// console.log(`dock z-idx is ${barDiv.style.zIndex}`)
 		});
 	}
 
@@ -976,6 +957,7 @@ export namespace JadeWindowUI {
 	export function renderWindowBody(win: UIObj): HTMLDivElement {
 		let windowBody = win.ui.windowBody;
 		windowBody.classList.add("window-body");
+		windowBody.style.overflow = win.cfg.body.overflow;
 		windowBody.innerHTML = `
 			<p> There are just so many possibilities:</p>
 			<ul>
@@ -1088,7 +1070,6 @@ export namespace JadeWindowUI {
 		end  : { left: number, top: number, width: number, height: number }) //
 	{
 		let transSec = (zoomMilSec / 1000);
-		// let winDiv = win.ui.win;
 		let pElem = win.desktop.desktopDiv;
 		let newDiv = document.createElement('div');
 		newDiv.style.zIndex = `${win.status.lastPos.zIdx + 10}`;
