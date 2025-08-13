@@ -421,12 +421,19 @@ export let defaultWinOption = {
 		};
 		winDiv.addEventListener("mousedown" , (e) => {
 			let desktop = win.desktop;
-			// let desktopDiv = desktop.desktopDiv;
+			let desktopDiv = desktop.desktopDiv;
 			let direction = checkScaleStart(winDiv, e);
 			if (5 != direction) {
 				desktop.setCurrScaling({ win: win, direction: direction });
-			} else {
-				cleanScaling(desktop);
+				if (2 === direction || 8 === direction) {
+					desktopDiv.style.cursor = "ns-resize";
+				} else if (4 === direction || 6 === direction) {
+					desktopDiv.style.cursor = "ew-resize";
+				} else if (7 === direction || 3 === direction) {
+					desktopDiv.style.cursor = "nwse-resize";
+				} else if (1 === direction || 9 === direction) {
+					desktopDiv.style.cursor = "nesw-resize";
+				}
 			}
 		});
 	},
@@ -437,24 +444,11 @@ export let defaultWinOption = {
 		//
 		// desktopDiv.addEventListener("mouseleave", (e) => { cleanScaling(desktop); })
 		desktopDiv.addEventListener("mouseup"   , (e) => { cleanScaling(desktop); })
+		desktopDiv.addEventListener("mouseleave", (e) => { cleanScaling(desktop); })
 		desktopDiv.addEventListener("mousedown" , (e) => {
 			setTimeout(() => {
 				if (desktop.getCurrScaling().win && desktop.getCurrScaling().direction) {
 					let win = desktop.getCurrScaling().win;
-					let direction = desktop.getCurrScaling().direction;
-					if (2 === direction || 8 === direction) {
-						desktopDiv.style.cursor = "ns-resize";
-					} else if (4 === direction || 6 === direction) {
-						desktopDiv.style.cursor = "ew-resize";
-					} else if (7 === direction || 3 === direction) {
-						desktopDiv.style.cursor = "nwse-resize";
-					} else if (1 === direction || 9 === direction) {
-						desktopDiv.style.cursor = "nesw-resize";
-					} else {
-						cleanScaling(desktop);
-					}
-				} else {
-					cleanScaling(desktop);
 				}
 			}, 10);
 		});
@@ -466,6 +460,17 @@ export let defaultWinOption = {
 				let dy = e.clientY - desktop.getCurrScaling().start!.y;
 				currDiv.style.left = `${desktop.getCurrScaling().distance!.left + dx}px`;
 				currDiv.style.top  = `${desktop.getCurrScaling().distance!.top  + dy}px`;
+
+					let direction = desktop.getCurrScaling().direction;
+					if (2 === direction) {
+					} else if (8 === direction) {
+					} else if (4 === direction) {
+					} else if (6 === direction) {
+					} else if (7 === direction) {
+					} else if (3 === direction) {
+					} else if (1 === direction) {
+					} else if (9 === direction) {
+					}
 			} else {
 				// cleanScaling(desktop);
 			}
@@ -477,9 +482,7 @@ export let defaultWinOption = {
 		titleBar.addEventListener("mousedown" , (e) => {
 			if (!win.status.isMax) {
 				titleBar.style.cursor = "move";
-				// titleBarControl.style.cursor = "pointer";
 				desktop.setCurrDragging({win:win});
-				// console.log(`mouse-click: win:${win.ui.win.id}`);
 			}
 		});
 	},
@@ -496,7 +499,6 @@ export let defaultWinOption = {
 		};
 		desktopDiv.addEventListener("mouseup"   , (e) => { cleanDragging() });
 		desktopDiv.addEventListener("mouseleave", (e) => { cleanDragging() });
-		// 窗口的拖动要监控整个桌面
 		desktopDiv.addEventListener("mousedown", (e) => {
 			//console.log(`mouse-click: win:${win.ui.win.id} title: ${titleBar.id}`);
 			setTimeout(() => {
@@ -514,11 +516,15 @@ export let defaultWinOption = {
 			}, 10);
 		});
 		desktopDiv.addEventListener("mousemove", (e) => {
-			console.log(`mouse-move: dragging: ${e.clientX}, ${e.clientY}`);
+			// console.log(`mouse-move: dragging: ${e.clientX}, ${e.clientY}`);
 			let dRct = desktop.desktopDiv.getBoundingClientRect();
-			if (e.clientX < dRct.left || e.clientX > dRct.right || e.clientY < dRct.top || e.clientY > dRct.bottom) {
-				cleanDragging();
-			} else if (desktop.getCurrDragging().win && desktop.getCurrDragging().start && desktop.getCurrDragging().distance) {
+			if (e.clientX < dRct.left || e.clientX > dRct.right || //
+				e.clientY < dRct.top || e.clientY > dRct.bottom)   //
+			{   // 鼠标已经行移出窗口，停止拖动
+				cleanDragging(); 
+			} else if (desktop.getCurrDragging().win && desktop.getCurrDragging().start && //
+				desktop.getCurrDragging().distance) // 
+			{   // 拖动窗口
 				let currDiv = desktop.getCurrDragging().win!.ui.win;
 				let dx = e.clientX - desktop.getCurrDragging().start!.x;
 				let dy = e.clientY - desktop.getCurrDragging().start!.y;
