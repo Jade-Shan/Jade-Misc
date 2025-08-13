@@ -563,7 +563,7 @@ export class UIWindow extends UIWindowAdptt implements ResizeableUI {
 type DockBarCfg = {
 	dockColor: string, 
 	iconColor: string,
-	opacity: number,
+	opacity: {normal: number, hover: number},
 	range: number, 
 	maxScale: number,
 };
@@ -571,7 +571,7 @@ type DockBarCfg = {
 type DockBarParam = {
 	dockColor?: string, 
 	iconColor?: string,
-	opacity?: number,
+	opacity?: {normal: number, hover: number},
 	range?: number, 
 	maxScale?: number,
 };
@@ -583,7 +583,7 @@ export class DockBar {
 	cfg: DockBarCfg = {
 		dockColor: "rgb(100, 100, 100)",
 		iconColor: "rgb(34, 199, 158)",
-		opacity: 70,
+		opacity: {normal: 55, hover: 75},
 		range: 300,
 		maxScale: 1.8
 	};
@@ -593,9 +593,10 @@ export class DockBar {
 		if (cfg) {
 			if (cfg.dockColor  ) { this.cfg.dockColor = cfg.dockColor; }
 			if (cfg.iconColor  ) { this.cfg.iconColor = cfg.iconColor; }
-			if (cfg.opacity    ) { this.cfg.opacity   = cfg.opacity  ; }
 			if (cfg.range      ) { this.cfg.range     = cfg.range    ; }
 			if (cfg.maxScale   ) { this.cfg.maxScale  = cfg.maxScale ; }
+			if (cfg.opacity?.normal) { this.cfg.opacity.normal = cfg.opacity.normal; }
+			if (cfg.opacity?.hover ) { this.cfg.opacity.hover  = cfg.opacity.hover ; }
 		}
 		//let range = cfg?.color ? cfg.color : 300;
 		//let maxScale = cfg?.maxScale ? cfg.maxScale : 1.8;
@@ -607,19 +608,24 @@ export class DockBar {
 		this.barDiv = barDiv;
 		barDiv.classList.add('dock-bar');
 		barDiv.style.backgroundColor = this.cfg.dockColor;
-		barDiv.style.opacity = `${this.cfg.opacity}%`;
+		barDiv.style.opacity = `${this.cfg.opacity.normal}%`;
 		this.parentElement.appendChild(this.barDiv);
 		barDiv.addEventListener("mousemove", e => {
-			let curve = this.createCurve(this.cfg.range, e.clientX, 1, this.cfg.maxScale);
-			this.layout(curve);
+			let sizeCurve    = this.createCurve(this.cfg.range, e.clientX, 1, this.cfg.maxScale);
+			let opacityCurve = (x: number) => { return this.cfg.opacity.hover; };
+			// this.createCurve(0.5, e.clientX, 
+			// 	this.cfg.opacity.normal, this.cfg.opacity.hover);
+			this.layout(sizeCurve, opacityCurve);
 		});
 		barDiv.addEventListener("mouseleave", e => {
-			this.layout(() => 1);
+			this.layout((x: number) => 1, (x: number) => this.cfg.opacity.normal);
+			barDiv.style.opacity = `${this.cfg.opacity.normal}%`;
 			barDiv.style.setProperty('width', 'fit-content');
 			barDiv.style.zIndex = `${WIN_Z_IDX_MIN - 1}`; // 下到最低层
 			console.log(`dock z-idx is ${barDiv.style.zIndex}`)
 		});
 		barDiv.addEventListener("mouseenter", e => {
+			barDiv.style.opacity = `${this.cfg.opacity.hover}%`;
 			barDiv.style.zIndex = `${desktop.getMaxWindowIndex() + 100}`;// 提到最上层
 			let rect = barDiv.getBoundingClientRect();
 			let width = rect.right - rect.left + 80;
@@ -644,16 +650,20 @@ export class DockBar {
 		return curve;
 	}
 
-	private layout(curve: (x: number) => number) {
+	private layout(sizeCurve: (x: number) => number, opacityCurve: (x: number) => number) {
 		let items = this.barDiv.children;
-		for (let i=0; i<items.length;i++) {
-			let item: Element|null = items.item(i);
+		for (let i = 0; i < items.length; i++) {
+			let item: Element | null = items.item(i);
 			if (item != null) {
+				let elm: any = item;
 				let rect = item.getBoundingClientRect();
 				let x = rect.left + rect.width / 2;
-				let scale = curve(x);
-				let elm: any = item;
+				// 图标的大小
+				let scale = sizeCurve(x);
 				elm.style.setProperty('--i', scale);
+				// 图标的透明度
+				let opacity = opacityCurve(x)
+				elm.style.opacity = `${opacity}%`;
 			}
 		}
 	}
@@ -676,7 +686,7 @@ export class DockBar {
 		icon.classList.add('menu-item');
 		icon.style.backgroundImage = WebUtil.transBase64ImgURL(win.cfg.icons.x32);
 		icon.style.backgroundSize = "100%";
-		icon.style.opacity = `${this.cfg.opacity}%`;
+		icon.style.opacity = `${this.cfg.opacity.normal}%`;
 		this.barDiv.appendChild(icon);
 		win.cfg.bindWinOpt.bindWinOptMin(win, icon);
 	}
