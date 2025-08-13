@@ -718,17 +718,14 @@ export namespace JadeWindowUI {
 
 	export function genWinTitleTextId(id: string): string { return `titText-${id}`; }
 
-
-	function renderTitleBar(win: UIObj): HTMLDivElement {
-		let titleBar = win.ui.titleBar;
-		titleBar.id = genWinTitleBarId(win.id);
-		titleBar.classList.add("title-bar");
-		return titleBar;
-	}
 	let renderTitleBarIcon = (win: UIObj): HTMLDivElement => {
-		let titleBarIcon = document.createElement("img");
+		let titleBarIcon = document.createElement("div");
 		titleBarIcon.id = genWinTitleIconId(win.id);
-		titleBarIcon.src = WebUtil.transBase64ImgSrc(win.cfg.icons.x12);
+		titleBarIcon.classList.add("title-bar-icon", "cannot-select");
+		titleBarIcon.style.width  = '12px';
+		titleBarIcon.style.height = '12px';
+		titleBarIcon.style.backgroundImage = //
+			WebUtil.transBase64ImgURL(win.cfg.icons.x12);
 		return titleBarIcon;
 	}
 	let renderTitleBarText = (win: UIObj): HTMLDivElement => {
@@ -738,6 +735,16 @@ export namespace JadeWindowUI {
 		titleBarText.innerHTML = win.title;
 		return titleBarText;
 	}
+	let renderTitleBarIconText = (win: UIObj): HTMLDivElement => {
+		let titleBarIcon = renderTitleBarIcon(win);
+		let titleBarText = renderTitleBarText(win);
+		let titleBarIconText = document.createElement('div');
+		titleBarIconText.classList.add("title-bar-icon-text");
+		titleBarIconText.appendChild(titleBarIcon);
+		titleBarIconText.appendChild(titleBarText);
+		return titleBarIconText;
+	}
+
 	let renderTitleBarControls = (win: UIObj): HTMLDivElement => {
 		//
 		let btnMin = document.createElement("button");
@@ -758,6 +765,18 @@ export namespace JadeWindowUI {
 		titleBarCtls.appendChild(btnMax);
 		titleBarCtls.appendChild(btnClose);
 		return titleBarCtls;
+	}
+
+	let renderTitleBar = (win: UIObj): HTMLDivElement => {
+		let titleBarIconText = renderTitleBarIconText(win);
+		let titleBarControls = renderTitleBarControls(win);
+		let titleBar = win.ui.titleBar;
+		titleBar.id = genWinTitleBarId(win.id);
+		titleBar.classList.add("title-bar");
+		titleBar.appendChild(titleBarIconText);
+		titleBar.appendChild(titleBarControls);
+		win.cfg.bindWinOpt.bindWindowDrag(win, titleBar, titleBarControls);
+		return titleBar;
 	}
 
 	export function renderWindowBody(win: UIObj): HTMLDivElement {
@@ -824,13 +843,7 @@ export namespace JadeWindowUI {
 	export function renderWindowTplt(win: UIObj): HTMLDivElement {
 		let parent = win.desktop.desktopDiv;
 		let winDiv: HTMLDivElement = win.ui.win;
-		let titleBarIcon = renderTitleBarIcon(win);
-		let titleBarText = renderTitleBarText(win);
-		let titleBarControl = renderTitleBarControls(win);
 		let titleBar = renderTitleBar(win);
-		titleBar.appendChild(titleBarIcon);
-		titleBar.appendChild(titleBarText);
-		titleBar.appendChild(titleBarControl);
 		let windowBody = renderWindowBody(win);
 		let statusBar = renderStatusBar(win);
 		winDiv.appendChild(titleBar );
@@ -872,7 +885,6 @@ export namespace JadeWindowUI {
 			win.status.lastPos.y = parent.offsetHeight - height;
 			winDiv.style.top = `${win.status.lastPos.y}px`;
 		}
-		win.cfg.bindWinOpt.bindWindowDrag(win, titleBar, titleBarControl);
 
 		return winDiv;
 	};
