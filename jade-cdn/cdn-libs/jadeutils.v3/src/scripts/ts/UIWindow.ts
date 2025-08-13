@@ -23,7 +23,7 @@ type ScalingWindow = {
 	win?: UIObj,
 	direction?: number,
 	moveStart?: { x: number, y: number },
-	winStart?: { width: number, height: number }
+	winStart?: { left: number, top: number, width: number, height: number }
 };
 
 type CurrentWindow = {
@@ -456,6 +456,8 @@ export let defaultWinOption = {
 					let currDiv = desktop.getCurrScaling().win!.ui.win;
 					let moveStart = { x: e.clientX, y: e.clientY };
 					let winStart  = {
+						left  : currDiv.offsetLeft,
+						top   : currDiv.offsetTop,
 						width : currDiv.offsetWidth,
 						height: currDiv.offsetHeight
 					};
@@ -470,7 +472,6 @@ export let defaultWinOption = {
 			}, 10);
 		});
 		desktopDiv.addEventListener("mousemove", (e) => {
-			// console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
 			if (desktop.getCurrScaling().win && desktop.getCurrScaling().moveStart && desktop.getCurrScaling().winStart) {
 				let currWin = desktop.getCurrScaling().win!;
 				let winDiv = currWin.ui.win;
@@ -480,14 +481,31 @@ export let defaultWinOption = {
 				let dy = e.clientY - desktop.getCurrScaling().moveStart!.y;
 				//
 				let end = {
-					left: winDiv.offsetLeft, top: winDiv.offsetTop,
-					width: winDiv.offsetWidth, height: winDiv.offsetHeight,
+					left: winStart.left, top: winStart.top,
+					width: winStart.width, height: winStart.height,
 				};
+				/*  */ if (2 === direction) {
+					end.height = winStart.height + dy - 6;
+				} else if (6 === direction) {
+					end.width = winStart.width + dx;
+					end.height = winStart.height - 6;
+				} else if (8 === direction) {
+					end.top = winStart.top + dy;
+					end.height = winStart.height - dy - 6;
+				} else if (4 === direction) {
+					end.left = winStart.left + dx;
+					end.width = winStart.width - dx;
+					end.height = winStart.height - 6;
+				}
 				//
-				// winDiv.style.left = `${desktop.getCurrScaling().distance!.left + dx}px`;
-				// winDiv.style.top  = `${desktop.getCurrScaling().distance!.top  + dy}px`;
-				winDiv.style.width  = `${winStart.width  + dx}px`;
-				winDiv.style.height = `${winStart.height + dy}px`;
+				// winDiv.style.width  = `${winStart.width + dx }px`;
+				// winDiv.style.height = `${winStart.height + dy }px`;
+				winDiv.style.left   = `${end.left  }px`;
+				winDiv.style.top    = `${end.top   }px`;
+				winDiv.style.width  = `${end.width }px`;
+				winDiv.style.height = `${end.height}px`;
+				console.log(`mouse-move: scaling: ${direction} ,(${dx}, ${dy})`);
+				console.log(`win: (${winDiv.style.left},${winDiv.style.top}) , (${winDiv.style.width}, ${winDiv.style.height})`);
 			} else {
 				// cleanScaling(desktop);
 			}
