@@ -14,16 +14,16 @@ type IDesktopConfig = {
 }
 
 type DraggingWindow = {
-		win?: UIObj,
-		start?: { x: number, y: number },
-		distance?: { left: number, top: number };
+	win?: UIObj,
+	moveStart?: { x: number, y: number },
+	winStart?: { left: number, top: number }
 };
 
 type ScalingWindow = {
 	win?: UIObj,
 	direction?: number,
-	start?: { x: number, y: number },
-	distance?: { left: number, top: number };
+	moveStart?: { x: number, y: number },
+	winStart?: { width: number, height: number }
 };
 
 type CurrentWindow = {
@@ -47,13 +47,13 @@ export class UIDesktop {
 
 	getCurrDragging() { return this.currWin.dragging;};
 	setCurrDragging(dragging: DraggingWindow) {
-		console.log(`Dragging-win: ${dragging.win?.id}`);
+		// console.log(`Dragging-win: ${dragging.win?.id}`);
 		this.currWin.dragging = dragging;
 	}
 
 	getCurrScaling() { return this.currWin.scaling;};
 	setCurrScaling(scaling: ScalingWindow) {
-		console.log(`Scaling-win: ${scaling.win?.id}`);
+		// console.log(`Scaling-win: ${scaling.win?.id}`);
 		this.currWin.scaling= scaling;
 	}
 
@@ -416,7 +416,7 @@ export let defaultWinOption = {
 							((cPoint.x < effSize) ? 1 : (distance.x < effSize) ? 3 : 2) : //
 							((cPoint.x < effSize) ? 4 : (distance.x < effSize) ? 6 : 5)));
 			}
-			console.log(`win-scaling: (${width},${height}) , (${cPoint.x}, ${cPoint.y}), ${direction}`);
+			// console.log(`win-scaling: (${width},${height}) , (${cPoint.x}, ${cPoint.y}), ${direction}`);
 			return direction;
 		};
 		winDiv.addEventListener("mousedown" , (e) => {
@@ -425,15 +425,19 @@ export let defaultWinOption = {
 			let direction = checkScaleStart(winDiv, e);
 			if (5 != direction) {
 				desktop.setCurrScaling({ win: win, direction: direction });
-				if (2 === direction || 8 === direction) {
-					desktopDiv.style.cursor = "ns-resize";
-				} else if (4 === direction || 6 === direction) {
-					desktopDiv.style.cursor = "ew-resize";
-				} else if (7 === direction || 3 === direction) {
-					desktopDiv.style.cursor = "nwse-resize";
-				} else if (1 === direction || 9 === direction) {
-					desktopDiv.style.cursor = "nesw-resize";
-				}
+					if (2 === direction || 8 === direction) {
+						desktopDiv.style.cursor = "ns-resize";
+					} else if (4 === direction || 6 === direction) {
+						desktopDiv.style.cursor = "ew-resize";
+					} else if (7 === direction || 3 === direction) {
+						desktopDiv.style.cursor = "nwse-resize";
+					} else if (1 === direction || 9 === direction) {
+						desktopDiv.style.cursor = "nesw-resize";
+					// } else {
+					// 	cleanScaling(desktop);
+					}
+			// } else {
+			// 	cleanScaling(desktop);
 			}
 		});
 	},
@@ -448,29 +452,42 @@ export let defaultWinOption = {
 		desktopDiv.addEventListener("mousedown" , (e) => {
 			setTimeout(() => {
 				if (desktop.getCurrScaling().win && desktop.getCurrScaling().direction) {
-					let win = desktop.getCurrScaling().win;
+					let direction = desktop.getCurrScaling().direction;
+					let currDiv = desktop.getCurrScaling().win!.ui.win;
+					let moveStart = { x: e.clientX, y: e.clientY };
+					let winStart  = {
+						width : currDiv.offsetWidth,
+						height: currDiv.offsetHeight
+					};
+					desktop.getCurrScaling().direction = direction;
+					desktop.getCurrScaling().moveStart = moveStart;
+					desktop.getCurrScaling().winStart  = winStart;
+
+
+				// } else {
+				// 	cleanScaling(desktop);
 				}
 			}, 10);
 		});
 		desktopDiv.addEventListener("mousemove", (e) => {
 			// console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
-			if (desktop.getCurrScaling().win && desktop.getCurrScaling().start && desktop.getCurrScaling().distance) {
-				let currDiv = desktop.getCurrScaling().win!.ui.win;
-				let dx = e.clientX - desktop.getCurrScaling().start!.x;
-				let dy = e.clientY - desktop.getCurrScaling().start!.y;
-				currDiv.style.left = `${desktop.getCurrScaling().distance!.left + dx}px`;
-				currDiv.style.top  = `${desktop.getCurrScaling().distance!.top  + dy}px`;
-
-					let direction = desktop.getCurrScaling().direction;
-					if (2 === direction) {
-					} else if (8 === direction) {
-					} else if (4 === direction) {
-					} else if (6 === direction) {
-					} else if (7 === direction) {
-					} else if (3 === direction) {
-					} else if (1 === direction) {
-					} else if (9 === direction) {
-					}
+			if (desktop.getCurrScaling().win && desktop.getCurrScaling().moveStart && desktop.getCurrScaling().winStart) {
+				let currWin = desktop.getCurrScaling().win!;
+				let winDiv = currWin.ui.win;
+				let winStart = desktop.getCurrScaling().winStart!;
+				let direction = desktop.getCurrScaling().direction!;
+				let dx = e.clientX - desktop.getCurrScaling().moveStart!.x;
+				let dy = e.clientY - desktop.getCurrScaling().moveStart!.y;
+				//
+				let end = {
+					left: winDiv.offsetLeft, top: winDiv.offsetTop,
+					width: winDiv.offsetWidth, height: winDiv.offsetHeight,
+				};
+				//
+				// winDiv.style.left = `${desktop.getCurrScaling().distance!.left + dx}px`;
+				// winDiv.style.top  = `${desktop.getCurrScaling().distance!.top  + dy}px`;
+				winDiv.style.width  = `${winStart.width  + dx}px`;
+				winDiv.style.height = `${winStart.height + dy}px`;
 			} else {
 				// cleanScaling(desktop);
 			}
@@ -482,7 +499,9 @@ export let defaultWinOption = {
 		titleBar.addEventListener("mousedown" , (e) => {
 			if (!win.status.isMax) {
 				titleBar.style.cursor = "move";
+				// titleBarControl.style.cursor = "pointer";
 				desktop.setCurrDragging({win:win});
+				// console.log(`mouse-click: win:${win.ui.win.id}`);
 			}
 		});
 	},
@@ -499,18 +518,21 @@ export let defaultWinOption = {
 		};
 		desktopDiv.addEventListener("mouseup"   , (e) => { cleanDragging() });
 		desktopDiv.addEventListener("mouseleave", (e) => { cleanDragging() });
+		// 窗口的拖动要监控整个桌面
 		desktopDiv.addEventListener("mousedown", (e) => {
 			//console.log(`mouse-click: win:${win.ui.win.id} title: ${titleBar.id}`);
 			setTimeout(() => {
 				if (desktop.getCurrDragging().win) {
 					let currDiv = desktop.getCurrDragging().win!.ui.win;
-					let start = { x: e.clientX, y: e.clientY };
-					let distance = {
-						left: parseInt(currDiv.style.left) || 0,
-						top: parseInt(currDiv.style.top) || 0
+					let moveStart = { x: e.clientX, y: e.clientY };
+					let winStart  = {
+						left: currDiv.offsetLeft,
+						top: currDiv.offsetTop
 					};
-					desktop.getCurrDragging().start = start;
-					desktop.getCurrDragging().distance = distance;
+					desktop.getCurrDragging().moveStart = moveStart;
+					desktop.getCurrDragging().winStart  = winStart;
+
+
 					// console.log(`drag-start: win:${win.ui.win.id}, (${start.x}, ${start.y}) , ${distance.left}, ${distance.top}`);
 				}
 			}, 10);
@@ -518,18 +540,14 @@ export let defaultWinOption = {
 		desktopDiv.addEventListener("mousemove", (e) => {
 			// console.log(`mouse-move: dragging: ${e.clientX}, ${e.clientY}`);
 			let dRct = desktop.desktopDiv.getBoundingClientRect();
-			if (e.clientX < dRct.left || e.clientX > dRct.right || //
-				e.clientY < dRct.top || e.clientY > dRct.bottom)   //
-			{   // 鼠标已经行移出窗口，停止拖动
-				cleanDragging(); 
-			} else if (desktop.getCurrDragging().win && desktop.getCurrDragging().start && //
-				desktop.getCurrDragging().distance) // 
-			{   // 拖动窗口
+			if (e.clientX < dRct.left || e.clientX > dRct.right || e.clientY < dRct.top || e.clientY > dRct.bottom) {
+				cleanDragging();
+			} else if (desktop.getCurrDragging().win && desktop.getCurrDragging().moveStart && desktop.getCurrDragging().winStart) {
 				let currDiv = desktop.getCurrDragging().win!.ui.win;
-				let dx = e.clientX - desktop.getCurrDragging().start!.x;
-				let dy = e.clientY - desktop.getCurrDragging().start!.y;
-				currDiv.style.left = `${desktop.getCurrDragging().distance!.left + dx}px`;
-				currDiv.style.top  = `${desktop.getCurrDragging().distance!.top  + dy}px`;
+				let dx = e.clientX - desktop.getCurrDragging().moveStart!.x;
+				let dy = e.clientY - desktop.getCurrDragging().moveStart!.y;
+				currDiv.style.left = `${desktop.getCurrDragging().winStart!.left + dx}px`;
+				currDiv.style.top  = `${desktop.getCurrDragging().winStart!.top  + dy}px`;
 			}
 		});
 	},
