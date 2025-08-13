@@ -376,9 +376,8 @@ export let defaultWinOption = {
 				}, 50);
 			}
 		});
-		desktop.desktopDiv.addEventListener("mouseup"   , (e) => { 
-			desktop.currWin.dragging = {};
-		});
+		desktop.desktopDiv.addEventListener("mouseup"   , (e) => { desktop.currWin.dragging = {}; });
+		desktop.desktopDiv.addEventListener("mouseleave", (e) => { desktop.currWin.dragging = {}; });
 		desktop.desktopDiv.addEventListener("mousemove", (e) => {
 			// console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
 			if (desktop.currWin.dragging.win && desktop.currWin.dragging.start && desktop.currWin.dragging.distance) {
