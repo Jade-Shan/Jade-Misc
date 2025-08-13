@@ -287,7 +287,7 @@ export let defaultWinOption = {
 				end.top    = win.status.lastPos.y;
 				end.width  = win.status.lastSize.width;
 				end.height = win.status.lastSize.height;
-			} else {
+			} else { // 最大化
 				win.status.isMax = true;
 				// 保存之前的位置与大小
 				win.status.lastPos.x       = start.left  ;
@@ -302,16 +302,18 @@ export let defaultWinOption = {
 				end.height = win.desktop.hasDockBar() ?
 						pElem.clientHeight - 10 : pElem.clientHeight - 6;
 			}
-			winDiv.style.left   = `${end.left  }px`;
-			winDiv.style.top    = `${end.top   }px`;
-			winDiv.style.width  = `${end.width }px`;
-			winDiv.style.height = `${end.height}px`;
-			let bodyHeight = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
-			if (win.ui.statusBar) {
-				bodyHeight = bodyHeight - win.ui.statusBar.clientHeight;
-			}
-			win.ui.windowBody.style.height = `${bodyHeight - 25}px`;
-			JadeWindowUI.showWinMaxMinAnima(win, 300, 100, start, end);
+			JadeWindowUI.showWinMaxMinAnima(win, 300, 50, start, end);
+			setTimeout(() => {
+				winDiv.style.left   = `${end.left  }px`;
+				winDiv.style.top    = `${end.top   }px`;
+				winDiv.style.width  = `${end.width }px`;
+				winDiv.style.height = `${end.height}px`;
+				let bodyHeight = win.ui.win.offsetHeight - win.ui.titleBar.clientHeight;
+				if (win.ui.statusBar) {
+					bodyHeight = bodyHeight - win.ui.statusBar.clientHeight;
+				}
+				win.ui.windowBody.style.height = `${bodyHeight - 25}px`;
+			}, 350);
 		});
 	},
 
@@ -326,24 +328,24 @@ export let defaultWinOption = {
 			let winDiv = win.ui.win;
 			let min = {
 				left: win.desktop.desktopDiv.offsetWidth / 2,
-				top: win.desktop.desktopDiv.offsetHeight + 50,
-				width: 100, height: 50
+				top: win.desktop.desktopDiv.offsetHeight - 10,
+				width: 10, height: 1
 			}
 			let ori = {
 				left: winDiv.offsetLeft, top: winDiv.offsetTop,
 				width: winDiv.offsetWidth, height: winDiv.offsetHeight
 			}
 			if (win.status.isMin) {
-				JadeWindowUI.showWinMaxMinAnima(win, 300, 100, min, ori);
+				JadeWindowUI.showWinMaxMinAnima(win, 300, 50, min, ori);
 				setTimeout(() => {
 					win.status.isMin = false;
 					win.ui.win.style.visibility = "visible";
 					win.desktop.optWinActive(win); // 恢复的窗口为顶层
-				}, 400);
+				}, 350);
 			} else {
 				win.status.isMin = true;
 				win.ui.win.style.visibility = "hidden";
-				JadeWindowUI.showWinMaxMinAnima(win, 300, 100, ori, min);
+				JadeWindowUI.showWinMaxMinAnima(win, 300, 50, ori, min);
 			}
 		})
 	},
