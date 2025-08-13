@@ -514,8 +514,11 @@ export let defaultWinOption = {
 			}, 10);
 		});
 		desktopDiv.addEventListener("mousemove", (e) => {
-			// console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
-			if (desktop.getCurrDragging().win && desktop.getCurrDragging().start && desktop.getCurrDragging().distance) {
+			console.log(`mouse-move: dragging: ${e.clientX}, ${e.clientY}`);
+			let dRct = desktop.desktopDiv.getBoundingClientRect();
+			if (e.clientX < dRct.left || e.clientX > dRct.right || e.clientY < dRct.top || e.clientY > dRct.bottom) {
+				cleanDragging();
+			} else if (desktop.getCurrDragging().win && desktop.getCurrDragging().start && desktop.getCurrDragging().distance) {
 				let currDiv = desktop.getCurrDragging().win!.ui.win;
 				let dx = e.clientX - desktop.getCurrDragging().start!.x;
 				let dy = e.clientY - desktop.getCurrDragging().start!.y;
