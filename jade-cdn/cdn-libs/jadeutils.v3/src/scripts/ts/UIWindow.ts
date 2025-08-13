@@ -22,6 +22,7 @@ type CurrentWindow = {
 	},
 	scaling: {
 		win?: UIObj,
+		direction?: number,
 		start?: { x: number, y: number },
 		distance?: { left: number, top: number };
 	},
@@ -63,6 +64,8 @@ export class UIDesktop {
 			WebUtil.transBase64ImgURL(JadeUIResource.defaultDesktopBackground);
 		this.dockBar = cfg?.dockBar ? new DockBar(this, cfg.dockBar) : undefined;
 
+		defaultWinOption.bindWindowDragMoving(this); // 绑定拖动窗口的事件
+		defaultWinOption.bindWindowScaleMoving(this); // 绑定缩放窗口的事件
 		desktopDiv.addEventListener("click", (e) => { console.log(`desk clieck event 01`)});
 		desktopDiv.addEventListener("click", (e) => { console.log(`desk clieck event 02`)});
 	}
@@ -231,8 +234,18 @@ export type IBindWinOpt = {
 	 */
 	bindWinOptMin: (win: UIObj, btn: HTMLElement) => any;
 
+
+	/* 选中要拖动窗口 */
+	bindWindowDragSelect: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement) => any,
+
 	/* 拖动窗口 */
-	bindWindowDrag: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement) => any;
+	bindWindowDragMoving: (desktop: UIDesktop) => any,
+
+	/* 选中要缩放窗口 */
+	bindWindowScaleSelect: (win: UIObj) => any,
+	/* 缩放窗口 */
+	bindWindowScaleMoving: (desktop: UIDesktop) => any,
+
 }
 
 /**
@@ -350,17 +363,55 @@ export let defaultWinOption = {
 		})
 	},
 
-	bindWindowDrag: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement): any => { /* 拖动窗口 */
+	bindWindowScaleSelect: (win: UIObj): any=> {
 		let winDiv = win.ui.win;
-		let desktop = win.desktop;
-		titleBar.style.cursor = "move";
-		titleBarControl.style.cursor = "pointer";
-		titleBar.addEventListener("mousedown" , (e) => {
-			desktop.currWin.dragging.win = win;
-			// console.log(`mouse-click: win:${win.ui.win.id}`);
+		let checkScaleStart = (winDiv: HTMLElement, e: MouseEvent): number => {
+			let effSize = 7; // 会触发的范围是5个像素
+			let width  = winDiv.offsetWidth ;
+			let height = winDiv.offsetHeight;
+			let rect = winDiv.getBoundingClientRect();
+			let cPoint = { // 点击的位置
+				x: parseInt(`${e.clientX - rect.left}`), 
+				y: parseInt(`${e.clientY - rect.top }`)
+			};
+			// 
+			let distance = {x: width - cPoint.x, y: height - cPoint.y};
+			let direction = ( //
+				(cPoint.y < effSize) ? //
+					((  cPoint.x < effSize) ? 7 : (distance.x < effSize) ? 9 : 8) : //
+					((distance.y < effSize) ? //
+						((cPoint.x < effSize) ? 1 : (distance.x < effSize) ? 3 : 2) : //
+						((cPoint.x < effSize) ? 4 : (distance.x < effSize) ? 6 : 5)));
+			console.log(`(${width},${height}) , (${cPoint.x}, ${cPoint.y}), ${direction}`);
+			return direction;
+		};
+		winDiv.addEventListener("mouseleave", (e) => { winDiv.style.cursor = "default"; })
+		winDiv.addEventListener("mouseup"   , (e) => { winDiv.style.cursor = "default"; })
+		winDiv.addEventListener("mousedown" , (e) => {
+			let desktop = win.desktop;
+			let direction = checkScaleStart(winDiv, e);
 		});
+
+	},
+
+	bindWindowDragSelect: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement): any => {
+		let desktop = win.desktop;
+		if (!win.status.isMax) {
+			titleBar.style.cursor = "move";
+			titleBarControl.style.cursor = "pointer";
+		}
+		titleBar.addEventListener("mousedown" , (e) => {
+			if (!win.status.isMax) {
+				desktop.currWin.dragging.win = win;
+				// console.log(`mouse-click: win:${win.ui.win.id}`);
+			}
+		});
+	},
+
+	bindWindowDragMoving: (desktop: UIDesktop): any => { /* 拖动窗口 */
+		let desktopDiv = desktop.desktopDiv; 
 		// 窗口的拖动要监控整个桌面
-		desktop.desktopDiv.addEventListener("mousedown" , (e) => {
+		desktopDiv.addEventListener("mousedown" , (e) => {
 			//console.log(`mouse-click: win:${win.ui.win.id} title: ${titleBar.id}`);
 			if (desktop.currWin.dragging.win) {
 				let currDiv = desktop.currWin.dragging.win.ui.win;
@@ -376,9 +427,9 @@ export let defaultWinOption = {
 				}, 50);
 			}
 		});
-		desktop.desktopDiv.addEventListener("mouseup"   , (e) => { desktop.currWin.dragging = {}; });
-		desktop.desktopDiv.addEventListener("mouseleave", (e) => { desktop.currWin.dragging = {}; });
-		desktop.desktopDiv.addEventListener("mousemove", (e) => {
+		desktopDiv.addEventListener("mouseup"   , (e) => { desktop.currWin.dragging = {}; });
+		desktopDiv.addEventListener("mouseleave", (e) => { desktop.currWin.dragging = {}; });
+		desktopDiv.addEventListener("mousemove", (e) => {
 			// console.log(`mouse-move: dragging: ${win.status.isDragging} win:${win.ui.win.id} title: ${titleBar.id}`);
 			if (desktop.currWin.dragging.win && desktop.currWin.dragging.start && desktop.currWin.dragging.distance) {
 				let currDiv = desktop.currWin.dragging.win.ui.win;
@@ -388,6 +439,12 @@ export let defaultWinOption = {
 				currDiv.style.top  = `${desktop.currWin.dragging.distance.top  + dy}px`;
 			}
 		});
+	},
+
+	bindWindowScaleMoving: (desktop: UIDesktop): any => {
+		let desktopDiv = desktop.desktopDiv;
+		desktopDiv.addEventListener("mouseup"   , (e) => { desktop.currWin.scaling= {}; });
+		desktopDiv.addEventListener("mouseleave", (e) => { desktop.currWin.scaling= {}; });
 	},
 
 };
@@ -785,7 +842,8 @@ export namespace JadeWindowUI {
 		titleBar.classList.add("title-bar");
 		titleBar.appendChild(titleBarIconText);
 		titleBar.appendChild(titleBarControls);
-		win.cfg.bindWinOpt.bindWindowDrag(win, titleBar, titleBarControls);
+		win.cfg.bindWinOpt.bindWindowDragSelect (win, titleBar, titleBarControls);
+		win.cfg.bindWinOpt.bindWindowScaleSelect(win);
 		return titleBar;
 	}
 
