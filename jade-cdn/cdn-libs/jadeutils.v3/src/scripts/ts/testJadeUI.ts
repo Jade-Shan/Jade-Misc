@@ -6,7 +6,6 @@ class TestWindow01 extends UIWindowAdpt {
 	renderIn(): void {
 		let renderWindowBody = (): HTMLDivElement => {
 			let windowBody = this.ui.windowBody;
-			windowBody.classList.add("window-body");
 			windowBody.style.overflow = this.cfg.body.overflow;
 			windowBody.innerHTML = `
 			<p> There are just so many possibilities:</p>

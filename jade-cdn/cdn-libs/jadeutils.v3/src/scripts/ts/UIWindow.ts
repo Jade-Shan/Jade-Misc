@@ -671,6 +671,7 @@ export abstract class UIWindowAdpt implements UIObj {
 		winDiv.classList.add("window");
 		let titleBar = document.createElement('div');
 		let windowBody = document.createElement('div');
+		windowBody.classList.add("window-body");
 		this.ui = { win: winDiv, titleBar: titleBar, windowBody: windowBody };
 		if (cfg) {
 			if (cfg.bindWinOpt) { this.cfg.bindWinOpt = cfg.bindWinOpt; }
