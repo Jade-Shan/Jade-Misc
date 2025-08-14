@@ -10,9 +10,6 @@ const WIN_Z_IDX_MIN = 2000;
  */
 type IDesktopConfig = {
 	desktop?: { backgroundImage?: string, width: string, height: string },
-	window?: { // 桌面上窗口的配置
-		scalable?: boolean, // 窗口是否可以缩放 
-	}
 	dockBar?: DockBarParam
 }
 
@@ -85,11 +82,7 @@ export class UIDesktop {
 		this.dockBar = cfg?.dockBar ? new DockBar(this, cfg.dockBar) : undefined;
 
 		defaultWinOption.bindWindowDragMoving(this); // 绑定拖动窗口的事件
-		if (cfg?.window) {
-			if (cfg.window.scalable) {
-				defaultWinOption.bindWindowScaleMoving(this); // 绑定缩放窗口的事件
-			}
-		}
+		defaultWinOption.bindWindowScaleMoving(this); // 绑定缩放窗口的事件
 	}
 
 	/**
@@ -308,6 +301,9 @@ export let defaultWinOption = {
 	 * @param btn 绑定的按键 
 	 */
 	bindWinOptMax: (win: UIObj, btn: HTMLElement): any => {
+		if (!win.cfg.scalable) {
+			return false; // 忽略不可调整大小的窗口
+		}
 		btn.addEventListener("mousedown", e => {
 			let winDiv = win.ui.win;
 			let pElem = win.desktop.desktopDiv;
@@ -321,12 +317,14 @@ export let defaultWinOption = {
 			};
 			if (win.status.isMax) {
 				win.status.isMax = false;
+				btn.setAttribute("aria-label", "Maximize"),
 				end.left   = win.status.lastPos.x;
 				end.top    = win.status.lastPos.y;
 				end.width  = win.status.lastSize.width;
 				end.height = win.status.lastSize.height;
 			} else { // 最大化
 				win.status.isMax = true;
+				btn.setAttribute("aria-label", "Restore"),
 				// 保存之前的位置与大小
 				win.status.lastPos.x       = start.left  ;
 				win.status.lastPos.y       = start.top   ;
@@ -392,6 +390,9 @@ export let defaultWinOption = {
 	},
 
 	bindWindowScaleSelect: (win: UIObj): any=> {
+		if (!win.cfg.scalable) {
+			return false; // 忽略不可调整大小的窗口
+		}
 		let desktop = win.desktop;
 		let winDiv = win.ui.win;
 		let checkScaleStart = (winDiv: HTMLElement, e: MouseEvent): number => {
@@ -570,12 +571,14 @@ export let defaultWinOption = {
 type WinCfg = {
 	icons: IconGroup, // 窗口的图标
 	bindWinOpt: IBindWinOpt, // 绑定窗口的操作
+	scalable: Boolean, // 是否可以调整大小
 	body: { overflow: string },
 };
 
 type WinParam = {
 	icons?: IconGroup, // 窗口的图标
 	bindWinOpt?: IBindWinOpt, // 绑定窗口的操作
+	scalable?: Boolean, // 是否可以调整大小
 	body?: { overflow?: string },
 };
 /**
@@ -648,6 +651,7 @@ export abstract class UIWindowAdpt implements UIObj {
 	cfg: WinCfg = {
 		icons: 	JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
 		bindWinOpt: defaultWinOption,
+		scalable: true,
 		body: { overflow: "hidden", }
 	};
 
@@ -671,6 +675,7 @@ export abstract class UIWindowAdpt implements UIObj {
 		if (cfg) {
 			if (cfg.bindWinOpt) { this.cfg.bindWinOpt = cfg.bindWinOpt; }
 			if (cfg.icons) { this.cfg.icons = cfg.icons; }
+			if (cfg.scalable != undefined) { this.cfg.scalable = cfg.scalable; }
 			if (cfg.body) { 
 				if (cfg.body.overflow) {
 					this.cfg.body.overflow = cfg.body.overflow;
@@ -925,7 +930,11 @@ export namespace JadeWindowUI {
 		//
 		let btnMax = document.createElement("button");
 		btnMax.setAttribute("aria-label", "Maximize");
-		win.cfg.bindWinOpt.bindWinOptMax(win, btnMax);
+		if (win.cfg.scalable) {
+			win.cfg.bindWinOpt.bindWinOptMax(win, btnMax);
+		} else {
+			btnMax.disabled = true;
+		}
 		//
 		let btnClose = document.createElement("button");
 		btnClose.setAttribute("aria-label", "Close");

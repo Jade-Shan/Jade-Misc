@@ -80,7 +80,7 @@ export class TestJadeUI {
 			win1.renderIn();
 			let win2 = new TestWindow01(desktop, `test-win-01-02`, `test win 01-02`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_BUG) });
 			win2.renderIn();
-			let win3 = new TestWindow01(desktop, `test-win-01-03`, `test win 01-03`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.CAMERA) });
+			let win3 = new TestWindow01(desktop, `test-win-01-03`, `test win 01-03`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.CAMERA), scalable: false});
 			win3.renderIn();
 		}
 		//
