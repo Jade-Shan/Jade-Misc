@@ -390,9 +390,6 @@ export let defaultWinOption = {
 	},
 
 	bindWindowScaleSelect: (win: UIObj): any=> {
-		if (!win.cfg.scalable) {
-			return false; // 忽略不可调整大小的窗口
-		}
 		let desktop = win.desktop;
 		let winDiv = win.ui.win;
 		let checkScaleStart = (winDiv: HTMLElement, e: MouseEvent): number => {
@@ -422,19 +419,21 @@ export let defaultWinOption = {
 			return direction;
 		};
 		winDiv.addEventListener("mousedown", (e) => {
-			let desktop = win.desktop;
-			let desktopDiv = desktop.desktopDiv;
-			let direction = checkScaleStart(winDiv, e);
-			if (5 != direction) {
-				desktop.setCurrScaling({ win: win, direction: direction });
-				if (2 === direction || 8 === direction) {
-					desktopDiv.style.cursor = "ns-resize";
-				} else if (4 === direction || 6 === direction) {
-					desktopDiv.style.cursor = "ew-resize";
-				} else if (7 === direction || 3 === direction) {
-					desktopDiv.style.cursor = "nwse-resize";
-				} else if (1 === direction || 9 === direction) {
-					desktopDiv.style.cursor = "nesw-resize";
+			if (win.cfg.scalable && !win.status.isMax && !win.status.isMin) {
+				let desktop = win.desktop;
+				let desktopDiv = desktop.desktopDiv;
+				let direction = checkScaleStart(winDiv, e);
+				if (5 != direction) {
+					desktop.setCurrScaling({ win: win, direction: direction });
+					if (2 === direction || 8 === direction) {
+						desktopDiv.style.cursor = "ns-resize";
+					} else if (4 === direction || 6 === direction) {
+						desktopDiv.style.cursor = "ew-resize";
+					} else if (7 === direction || 3 === direction) {
+						desktopDiv.style.cursor = "nwse-resize";
+					} else if (1 === direction || 9 === direction) {
+						desktopDiv.style.cursor = "nesw-resize";
+					}
 				}
 			}
 		});
@@ -512,7 +511,7 @@ export let defaultWinOption = {
 	bindWindowDragSelect: (win: UIObj, titleBar: HTMLElement, titleBarControl: HTMLElement): any => {
 		let desktop = win.desktop;
 		titleBar.addEventListener("mousedown" , (e) => {
-			if (!win.status.isMax) {
+			if (!win.status.isMax && !win.status.isMin) {
 				titleBar.style.cursor = "move";
 				desktop.setCurrDragging({win:win});
 			}
