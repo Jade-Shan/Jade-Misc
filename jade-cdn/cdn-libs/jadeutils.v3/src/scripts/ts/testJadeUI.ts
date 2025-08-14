@@ -1,5 +1,6 @@
+import { CanvasRectangle2D, CanvasUtils } from "./canvas.js";
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
-import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt } from "./UIWindow.js";
+import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWindow.js";
 
 export namespace TestJadeUI {
 
@@ -89,6 +90,43 @@ export namespace TestJadeUI {
 		//
 	}
 
+	class TestCanvasWindow extends UIWindowAdpt {
+
+		canvas: HTMLCanvasElement = document.createElement("canvas");
+
+		constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinParam) {
+			super(desktop, id, title, cfg);
+			this.canvas.id = `canvas-${id}`;
+			this.canvas.style.width  = `300px`;
+			this.canvas.style.height = `300px`;
+		}
+
+		renderIn(): void {
+			let renderWindowBody = (): HTMLDivElement => {
+				let windowBody = this.ui.windowBody;
+				windowBody.style.overflow = this.cfg.body.overflow;
+				windowBody.style.width  = `${this.cfg.body.initSize.width }px`;
+				windowBody.style.height = `${this.cfg.body.initSize.height}px`;
+				windowBody.appendChild(this.canvas);
+				return windowBody;
+			}
+
+			let renderStatusBar = (): HTMLDivElement => {
+				let statusBar = document.createElement("div");
+				statusBar.classList.add("status-bar");
+				statusBar.innerHTML = `
+					<p class="status-bar-field">Press F1 for help</p>
+					<p class="status-bar-field">Slide 1</p>
+					<p class="status-bar-field">canvas for map</p>
+				`;
+				return statusBar;
+			}
+			JadeWindowUI.renderWindowTplt(this, renderWindowBody, renderStatusBar);
+		}
+
+	}
+
+
 
 	export let testTrpgUI = () => {
 		//
@@ -101,12 +139,28 @@ export namespace TestJadeUI {
 		let desktop01 = document.getElementById(`test-desktop-01`);
 		if (desktop01) {
 			let desktop: UIDesktop = new UIDesktop(desktop01, { dockBar: { range: 300, maxScale: 1.8 } });
-			let win1 = new TestWindow01(desktop, `test-win-01-01`, `test win 01-01`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE) });
-			win1.renderIn();
-			let win2 = new TestWindow01(desktop, `test-win-01-02`, `test win 01-02`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_BUG) });
-			win2.renderIn();
-			let win3 = new TestWindow01(desktop, `test-win-01-03`, `test win 01-03`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.CAMERA), scalable: false });
-			win3.renderIn();
+			let canvasWin = new TestCanvasWindow(desktop, "test-canvas-01", "Map-001", { 
+				icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
+				body: { initSize: {width: 800, height: 600}, overflow: "scroll" }
+			});
+			canvasWin.renderIn();
+			//
+			let cvsCtx = canvasWin.canvas.getContext("2d");
+			if (cvsCtx) {
+				let center  = {x:150, y:150, radius: 3, fillStyle: "fuchsia"};
+				let rect01 = new CanvasRectangle2D( 50,  50,  60, 120, 3, "red" , "");
+				let rect02 = new CanvasRectangle2D(130,  50, 120,  60, 3, "lime", "");
+				let rect03 = new CanvasRectangle2D(190, 130,  60, 120, 3, "blue", "");
+				let rect04 = new CanvasRectangle2D( 50, 190, 120,  60, 3, "gray", "");
+				CanvasUtils.drawRectangle(cvsCtx, rect01);
+				CanvasUtils.drawRectangle(cvsCtx, rect03);
+				//
+				CanvasUtils.drawPoint(cvsCtx, center);
+				//
+				CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect01, 150, 1, "red");
+				CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect03, 150, 1, "blue");
+			}
+
 		}
 		//
 	}

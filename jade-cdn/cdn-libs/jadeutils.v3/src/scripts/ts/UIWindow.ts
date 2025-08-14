@@ -571,14 +571,20 @@ type WinCfg = {
 	icons: IconGroup, // 窗口的图标
 	bindWinOpt: IBindWinOpt, // 绑定窗口的操作
 	scalable: Boolean, // 是否可以调整大小
-	body: { overflow: string },
+	body: { 
+		initSize: {width: number, height: number},
+		overflow: string 
+	},
 };
 
-type WinParam = {
+export type WinParam = {
 	icons?: IconGroup, // 窗口的图标
 	bindWinOpt?: IBindWinOpt, // 绑定窗口的操作
 	scalable?: Boolean, // 是否可以调整大小
-	body?: { overflow?: string },
+	body?: { 
+		initSize?: {width: number, height: number},
+		overflow?: string 
+	},
 };
 /**
  * 窗口状态
@@ -651,7 +657,7 @@ export abstract class UIWindowAdpt implements UIObj {
 		icons: 	JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
 		bindWinOpt: defaultWinOption,
 		scalable: true,
-		body: { overflow: "hidden", }
+		body: { overflow: "hidden", initSize: {width: 800, height: 600} }
 	};
 
 	/**
@@ -677,9 +683,8 @@ export abstract class UIWindowAdpt implements UIObj {
 			if (cfg.icons) { this.cfg.icons = cfg.icons; }
 			if (cfg.scalable != undefined) { this.cfg.scalable = cfg.scalable; }
 			if (cfg.body) { 
-				if (cfg.body.overflow) {
-					this.cfg.body.overflow = cfg.body.overflow;
-				}
+				if (cfg.body.overflow) { this.cfg.body.overflow = cfg.body.overflow; }
+				if (cfg.body.initSize) { this.cfg.body.initSize = cfg.body.initSize; }
 			 }
 		}
 	}
