@@ -26,7 +26,7 @@ const themes = ['hobbit', 'lo-fi', 'paper-print'];
 const themeTasks = [];
 
 // =======================
-// css
+// css for blog
 // =======================
 
 themes.forEach((theme) => {
@@ -64,6 +64,26 @@ themes.forEach((theme) => {
 	themeTasks.push(styleTsk)
 
 });
+
+// =======================
+// css for window UI 
+// =======================
+
+gulp.task("process-style-window-ui", gulp.series(
+	() => {
+		return gulp.src(
+			["webroot/themes/window-ui/styles/**/*.less"], 
+			{read: false, allowEmpty: true}).pipe(clean());
+	},
+	() => {
+			return gulp.src(['src/themes/window-ui/styles/**/*.less'])
+				.pipe(concat('all.less'))
+ 				.pipe(less({compress: false})).on('error', (e) => {console.log(e)})
+ 				.pipe(gulp.dest("webroot/themes/window-ui/styles/"))
+ 				.pipe(minifycss()).pipe(rename({suffix: '.min'}))
+ 				.pipe(gulp.dest("webroot/themes/window-ui/styles/"))
+	},
+));
 
 // =======================
 // javascript
