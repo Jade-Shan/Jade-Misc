@@ -10,6 +10,9 @@ const WIN_Z_IDX_MIN = 2000;
  */
 type IDesktopConfig = {
 	desktop?: { backgroundImage?: string, width: string, height: string },
+	window?: { // 桌面上窗口的配置
+		scalable?: boolean, // 窗口是否可以缩放 
+	}
 	dockBar?: DockBarParam
 }
 
@@ -82,7 +85,11 @@ export class UIDesktop {
 		this.dockBar = cfg?.dockBar ? new DockBar(this, cfg.dockBar) : undefined;
 
 		defaultWinOption.bindWindowDragMoving(this); // 绑定拖动窗口的事件
-		defaultWinOption.bindWindowScaleMoving(this); // 绑定缩放窗口的事件
+		if (cfg?.window) {
+			if (cfg.window.scalable) {
+				defaultWinOption.bindWindowScaleMoving(this); // 绑定缩放窗口的事件
+			}
+		}
 	}
 
 	/**
@@ -628,7 +635,7 @@ export interface UIObj {
 /**
  * 窗口的部分实现
  */
-export abstract class UIWindowAdptt implements UIObj {
+export abstract class UIWindowAdpt implements UIObj {
 	readonly desktop: UIDesktop;
 	readonly ui: WinUIElement;
 	readonly status: WinStatus = { 
@@ -710,27 +717,18 @@ export abstract class UIWindowAdptt implements UIObj {
 
 } 
 
-// 不可以调整大小的UI组件
-export interface UNResizeableUI extends UIObj {
+//export abstract class UIWindow extends UIWindowAdptt {
 
-}
+//	constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinParam) {
+//		super(desktop, id, title, cfg);
+//	}
 
-// 可以调整大小的UI组件
-export interface ResizeableUI extends UIObj {
+//	//renderIn(): void {
+//	//	let div = JadeWindowUI.renderWindowTplt(this);
+//	//}
 
-}
+//}
 
-export class UIWindow extends UIWindowAdptt implements ResizeableUI {
-
-	constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinParam) {
-		super(desktop, id, title, cfg);
-	}
-
-	renderIn(): void {
-		let div = JadeWindowUI.renderWindowTplt(this);
-	}
-
-}
 
 type DockBarCfg = {
 	dockColor: string, 
@@ -954,51 +952,7 @@ export namespace JadeWindowUI {
 		return titleBar;
 	}
 
-	export function renderWindowBody(win: UIObj): HTMLDivElement {
-		let windowBody = win.ui.windowBody;
-		windowBody.classList.add("window-body");
-		windowBody.style.overflow = win.cfg.body.overflow;
-		windowBody.innerHTML = `
-			<p> There are just so many possibilities:</p>
-			<ul>
-				<li>A Task Manager</li>
-				<li>A Notepad</li>
-				<li>Or even a File Explorer!</li>
-			</ul>
 
-			<div class="sunken-panel" style="height: 120px; width: 240px;">
-				<table class="interactive">
-					<thead>
-						<tr><th>Name</th><th>Version</th><th>Company</th></tr>
-					</thead>
-					<tbody>
-						<tr><td>MySQL ODBC 3.51 Driver</td><td>3.51.11.00</td><td>MySQL AB</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-						<tr><td>SQL Server</td><td>3.70.06.23</td><td>Microsoft Corporation</td></tr>
-					</tbody>
-				</table>
-			</div>
-		`;
-		return windowBody;
-	}
-
-	export function renderStatusBar(win: UIObj): HTMLDivElement {
-		let statusBar = document.createElement("div");
-		statusBar.classList.add("status-bar");
-		statusBar.innerHTML= `
-			<p class="status-bar-field">Press F1 for help</p>
-			<p class="status-bar-field">Slide 1</p>
-			<p class="status-bar-field">CPU Usage: 14%</p>
-		`;
-		return statusBar;
-	}
 
 	export function countWindowHeight(divs: Array<HTMLDivElement>): number {
 		let totalHeight = 0;
@@ -1016,16 +970,23 @@ export namespace JadeWindowUI {
 		return totalWidth;
 	}
 
-	export function renderWindowTplt(win: UIObj): HTMLDivElement {
+	export function renderWindowTplt(win: UIObj, renderWindowBody?: () => HTMLDivElement, renderStatusBar?: () => HTMLDivElement): HTMLDivElement {
+
 		let parent = win.desktop.desktopDiv;
 		let winDiv: HTMLDivElement = win.ui.win;
+		//
 		let titleBar = renderTitleBar(win);
-		let windowBody = renderWindowBody(win);
-		let statusBar = renderStatusBar(win);
 		winDiv.appendChild(titleBar );
+		//
+		if (renderWindowBody) { renderWindowBody(); }
+		let windowBody = win.ui.windowBody;
 		winDiv.appendChild(windowBody);
-		winDiv.appendChild(statusBar);
-		win.ui.statusBar = statusBar;
+		//
+		if (renderStatusBar) {
+			let statusBar = renderStatusBar();
+			win.ui.statusBar = statusBar;
+			winDiv.appendChild(statusBar);
+		}
 		// 
 		let pos = win.desktop.getNewWindowPosition( //
 			winDiv.getBoundingClientRect().width, //
