@@ -1,13 +1,17 @@
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
 import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt } from "./UIWindow.js";
 
-class TestWindow01 extends UIWindowAdpt {
+export namespace TestJadeUI {
 
-	renderIn(): void {
-		let renderWindowBody = (): HTMLDivElement => {
-			let windowBody = this.ui.windowBody;
-			windowBody.style.overflow = this.cfg.body.overflow;
-			windowBody.innerHTML = `
+
+
+	class TestWindow01 extends UIWindowAdpt {
+
+		renderIn(): void {
+			let renderWindowBody = (): HTMLDivElement => {
+				let windowBody = this.ui.windowBody;
+				windowBody.style.overflow = this.cfg.body.overflow;
+				windowBody.innerHTML = `
 			<p> There are just so many possibilities:</p>
 			<ul>
 				<li>A Task Manager</li>
@@ -35,28 +39,28 @@ class TestWindow01 extends UIWindowAdpt {
 				</table>
 			</div>
 		`;
-			return windowBody;
-		}
+				return windowBody;
+			}
 
-		let renderStatusBar = (): HTMLDivElement => {
-			let statusBar = document.createElement("div");
-			statusBar.classList.add("status-bar");
-			statusBar.innerHTML = `
+			let renderStatusBar = (): HTMLDivElement => {
+				let statusBar = document.createElement("div");
+				statusBar.classList.add("status-bar");
+				statusBar.innerHTML = `
 			<p class="status-bar-field">Press F1 for help</p>
 			<p class="status-bar-field">Slide 1</p>
 			<p class="status-bar-field">CPU Usage: 14%</p>
 		`;
-			return statusBar;
+				return statusBar;
+			}
+			JadeWindowUI.renderWindowTplt(this, renderWindowBody, renderStatusBar);
 		}
-		JadeWindowUI.renderWindowTplt(this, renderWindowBody, renderStatusBar);
+
 	}
 
-}
-
-export class TestJadeUI {
 
 
-	static testWindowUI() {
+
+	export let testWindowUI = () => {
 		//
 		let desktop00 = document.getElementById(`test-desktop-00`);
 		if (desktop00) {
@@ -79,14 +83,14 @@ export class TestJadeUI {
 			win1.renderIn();
 			let win2 = new TestWindow01(desktop, `test-win-01-02`, `test win 01-02`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_BUG) });
 			win2.renderIn();
-			let win3 = new TestWindow01(desktop, `test-win-01-03`, `test win 01-03`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.CAMERA), scalable: false});
+			let win3 = new TestWindow01(desktop, `test-win-01-03`, `test win 01-03`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.CAMERA), scalable: false });
 			win3.renderIn();
 		}
 		//
 	}
 
 
-	static testTrpgUI() {
+	export let testTrpgUI = () => {
 		//
 		//
 		let icon01 = JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE);
@@ -101,7 +105,7 @@ export class TestJadeUI {
 			win1.renderIn();
 			let win2 = new TestWindow01(desktop, `test-win-01-02`, `test win 01-02`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_BUG) });
 			win2.renderIn();
-			let win3 = new TestWindow01(desktop, `test-win-01-03`, `test win 01-03`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.CAMERA), scalable: false});
+			let win3 = new TestWindow01(desktop, `test-win-01-03`, `test win 01-03`, { icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.CAMERA), scalable: false });
 			win3.renderIn();
 		}
 		//
