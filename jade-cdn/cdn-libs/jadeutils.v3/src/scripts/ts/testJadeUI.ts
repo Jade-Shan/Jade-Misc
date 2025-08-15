@@ -167,8 +167,8 @@ export namespace TestJadeUI {
 				CanvasUtils.drawPoint(cvsCtx, center);
 				CanvasUtils.drawRectangle(cvsCtx, rect02);
 				CanvasUtils.drawRectangle(cvsCtx, rect04);
-				CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect02, 150, 1, "red");
-				CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect04, 150, 1, "blue");
+				CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect02, 150, 1, "lime");
+				CanvasUtils.drawVertexRaysFrom(cvsCtx, center.x, center.y, rect04, 150, 1, "gray");
 			}
 			if (cvsCtx) {
 				let center  = {x:750, y:150, radius: 3, fillStyle: "fuchsia"};
@@ -189,8 +189,8 @@ export namespace TestJadeUI {
 				CanvasUtils.drawPoint(cvsCtx, center);
 				CanvasUtils.drawRectangle(cvsCtx, rect02);
 				CanvasUtils.drawRectangle(cvsCtx, rect04);
-				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect02, 150, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
-				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect04, 150, { lineWidth: 1, strokeStyle: "blue", fillStyle: "rgba(100,100,100,0.5)" });
+				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect02, 150, { lineWidth: 1, strokeStyle: "lime", fillStyle: "rgba(100,100,100,0.5)" });
+				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect04, 150, { lineWidth: 1, strokeStyle: "gray", fillStyle: "rgba(100,100,100,0.5)" });
 			}
 			if (cvsCtx) {
 				let center  = {x:1350, y:150, radius: 3, fillStyle: "fuchsia"};
