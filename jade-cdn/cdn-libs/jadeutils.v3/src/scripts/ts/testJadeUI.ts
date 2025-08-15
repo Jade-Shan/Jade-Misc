@@ -132,7 +132,7 @@ export namespace TestJadeUI {
 
 
 
-	export let testTrpgUI = () => {
+	export let testCanvasWindow = () => {
 		//
 		//
 		let icon01 = JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE);
@@ -140,12 +140,12 @@ export namespace TestJadeUI {
 		let icon02 = JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_BUG);
 		console.log(icon02.x12);
 		//
-		let desktop01 = document.getElementById(`test-desktop-01`);
+		let desktop01 = document.getElementById(`test-desktop-02`);
 		if (desktop01) {
 			let desktop: UIDesktop = new UIDesktop(desktop01, { dockBar: { range: 300, maxScale: 1.8 } });
 			let canvasWin = new TestCanvasWindow(desktop, "test-canvas-01", "Map-001", { 
 				icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
-				body: { initSize: {width: 800, height: 600}, overflow: "scroll" }
+				body: { initSize: {width: 640, height: 480}, overflow: "scroll" }
 			});
 			canvasWin.renderIn();
 			//
@@ -307,9 +307,22 @@ export namespace TestJadeUI {
 				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric02, 145, { lineWidth: 1, strokeStyle: "lime", fillStyle: "rgba(100,100,100,0.5)" });
 				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric04, 145, { lineWidth: 1, strokeStyle: "gray", fillStyle: "rgba(100,100,100,0.5)" });
 			}
-
+			if (cvsCtx) {
+				let canvas = canvasWin.canvas;
+				canvas.addEventListener("mousedown", e => {
+					let rect = canvas.getBoundingClientRect();
+					// let cPoint = { // 点击的位置
+					// 	x: parseInt(`${e.clientX - rect.left}`),
+					// 	y: parseInt(`${e.clientY - rect.top}`)
+					// };
+					CanvasUtils.drawPoint(cvsCtx, { x: e.clientX - rect.left, y: e.clientY - rect.top, radius: 3, fillStyle: "lime" });
+				})
+			}
 		}
 		//
+	}
+
+	export let testTrpgUI = () => {
 	}
 
 

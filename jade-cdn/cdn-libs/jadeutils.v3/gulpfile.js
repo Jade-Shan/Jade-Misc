@@ -144,6 +144,7 @@ gulp.task('process-typescript', gulp.series('clean-typescript', () => {
 		scriptTsSrc + 'wiki.ts',
 		scriptTsSrc + 'blog.ts',
 		scriptTsSrc + 'UIWindow.ts',
+		scriptTsSrc + 'testJadeTRPG.ts',
 		scriptTsSrc + 'testJadeUtils.ts',
 		scriptTsSrc + 'testJadeUI.ts',
 	]).pipe(ts({
@@ -175,6 +176,7 @@ gulp.task('compress-typescript', gulp.series('process-typescript', () => {
 		scriptTsTag + 'wiki.js',
 		scriptTsTag + 'blog.js',
 		scriptTsTag + 'UIWindow.js',
+		scriptTsTag + 'testJadeTRPG.js',
 		scriptTsTag + 'testJadeUtils.js',
 		scriptTsTag + 'testJadeUI.js',
 	]).pipe(rename({ suffix: '.min' }))
