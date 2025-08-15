@@ -97,10 +97,10 @@ export namespace TestJadeUI {
 		constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinParam) {
 			super(desktop, id, title, cfg);
 			this.canvas.id = `canvas-${id}`;
-			this.canvas.width = 1920;
-			this.canvas.height = 1080;
-			this.canvas.style.width  = `1920px`;
-			this.canvas.style.height = `1080px`;
+			this.canvas.width = 1600;
+			this.canvas.height = 600;
+			this.canvas.style.width  = `1600px`;
+			this.canvas.style.height = `600px`;
 		}
 
 		renderIn(): void {
@@ -109,6 +109,8 @@ export namespace TestJadeUI {
 				windowBody.style.overflow = this.cfg.body.overflow;
 				windowBody.style.width  = `${this.cfg.body.initSize.width }px`;
 				windowBody.style.height = `${this.cfg.body.initSize.height}px`;
+				windowBody.style.overflowX = 'auto';
+				windowBody.style.overflowY = 'auto';
 				windowBody.appendChild(this.canvas);
 				return windowBody;
 			}
@@ -212,9 +214,9 @@ export namespace TestJadeUI {
 				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric03, 145, { lineWidth: 1, strokeStyle: "blue", fillStyle: "rgba(100,100,100,0.5)" });
 			}
 			if (null != cvsCtx) {
-				let center  = {x:1650, y:150, radius: 3, fillStyle: "fuchsia"};
-				let cric02 = new CanvasCircle2D(1720, 150, 60, 3, "lime", "");
-				let cric04 = new CanvasCircle2D(1580, 150, 60, 3, "gray", "");
+				let center  = {x:1350, y:450, radius: 3, fillStyle: "fuchsia"};
+				let cric02 = new CanvasCircle2D(1420, 450, 60, 3, "lime", "");
+				let cric04 = new CanvasCircle2D(1280, 450, 60, 3, "gray", "");
 				CanvasUtils.drawPoint(cvsCtx, center);
 				CanvasUtils.drawCircle(cvsCtx, cric02);
 				CanvasUtils.drawCircle(cvsCtx, cric04);

@@ -349,6 +349,7 @@ export let defaultWinOption = {
 					bodyHeight = bodyHeight - win.ui.statusBar.clientHeight;
 				}
 				win.ui.windowBody.style.height = `${bodyHeight - 25}px`;
+				win.ui.windowBody.style.width  = `${end.width  - 25}px`;
 			}, 350);
 		});
 	},
@@ -504,6 +505,7 @@ export let defaultWinOption = {
 				winDiv.style.width  = `${end.width }px`;
 				winDiv.style.height = `${end.height}px`;
 				currWin.ui.windowBody.style.height = `${bodyHeight - 25}px`;
+				currWin.ui.windowBody.style.width  = `${end.width  - 25}px`;
 			}
 		});
 	},
@@ -657,7 +659,7 @@ export abstract class UIWindowAdpt implements UIObj {
 		icons: 	JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
 		bindWinOpt: defaultWinOption,
 		scalable: true,
-		body: { overflow: "hidden", initSize: {width: 800, height: 600} }
+		body: { overflow: "auto", initSize: {width: 800, height: 600} }
 	};
 
 	/**
