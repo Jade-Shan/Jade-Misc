@@ -6,7 +6,7 @@ function gnuplotImage() {
 		gnuplot "$1" > "$1.png"
 }
 function gnuplotDocImages() {
-	for pltFile in ./docs/images/*.plt;     do gnuplotImage "$pltFile"; done;
+	# for pltFile in ./docs/images/*.plt;     do gnuplotImage "$pltFile"; done;
 	for pltFile in ./docs/images/*/*.plt;   do gnuplotImage "$pltFile"; done;
 	for pltFile in ./docs/images/*/*/*.plt; do gnuplotImage "$pltFile"; done;
 }
