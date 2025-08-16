@@ -94,8 +94,8 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 		let angleCP  = Math.atan2(dy, dx);
 		// 圆心`C`到圆外的点`P`的连线`PC`与切线`PQ1`、`PQ2`形成的夹角
 		// pi - arcsin = acos
-		// let anglePCQ = Geo2DUtils.PI_HALF - Math.asin(this.radius / lenghCP);
-		let anglePCQ = Math.acos(this.radius / lenghCP);
+		let anglePCQ = Geo2DUtils.PI_HALF - Math.asin(this.radius / lenghCP);
+		// let anglePCQ = Math.acos(this.radius / lenghCP);
 		// 两个切线的点的夹角
 		let anglePQ1 = angleCP + anglePCQ;
 		let anglePQ2 = angleCP - anglePCQ;
@@ -111,6 +111,8 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 		// 两个节点的坐标
 		let pos1   = new Point2D(this.c.x + this.radius * Math.cos(anglePQ1), this.c.y + this.radius * Math.sin(anglePQ1));
 		let pos2   = new Point2D(this.c.x + this.radius * Math.cos(anglePQ2), this.c.y + this.radius * Math.sin(anglePQ2));
+		// let pos1   = new Point2D(this.c.x + lenghCP * Math.cos(anglePQ1), this.c.y + lenghCP * Math.sin(anglePQ1));
+		// let pos2   = new Point2D(this.c.x + lenghCP * Math.cos(anglePQ2), this.c.y + lenghCP * Math.sin(anglePQ2));
 		return [pos1, pos2];
 	}
 
