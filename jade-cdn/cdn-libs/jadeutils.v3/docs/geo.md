@@ -18,17 +18,29 @@ Circle2D.getVertexesFrom(x: number, y: number): Array<Point2D>;
 ```
 ![sample-img](images/geo/circ_cut_01.plt.png "sample image")
 
+注意：
+
+计算过程中都在用以圆心作为新坐标系的原点，
+计算以圆心为顶点的角的角度；
+如果用以点P作为新坐标系的原点，计算以P为顶点的角的角度来计算，
+就要考虑到可考虑到圆在新的坐标系中不同象限时，
+三角函数诱导公式的变化与符号的变化。会更加复杂
+
 1. 计算线段`dx`与`dy`的长度分别为`C.x - P.x`与`C.y - P.y`。
-	（结果出错，要改成`P.x - C.x`与`P.y - X.y`才对，为什么？）
-2. 计算线段`CP`的长度`sqrt(dx^2 + dy^2)`。
-3. 计算线段`CP`的角度`arctan(dy, dx)`。
-4. 角`PCQ`等于`arcsin(CQ / PC)`等于`arcsin(r / CP)`。
-	（结果出错，要改成`pi/2 - arcsin(r / PC)`才对，为什么？）
-5. `PQ1`与`PQ2`的角度分别为`PC + QPC`与`PC - QPC`
-6. `Q1.x`等于`C.x + CP * cos(PQ1)`
-6. `Q1.y`等于`C.y + CP * sin(PQ1)`
-6. `Q2.x`等于`C.x + CP * cos(PQ2)`
-6. `Q2.y`等于`C.y + CP * sin(PQ2)`
+	（注意：以圆心`C`为起点）
+2. 计算线段`C->P`的长度`sqrt(dx^2 + dy^2)`。
+3. 计算射线`C->P`的角度`aCP = arctan(dy, dx)`。
+4. `C->Q1`和`C->Q2`这两个射线与`C->P`的夹角，
+	分别为`aPCQ = (+/-)arcos(CQ / CP)`，等于`aPCQ = (+/-)arcos(r / CP)`。
+5. 得到了`C->Q1`和`C->Q2`这两个射线相对于与`C->P`的夹角后，
+	再加上`C->P`在坐标系中的角度`aCP`，
+	就是`C->Q1`和`C->Q2`在整个坐标系中的角度：
+	`aCQ1 = aCP + aPCQ`，`aCQ2 = aCP - aPCQ`
+6. 通过`aCQ1`和`aCQ2`的角度与圆的半径，
+	可以得到`Q1`和`Q2`相对于圆心的坐标。
+	然后再加上圆心在坐标系中的坐标就可以到`Q1`和`Q2`在坐标系中的坐标:
+	`Q1:(c.x + r * cos(Q1), c.y + r * sin(Q1))` ， 
+	`Q2:(c.x + r * cos(Q2), c.y + r * sin(Q2))`
 
 ### 点到图形的扇面
 

@@ -82,39 +82,47 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 	}
 
 	// 圆外一点`P(x,y)`到圆的切线`PQ1`与`PQ2`
+	// 注意：
+	// 计算过程中都在用以圆心作为新坐标系的原点，
+	// 计算以圆心为顶点的角的角度；
+	// 如果用以点P作为新坐标系的原点，计算以P为顶点的角的角度来计算，
+	// 就要考虑到可考虑到圆在新的坐标系中不同象限时，
+	// 三角函数诱导公式的变化与符号的变化。会更加复杂
 	getVertexesFrom(x: number, y: number): Array<Point2D> {
-		// 圆心`C`到外部点`P`的连线`CP`的角度与距离
+		// 圆心`C`为新的坐标系的原点，计算射线`C->P`的长度
 		let dx     = x - this.c.x;
 		let dy     = y - this.c.y;
 		let lenghCP = Math.sqrt(dx * dx + dy * dy);
 		if (lenghCP < this.radius) { // 点在圆内，不存在切线
 			return [];
 		}
-		// 圆心`c`到圆外的点`P`的连线`PC`与x轴正方向的夹角
+		// 圆心`C`为新的坐标系的原点，计算射线`C->P`的角度
 		let angleCP  = Math.atan2(dy, dx);
-		let ca1 = Geo2DUtils.formatAngle(angleCP);
-		console.log(`${(new Date()).getUTCMilliseconds()}:
-			angleCP: ${NumUtil.toFixed(ca1.oriAgl, 3)} = ${NumUtil.toFixed(ca1.fmtAgl, 3)} = ` +
-			`${NumUtil.toFixed(ca1.oriDgr, 2)}° = ${NumUtil.toFixed(ca1.fmtDgr, 2)}°
-			`);
-		// 圆心`C`到圆外的点`P`的连线`PC`与切线`PQ1`、`PQ2`形成的夹角
-		// pi - arcsin = acos
-		let anglePCQ = Geo2DUtils.PI_HALF - Math.asin(this.radius / lenghCP);
-		let ca2 = Geo2DUtils.formatAngle(anglePCQ);
-		console.log(`${(new Date()).getUTCMilliseconds()}:
-			angle: ${NumUtil.toFixed(ca2.oriAgl, 3)} = ${NumUtil.toFixed(ca2.fmtAgl, 3)} = ` +
-			`${NumUtil.toFixed(ca2.oriDgr, 2)}° = ${NumUtil.toFixed(ca2.fmtDgr, 2)}°
-			`);
-		// let anglePCQ = Math.acos(this.radius / lenghCP);
-		// 两个切线的点的夹角
+		// let ca1 = Geo2DUtils.formatAngle(angleCP);
+		// console.log(`${(new Date()).getUTCMilliseconds()}:
+		// 	angleCP: ${NumUtil.toFixed(ca1.oriAgl, 3)} = ${NumUtil.toFixed(ca1.fmtAgl, 3)} = ` +
+		// 	`${NumUtil.toFixed(ca1.oriDgr, 2)}° = ${NumUtil.toFixed(ca1.fmtDgr, 2)}°
+		// 	`);
+		//
+		// 计算`C->Q1`和`C->Q2`这两个射线相对于与`C->P`的夹角后，
+		let anglePCQ = Math.acos(this.radius / lenghCP);
+		// let ca2 = Geo2DUtils.formatAngle(anglePCQ);
+		// console.log(`${(new Date()).getUTCMilliseconds()}:
+		// 	angle: ${NumUtil.toFixed(ca2.oriAgl, 3)} = ${NumUtil.toFixed(ca2.fmtAgl, 3)} = ` +
+		// 	`${NumUtil.toFixed(ca2.oriDgr, 2)}° = ${NumUtil.toFixed(ca2.fmtDgr, 2)}°
+		// 	`);
+		//
+		// 得到了`C->Q1`和`C->Q2`这两个射线相对于与`C->P`的夹角后，
+		// 再加上`C->P`在坐标系中的角度`aCP`，
+		// 就是`C->Q1`和`C->Q2`在整个坐标系中的角度：
 		let anglePQ1 = angleCP + anglePCQ;
 		let anglePQ2 = angleCP - anglePCQ;
-		//// 打印信息
 		// 两个节点的坐标
+		// 通过`aCQ1`和`aCQ2`的角度与圆的半径，
+		// 可以得到`Q1`和`Q2`相对于圆心的坐标。
+		// 然后再加上圆心在坐标系中的坐标就可以到`Q1`和`Q2`在坐标系中的坐标:
 		let pos1   = new Point2D(this.c.x + this.radius * Math.cos(anglePQ1), this.c.y + this.radius * Math.sin(anglePQ1));
 		let pos2   = new Point2D(this.c.x + this.radius * Math.cos(anglePQ2), this.c.y + this.radius * Math.sin(anglePQ2));
-		// let pos1   = new Point2D(this.c.x + lenghCP * Math.cos(anglePQ1), this.c.y + lenghCP * Math.sin(anglePQ1));
-		// let pos2   = new Point2D(this.c.x + lenghCP * Math.cos(anglePQ2), this.c.y + lenghCP * Math.sin(anglePQ2));
 		return [pos1, pos2];
 	}
 
