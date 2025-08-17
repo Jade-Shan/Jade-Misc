@@ -295,13 +295,13 @@ class TestCanvas {
 
 	static testCutCircle() {
 		let p = new Point2D(5, 5);
-		let c = new Circle2D(30, 30, 20);
+		let c = new Circle2D(45, 30, 20);
 
 		let points = c.getVertexesFrom(p.x, p.y);
 		console.log(`P(${p.x},${p.y}) cut circ ` + //
 			`C(${c.getCenter().x },${ c.getCenter().y },${c.radius}) ` + //
 			`at Q1(${points[0].x},${points[0].y})` + //
-			`at Q1(${points[1].x},${points[1].y})`);
+			`at Q2(${points[1].x},${points[1].y})`);
 	}
 
 	static testLinePointSide() {
