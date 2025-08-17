@@ -29,18 +29,18 @@ Circle2D.getVertexesFrom(x: number, y: number): Array<Point2D>;
 1. 计算线段`dx`与`dy`的长度分别为`C.x - P.x`与`C.y - P.y`。
 	（注意：以圆心`C`为起点）
 2. 计算线段`C->P`的长度`sqrt(dx^2 + dy^2)`。
-3. 计算射线`C->P`的角度`aCP = arctan(dy, dx)`。
-4. `C->Q1`和`C->Q2`这两个射线与`C->P`的夹角，
-	分别为`aPCQ = (+/-)arcos(CQ / CP)`，等于`aPCQ = (+/-)arcos(r / CP)`。
-5. 得到了`C->Q1`和`C->Q2`这两个射线相对于与`C->P`的夹角后，
-	再加上`C->P`在坐标系中的角度`aCP`，
+3. 计算射线`C->P`的角度`alpha`等于`arctan(dy, dx)`。
+4. `C->Q1`和`C->Q2`这两个射线与`C->P`的夹角`beta`
+	分别为`arcos(CQ / CP)`，等于`arcos(r / CP)`。
+5. 得到了`beta`这个`C->Q1`和`C->Q2`相对于`C->P`的夹角后，
+	再加上`C->P`在坐标系中的角度`alpha`，
 	就是`C->Q1`和`C->Q2`在整个坐标系中的角度：
-	`aCQ1 = aCP + aPCQ`，`aCQ2 = aCP - aPCQ`
-6. 通过`aCQ1`和`aCQ2`的角度与圆的半径，
+	`beta1 = alpha + beta`和`beta2 = alpha - beta`
+6. 通过`beta1`和`beta2`的角度与圆的半径，
 	可以得到`Q1`和`Q2`相对于圆心的坐标。
 	然后再加上圆心在坐标系中的坐标就可以到`Q1`和`Q2`在坐标系中的坐标:
-	`Q1:(c.x + r * cos(Q1), c.y + r * sin(Q1))` ， 
-	`Q2:(c.x + r * cos(Q2), c.y + r * sin(Q2))`
+	`Q1:(c.x + r * cos(beta1), c.y + r * sin(beta1))` ， 
+	`Q2:(c.x + r * cos(beta2), c.y + r * sin(beta2))`
 
 ### 点到图形的扇面
 
