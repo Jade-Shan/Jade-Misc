@@ -92,22 +92,24 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 		}
 		// 圆心`c`到圆外的点`P`的连线`PC`与x轴正方向的夹角
 		let angleCP  = Math.atan2(dy, dx);
+		let ca1 = Geo2DUtils.formatAngle(angleCP);
+		console.log(`${(new Date()).getUTCMilliseconds()}:
+			angleCP: ${NumUtil.toFixed(ca1.oriAgl, 3)} = ${NumUtil.toFixed(ca1.fmtAgl, 3)} = ` +
+			`${NumUtil.toFixed(ca1.oriDgr, 2)}° = ${NumUtil.toFixed(ca1.fmtDgr, 2)}°
+			`);
 		// 圆心`C`到圆外的点`P`的连线`PC`与切线`PQ1`、`PQ2`形成的夹角
 		// pi - arcsin = acos
 		let anglePCQ = Geo2DUtils.PI_HALF - Math.asin(this.radius / lenghCP);
+		let ca2 = Geo2DUtils.formatAngle(anglePCQ);
+		console.log(`${(new Date()).getUTCMilliseconds()}:
+			angle: ${NumUtil.toFixed(ca2.oriAgl, 3)} = ${NumUtil.toFixed(ca2.fmtAgl, 3)} = ` +
+			`${NumUtil.toFixed(ca2.oriDgr, 2)}° = ${NumUtil.toFixed(ca2.fmtDgr, 2)}°
+			`);
 		// let anglePCQ = Math.acos(this.radius / lenghCP);
 		// 两个切线的点的夹角
 		let anglePQ1 = angleCP + anglePCQ;
 		let anglePQ2 = angleCP - anglePCQ;
 		//// 打印信息
-		//let ca1 = Geo2DUtils.formatAngle(anglePC);
-		//let ca2 = Geo2DUtils.formatAngle(anglePCQ);
-		//console.log(`${(new Date()).getUTCMilliseconds()}:
-		//	angle: ${NumUtil.toFixed(ca1.oriAgl, 3)} = ${NumUtil.toFixed(ca1.fmtAgl, 3)} = ` +
-		//	`${NumUtil.toFixed(ca1.oriDgr, 2)}° = ${NumUtil.toFixed(ca1.fmtDgr, 2)}°
-		//	angle: ${NumUtil.toFixed(ca2.oriAgl, 3)} = ${NumUtil.toFixed(ca2.fmtAgl, 3)} = ` +
-		//	`${NumUtil.toFixed(ca2.oriDgr, 2)}° = ${NumUtil.toFixed(ca2.fmtDgr, 2)}°
-		//	`);
 		// 两个节点的坐标
 		let pos1   = new Point2D(this.c.x + this.radius * Math.cos(anglePQ1), this.c.y + this.radius * Math.sin(anglePQ1));
 		let pos2   = new Point2D(this.c.x + this.radius * Math.cos(anglePQ2), this.c.y + this.radius * Math.sin(anglePQ2));

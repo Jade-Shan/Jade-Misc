@@ -4,7 +4,7 @@ import { WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 import { CanvasCircle2D, CanvasLine2D, CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
-import { Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
+import { Circle2D, Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -293,6 +293,17 @@ class TestCanvas {
 		this.testAtan2(100,-100);
 	}
 
+	static testCutCircle() {
+		let p = new Point2D(5, 5);
+		let c = new Circle2D(30, 30, 20);
+
+		let points = c.getVertexesFrom(p.x, p.y);
+		console.log(`P(${p.x},${p.y}) cut circ ` + //
+			`C(${c.getCenter().x },${ c.getCenter().y },${c.radius}) ` + //
+			`at Q1(${points[0].x},${points[0].y})` + //
+			`at Q1(${points[1].x},${points[1].y})`);
+	}
+
 	static testLinePointSide() {
 
 		let line1 = new Line2D({ x:20, y:20 }, { x:90, y:90 });
@@ -314,6 +325,8 @@ class TestCanvas {
 
 	static testCanvas() {
 		this.testTriFun();
+
+		this.testCutCircle();
 
 		this.testLinePointSide();
 
