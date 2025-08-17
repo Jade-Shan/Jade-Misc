@@ -20,12 +20,12 @@ C[2]=30
 C[3]=20
 
 array Q1[2]
-Q1[1]=47.4
-Q1[2]=10.15
+Q1[1]=28.21
+Q1[2]=40.87
 
 array Q2[2]
-Q2[1]=28.21
-Q2[2]=40.87
+Q2[1]=47.4
+Q2[2]=10.15
 
 dx=C[1]-P[1]
 dy=C[2]-P[2]
@@ -44,15 +44,15 @@ set label 4 at Q2[1],Q2[2] point pt 7 ps 1.5 lc rgb "#00FF00"
 
 set label  9 "P"  at  P[1]-3,  P[2]+2
 set label 10 "C"  at  C[1]+1,  C[2]-2 
-set label 11 "Q1" at Q1[1]+1, Q1[2]-2
-set label 12 "Q2" at Q2[1]-5, Q2[2]-1
+set label 11 "Q1" at Q1[1]-5, Q1[2]-1
+set label 12 "Q2" at Q2[1]+1, Q2[2]-2
 set label 13 "dx" at  P[1]  ,      -1
 set label 14 "dy" at      -4,  P[2]  
 set label 15 "{/Symbol a}"  at C[1] -2, C[2]+4 tc rgb "#0000FF" 
-set label 16 "-{/Symbol b}" at C[1] -8, C[2]   tc rgb "#00FF00" 
-set label 17 "+{/Symbol b}" at C[1] -5, C[2]-6 tc rgb "#FF0000" 
-set label 18 "{/Symbol b}2" at C[1] +2, C[2]+7 tc rgb "#00FF00" 
-set label 19 "{/Symbol b}1" at C[1] -9, C[2]+9 tc rgb "#FF0000" 
+set label 16 "-{/Symbol b}" at C[1] -8, C[2]   tc rgb "#FF0000" 
+set label 17 "+{/Symbol b}" at C[1] -5, C[2]-6 tc rgb "#00FF00" 
+set label 18 "{/Symbol b}1" at C[1] +2, C[2]+7 tc rgb "#FF00FF" 
+set label 19 "{/Symbol b}2" at C[1] -9, C[2]+9 tc rgb "#A20055" 
 
 set arrow  5 from P[1], P[2] to  C[1], C[2] nofilled size 8,0,0 lc rgb "#0000FF" lw 1
 set arrow  6 from P[1], P[2] to Q1[1],Q1[2] nofilled size 8,0,0 lc rgb "#FF0000" lw 1
@@ -64,10 +64,10 @@ set arrow 11 from C[1], P[2] to     0,    5 nofilled size 8,0,0 lc rgb "#AAAAAA"
 
 set object 1 circle at C[1],C[2] size C[3] fc rgb "#0000FF" lw 2
 set object 2 circle at C[1],C[2] size    3 arc [  0:213] fc rgb "#0000FF" lw 1
-set object 3 circle at C[1],C[2] size    5 arc [147:213] fc rgb "#00FF00" lw 1
-set object 4 circle at C[1],C[2] size    5 arc [213:277] fc rgb "#FF0000" lw 1
-set object 5 circle at C[1],C[2] size    6 arc [  0:147] fc rgb "#00FF00" lw 1
-set object 6 circle at C[1],C[2] size   10 arc [  0:277] fc rgb "#FF0000" lw 1
+set object 3 circle at C[1],C[2] size    5 arc [213:277] fc rgb "#00FF00" lw 1
+set object 4 circle at C[1],C[2] size    5 arc [147:213] fc rgb "#FF0000" lw 1
+set object 5 circle at C[1],C[2] size    6 arc [  0:147] fc rgb "#FF00FF" lw 1
+set object 6 circle at C[1],C[2] size   10 arc [  0:277] fc rgb "#A20055" lw 1
 
 plot 1/0 
 

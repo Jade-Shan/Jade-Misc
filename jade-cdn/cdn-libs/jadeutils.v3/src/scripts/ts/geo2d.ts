@@ -115,8 +115,8 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 		// 得到了`C->Q1`和`C->Q2`这两个射线相对于与`C->P`的夹角后，
 		// 再加上`C->P`在坐标系中的角度`aCP`，
 		// 就是`C->Q1`和`C->Q2`在整个坐标系中的角度：
-		let anglePQ1 = angleCP + anglePCQ;
-		let anglePQ2 = angleCP - anglePCQ;
+		let anglePQ1 = angleCP - anglePCQ;
+		let anglePQ2 = angleCP + anglePCQ;
 		// 两个节点的坐标
 		// 通过`aCQ1`和`aCQ2`的角度与圆的半径，
 		// 可以得到`Q1`和`Q2`相对于圆心的坐标。
