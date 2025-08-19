@@ -18,17 +18,15 @@ export interface GeoShape2D extends IGeo2D {
 	 */
 	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number }
 
-	///**
-	// * 对于一个外部的点`(x,y)`，返回这个点到图形近的顶占的射线
-	// * 
-	// * @param x 外部点的坐标x
-	// * @param y 外部点的坐标y
-	// * @param length 射线最大的长度
-	// * 
-	// * @returns 点到所有顶点的射线
-	// */
-	//getVertexRaysFrom(x: number, y: number): Array<Ray2D>
 
+	/**
+	 * 
+	 * 对于一个外部的点`(x,y)`，返回这个点到图形的多个顶点
+	 * 
+	 * @param x 外部点的坐标x
+	 * @param y 外部点的坐标y
+	 * @returns 多个顶点
+	 */
 	getVertexesFrom(x: number, y: number): Array<Point2D>;
 
 }
