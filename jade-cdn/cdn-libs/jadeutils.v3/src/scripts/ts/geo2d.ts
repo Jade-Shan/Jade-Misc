@@ -731,19 +731,6 @@ export namespace Geo2DUtils {
 			//console.log(`diff angle: ${formatAngleStr(diffAngle)}`);
 			side = angleAB - angleAP;
 		} else if (p.y < ll.a.y) {
-			// let n1 = (ll.b.x - ll.a.x) * (ll.b.y - ll.a.y);
-			// let n2 = ll.b.y - ll.a.y;
-			// let n3 = n1 / n2;
-			// let cx = ll.b.x - n3;
-			// let c = { x: cx, y: p.y };
-			// let c = { x: -ll.a.x, y: p.y };
-			// angleAP = Math.atan2(p.y - c.y, p.x - c.x);
-			//
-			// (ll.a.x - c.x) / (ll.a.y - c.y);
-			// (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y);
-			//
-			// (ll.a.x - c.x) = ;
-			// cx = ll.a.x - ((ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (ll.a.y - c.y))
 			let cx = ll.a.x - ((ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (ll.a.y - p.y))
 			side = p.x - cx; 
 		} else if (ll.b.y < p.y) {

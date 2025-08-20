@@ -93,12 +93,27 @@ export function checkPointLineSide(
 
 1. `(c.x - ll.a.x) / (c.y - ll.a.y) = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y)`
 2. `(c.x - ll.a.x) = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (c.y - ll.a.y)`
-3. 
-4. 因为`c.y = p.y`所以
+3. `c.x = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (c.y - ll.a.y) - ll.a.x`
+4. 因为`c.y = p.y`所以`c.x = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (p.y - ll.a.y) - ll.a.x`
 
 * 如果`c.x < a.x`则说明点在线段的右方
 * 如果`c.x > a.x`则说明点在线段的左方
 
+还有另一种算法：
+
+```javascript
+// 在上下的情况也下直接算角度？没有看明白，
+// 但跑出来的结果一样
+if (p.y < ll.a.y || ll.b.y < p.y) {
+	let n1 = (ll.b.x - ll.a.x) * (ll.b.y - ll.a.y);
+	let n2 = ll.b.y - ll.a.y;
+	let n3 = n1 / n2;
+	let cx = ll.b.x - n3;
+	let c = { x: cx, y: p.y };
+	let c = { x: -ll.a.x, y: p.y };
+	angleAP = Math.atan2(p.y - c.y, p.x - c.x);
+}
+```
 
 ### 计算旋转的角度
 
