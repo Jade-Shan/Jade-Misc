@@ -62,12 +62,43 @@ export function checkPointLineSide(
 
 几种情况分别分析：
 
-假设`A.y < B.y`的情况下，`(P.y < A.y) || (B.y < P.y)`：
+假设`A.y < B.y`的情况下，`(A.y < P.y) && (P.y < B.y)`：
 
 ![sample-img](images/geo/point_side_line.01.plt.png "sample image")
 
+* 如果`A->B`的角度大于`A->P`则说明点在线段的右方
+* 如果`A->B`的角度小于`A->P`则说明点在线段的左方
+
+假设`A.y < B.y`的情况下，`P.y < A.y`：
+
+延长`B->A`到与`y=P.y`相交的点`C`
 
 ![sample-img](images/geo/point_side_line.02.plt.png "sample image")
+
+
+1. `(ll.a.x - c.x) / (ll.a.y - c.y) = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y)`
+2. `(ll.a.x - c.x) = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (ll.a.y - c.y)`
+3. `c.x = (ll.a.x - (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (ll.a.y - c.y))`
+4. 因为`c.y = p.y`所以`c.x = ll.a.x - (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (ll.a.y - c.y)`
+
+* 如果`c.x < a.x`则说明点在线段的右方
+* 如果`c.x > a.x`则说明点在线段的左方
+
+假设`A.y < B.y`的情况下，`P.y > B.y`：
+
+延长`A->B`到与`y=P.y`相交的点`C`
+
+![sample-img](images/geo/point_side_line.03.plt.png "sample image")
+
+
+1. `(c.x - ll.a.x) / (c.y - ll.a.y) = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y)`
+2. `(c.x - ll.a.x) = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (c.y - ll.a.y)`
+3. 
+4. 因为`c.y = p.y`所以
+
+* 如果`c.x < a.x`则说明点在线段的右方
+* 如果`c.x > a.x`则说明点在线段的左方
+
 
 ### 计算旋转的角度
 

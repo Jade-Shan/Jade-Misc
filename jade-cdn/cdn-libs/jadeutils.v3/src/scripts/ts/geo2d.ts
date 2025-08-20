@@ -721,27 +721,37 @@ export namespace Geo2DUtils {
 
 	export function checkPointLineSide(line: ILine2D, p: IPoint2D): number {
 		//console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
-		let diffAngle = 0;
+		let side = 0;
 		let ll = line.b.y < line.a.y ? { a: line.b, b: line.a } : line;
-		let angle = Math.atan2(ll.b.y - ll.a.y, ll.b.x - ll.a.x);
+		let angleAB = Math.atan2(ll.b.y - ll.a.y, ll.b.x - ll.a.x);
 		//console.log(`line angle: ${formatAngleStr(angle)}`);
 		if (ll.a.y < p.y && p.y < ll.b.y) {
-			let ac = Math.atan2(p.y - ll.a.y, p.x - ll.a.x);
+			let angleAP = Math.atan2(p.y - ll.a.y, p.x - ll.a.x);
 			//console.log(`point angle: ${formatAngleStr(ac)}`);
-			diffAngle = angle - ac;
 			//console.log(`diff angle: ${formatAngleStr(diffAngle)}`);
-		} else if (ll.a.y > p.y || p.y > ll.b.y) {
-			let n1 = (ll.b.x - ll.a.x) * (ll.b.y - ll.a.y);
-			let n2 = ll.b.y - ll.a.y;
-			let n3 = n1 / n2;
-			let cx = ll.b.x - n3;
-			let c = { x: cx, y: p.y };
+			side = angleAB - angleAP;
+		} else if (p.y < ll.a.y) {
+			// let n1 = (ll.b.x - ll.a.x) * (ll.b.y - ll.a.y);
+			// let n2 = ll.b.y - ll.a.y;
+			// let n3 = n1 / n2;
+			// let cx = ll.b.x - n3;
+			// let c = { x: cx, y: p.y };
+			// let c = { x: -ll.a.x, y: p.y };
+			// angleAP = Math.atan2(p.y - c.y, p.x - c.x);
 			//
-			let ac = Math.atan2(p.y - c.y, p.x - c.x);
-			diffAngle = angle - ac;
+			// (ll.a.x - c.x) / (ll.a.y - c.y);
+			// (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y);
+			//
+			// (ll.a.x - c.x) = ;
+			// cx = ll.a.x - ((ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (ll.a.y - c.y))
+			let cx = ll.a.x - ((ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (ll.a.y - p.y))
+			side = p.x - cx; 
+		} else if (ll.b.y < p.y) {
+			let cx = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y) * (p.y - ll.a.y) - ll.a.x;
+			side = p.x - cx;
 		}
 		//console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
-		return diffAngle;
+		return side;
 	}
 
 }
