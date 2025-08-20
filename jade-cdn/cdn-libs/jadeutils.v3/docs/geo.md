@@ -42,12 +42,49 @@ Circle2D.getVertexesFrom(x: number, y: number): Array<Point2D>;
 	`Q1:(c.x + r * cos(beta1), c.y + r * sin(beta1))` ， 
 	`Q2:(c.x + r * cos(beta2), c.y + r * sin(beta2))`
 
-### 点到图形的扇面
+### 点到图形的切线
+
+根据一个二维图形`shape`和外部的一点`P`，计算`P`与`shap`的两个切线的点`A`与`B`，再加上以`P`为起点的两条射线`P->A`与`P->B`：
 
 ```javascript
 genVertexRaysFrom(
 	x: number, y: number, shape: GeoShape2D, length?: number
 ): Array<{ vertex: Point2D, ray: Ray2D }>
+```
+
+### 计算点与线段的位置
+
+```javascript
+export function checkPointLineSide(
+	line: ILine2D, p: IPoint2D
+): number;
+```
+
+几种情况分别分析：
+
+假设`A.y < B.y`的情况下，`(P.y < A.y) || (B.y < P.y)`：
+
+![sample-img](images/geo/point_side_line.01.plt.png "sample image")
+
+
+![sample-img](images/geo/point_side_line.02.plt.png "sample image")
+
+### 计算旋转的角度
+
+以点`C`为圆心，计算点`start`旋转到`end`的方向与角度：
+
+* `c`：圆心，
+* `start`：开始
+* `end`：结束
+* 返回：
+	- `start`开始角度，
+	- `end`结束角度，
+	- `diff`旋转的角度
+
+```javascript
+export function revolveRay(
+	c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D
+	): IRevolveOption;
 ```
 
 ![sample-img](images/geo/rote_ray_01.plt.png "sample image")

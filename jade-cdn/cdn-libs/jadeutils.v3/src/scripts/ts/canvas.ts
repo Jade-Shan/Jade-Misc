@@ -184,10 +184,10 @@ export namespace CanvasUtils {
 		start: { vertex: Point2D, ray: Ray2D }, end: { vertex: Point2D, ray: Ray2D }, style?: ICanvasStyle) //
 	{
 		let revole = Geo2DUtils.revolveRay(start.ray.start, start.ray.mid, end.ray.mid);
-		let a1 = Geo2DUtils.formatAngle(revole.start);
-		let a2 = Geo2DUtils.formatAngle(revole.end);
-		let a3 = Geo2DUtils.formatAngle(revole.diff);
-		//		console.log(` 
+		// let a1 = Geo2DUtils.formatAngle(revole.start);
+		// let a2 = Geo2DUtils.formatAngle(revole.end);
+		// let a3 = Geo2DUtils.formatAngle(revole.diff);
+		// console.log(` 
 		//=================================================================================	${(new Date()).getUTCMilliseconds()}
 		//		 c: (${start.ray.start.x},${start.ray.start.y}), radius ${start.ray.length}, 
 		//		 from: ${NumUtil.toFixed(a1.oriAgl, 3)} = ${NumUtil.toFixed(a1.fmtAgl, 3)} = ${NumUtil.toFixed(a1.oriDgr, 2)}° = ${NumUtil.toFixed(a1.fmtDgr, 2)}°

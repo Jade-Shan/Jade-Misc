@@ -232,7 +232,7 @@ export class Ray2D implements GeoPolygon2D, IRay2D {
 	readonly angle: number;  // 角度
 	readonly cAngle: number; // 规范后的角度
 	readonly angleStr: string; //
-	readonly length: number; // start 到 end 的距离
+	readonly length: number; // start 到 mid 的距离
 	private center: Point2D;
 
 	constructor(start: IPoint2D, mid: IPoint2D) {
@@ -573,6 +573,14 @@ export namespace Geo2DUtils {
 		return new Ray2D(start, mid);
 	}
 
+	/**
+	 * 
+	 * @param x 
+	 * @param y 
+	 * @param shape 
+	 * @param length 
+	 * @returns 
+	 */
 	export function genVertexRaysFrom(x: number, y: number, shape: GeoShape2D, length?: number): Array<{ vertex: Point2D, ray: Ray2D }> {
 		let results: Array<{ vertex: Point2D, ray: Ray2D }> = [];
 		let vertexes = shape.getVertexesFrom(x, y);
@@ -679,11 +687,11 @@ export namespace Geo2DUtils {
 			// 跨三个象限
 			if (checkPointLineSide({ a: startPoint, b: endPoint }, c) > 0) {
 				if (d1.y < 0 && d2.y > 0) {
-				// 从三四象限到一二象限
-				diffAngle = diffAngle - PI_DOUBLE;
+					// 从三四象限到一二象限
+					diffAngle = diffAngle - PI_DOUBLE;
 				} else if (d1.y > 0 && d2.y < 0) {
-				// 从一二象限三四象限
-				diffAngle =  diffAngle + PI_DOUBLE;
+					// 从一二象限三四象限
+					diffAngle = diffAngle + PI_DOUBLE;
 				}
 			}
 		} else if (d1.x < 0 && d2.x < 0) {
@@ -693,11 +701,11 @@ export namespace Geo2DUtils {
 				diffAngle = diffAngle - PI_DOUBLE;
 			} else if (d1.y > 0 && d2.y < 0) {
 				// 从第一象限第四象限
-				diffAngle =  diffAngle + PI_DOUBLE;
+				diffAngle = diffAngle + PI_DOUBLE;
 			}
 		}
-		let ca = formatAngle(diffAngle);
-		let side = checkPointLineSide({ a: startPoint, b: endPoint }, c);
+// 		let ca = formatAngle(diffAngle);
+// 		let side = checkPointLineSide({ a: startPoint, b: endPoint }, c);
 //		console.log(`${(new Date()).getUTCMilliseconds()} 
 //=================================================================================	
 //		 side ${NumUtil.toFixed(side, 2)} ` +
@@ -717,12 +725,12 @@ export namespace Geo2DUtils {
 		let ll = line.b.y < line.a.y ? { a: line.b, b: line.a } : line;
 		let angle = Math.atan2(ll.b.y - ll.a.y, ll.b.x - ll.a.x);
 		//console.log(`line angle: ${formatAngleStr(angle)}`);
-		if (ll.a.y < p.y) {
+		if (ll.a.y < p.y && p.y < ll.b.y) {
 			let ac = Math.atan2(p.y - ll.a.y, p.x - ll.a.x);
 			//console.log(`point angle: ${formatAngleStr(ac)}`);
 			diffAngle = angle - ac;
 			//console.log(`diff angle: ${formatAngleStr(diffAngle)}`);
-		} else if (ll.a.y > p.y) {
+		} else if (ll.a.y > p.y || p.y > ll.b.y) {
 			let n1 = (ll.b.x - ll.a.x) * (ll.b.y - ll.a.y);
 			let n2 = ll.b.y - ll.a.y;
 			let n3 = n1 / n2;
@@ -730,7 +738,7 @@ export namespace Geo2DUtils {
 			let c = { x: cx, y: p.y };
 			//
 			let ac = Math.atan2(p.y - c.y, p.x - c.x);
-			diffAngle = angle = ac;
+			diffAngle = angle - ac;
 		}
 		//console.log(`--------------------------------${(new Date()).getMilliseconds()}`)
 		return diffAngle;

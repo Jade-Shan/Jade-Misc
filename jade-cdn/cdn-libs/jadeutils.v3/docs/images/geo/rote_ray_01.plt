@@ -14,14 +14,14 @@ set label 6 at -60,-30 point pt 7 ps 1.5 lc rgb "#F87217"
 set label 7 at -60, 30 point pt 7 ps 1.5 lc rgb "#F87217"
 set label 8 at -30, 60 point pt 7 ps 1.5 lc rgb "#F87217"
 
-set label  9 "A" at  25, 60
-set label 10 "B" at  60, 25 
-set label 11 "A" at  60,-25
-set label 12 "B" at  25,-60
-set label 13 "A" at -25,-60
-set label 14 "B" at -60,-25
-set label 15 "A" at -60, 25
-set label 16 "B" at -25, 60
+set label  9 "start" at  18, 60
+set label 10 "end"   at  60, 25 
+set label 11 "start" at  60,-35
+set label 12 "end"   at  20,-60
+set label 13 "start" at -25,-60
+set label 14 "end"   at -60,-20
+set label 15 "start" at -60, 25
+set label 16 "end"   at -28, 60
 
 set arrow 1 from  30, 60 to  60, 30 nofilled size 8,15,13 lc rgb "#FF0000" lw 1
 set arrow 2 from  60,-30 to  30,-60 nofilled size 8,15,13 lc rgb "#00FF00" lw 1
