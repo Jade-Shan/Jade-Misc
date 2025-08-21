@@ -71,6 +71,13 @@ themes.forEach((theme) => {
 
 gulp.task("process-style-window-ui", gulp.series(
 	() => {
+		return gulp.src(['webroot/themes/window-ui/images/*'], { read: false, allowEmpty: true })
+			.pipe(clean());
+	}, 
+	() => {
+		return gulp.src(['src/themes/window-ui/images/**/*']).pipe(gulp.dest('webroot/themes/window-ui/images/'))
+	},
+	() => {
 		return gulp.src(
 			["webroot/themes/window-ui/styles/**/*.less"], 
 			{read: false, allowEmpty: true}).pipe(clean());
