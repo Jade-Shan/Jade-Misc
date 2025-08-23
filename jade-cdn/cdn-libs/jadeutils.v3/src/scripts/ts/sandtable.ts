@@ -58,3 +58,35 @@ export abstract class Token2D<T extends CanvasShape2D> implements IToken2D {
 	}
 
 }
+
+export interface ISandTable {
+	mapImgUrl: string
+
+}
+export class SandTable implements ISandTable {
+	mapImgUrl: string
+	bufferCanvas: HTMLCanvasElement;
+	finalCanvas : HTMLCanvasElement;
+	bufferCvsCtx: CanvasRenderingContext2D;
+	finalCvsCtx : CanvasRenderingContext2D;
+
+
+	constructor(mapImgUrl: string, bufferCanvas: HTMLCanvasElement, finalCanvas: HTMLCanvasElement) // 
+	{
+		this.mapImgUrl = mapImgUrl;
+		this.bufferCanvas = bufferCanvas;
+		this.finalCanvas  = finalCanvas;
+		this.bufferCvsCtx = bufferCanvas.getContext("2d")!;
+		this.finalCvsCtx  = finalCanvas.getContext("2d")!;
+	}
+
+
+
+
+}
+
+export namespace SandTableUtils {
+
+
+
+}
