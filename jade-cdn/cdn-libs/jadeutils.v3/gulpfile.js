@@ -102,7 +102,7 @@ gulp.task("process-style-trpg", gulp.series(
 			.pipe(clean());
 	}, 
 	() => {
-		return gulp.src(['src/themes/trpg/images/**/*']).pipe(gulp.dest('webroot/themes/window-ui/images/'))
+		return gulp.src(['src/themes/trpg/images/*']).pipe(gulp.dest('webroot/themes/trpg/images/'))
 	},
 ));
 themeTasks.push("process-style-trpg");

@@ -1,5 +1,6 @@
 import { CanvasShape2D, ICanvas2D } from "./canvas";
 import { GeoShape2D, IPoint2D, Point2D } from "./geo2d";
+import { WebUtil } from "./web";
 
 
 export interface IToken2D {
@@ -60,11 +61,10 @@ export abstract class Token2D<T extends CanvasShape2D> implements IToken2D {
 }
 
 export interface ISandTable {
-	mapImgUrl: string
-
+	map: {imageUrl: string, width: number, height: number};
 }
 export class SandTable implements ISandTable {
-	mapImgUrl: string
+	map = {imageUrl: "", width:0, height: 0};
 	bufferCanvas: HTMLCanvasElement;
 	finalCanvas : HTMLCanvasElement;
 	bufferCvsCtx: CanvasRenderingContext2D;
@@ -73,14 +73,26 @@ export class SandTable implements ISandTable {
 
 	constructor(mapImgUrl: string, bufferCanvas: HTMLCanvasElement, finalCanvas: HTMLCanvasElement) // 
 	{
-		this.mapImgUrl = mapImgUrl;
+		this.map.imageUrl = mapImgUrl;
 		this.bufferCanvas = bufferCanvas;
 		this.finalCanvas  = finalCanvas;
 		this.bufferCvsCtx = bufferCanvas.getContext("2d")!;
 		this.finalCvsCtx  = finalCanvas.getContext("2d")!;
 	}
 
-
+	loadSandTableImage() {
+		let image = new Image();
+		let imageUrl = "https://s21.ax1x.com/2024/06/29/pk6vkEF.jpg";
+		// let imageUrl = "https://raw.githubusercontent.com/Jade-Shan/Jade-Dungeon/refs/heads/dev/jade-dungeon-page/src/images/sandtable/map.jpg";
+		let proxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
+		WebUtil.loadImageByProxy(image, imageUrl, proxyUrl);
+		this.map.width  = image.width ;
+		this.map.height = image.height;
+		this.bufferCanvas.setAttribute('width' , `${this.map.width }px`);
+		this.bufferCanvas.setAttribute('height', `${this.map.height}px`);
+		this.bufferCvsCtx.clearRect(0, 0, this.bufferCanvas.width, this.bufferCanvas.height);
+		this.bufferCvsCtx.drawImage(image, 0, 0);
+	}
 
 
 }

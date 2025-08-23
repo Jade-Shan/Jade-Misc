@@ -7,15 +7,22 @@ export namespace TestJadeTRPG {
 
 	class TestCanvasWindow extends UIWindowAdpt {
 
-		canvas: HTMLCanvasElement = document.createElement("canvas");
+		bufferCanvas: HTMLCanvasElement = document.createElement("canvas");
+		finalCanvas : HTMLCanvasElement = document.createElement("canvas");
 
 		constructor(desktop: UIDesktop, id: string, title: string, cfg?: WinParam) {
 			super(desktop, id, title, cfg);
-			this.canvas.id = `canvas-${id}`;
-			this.canvas.width = 1600;
-			this.canvas.height = 600;
-			this.canvas.style.width = `1600px`;
-			this.canvas.style.height = `600px`;
+			this.finalCanvas.id = `canvas-final-${id}`;
+			this.finalCanvas.width = 1600;
+			this.finalCanvas.height = 600;
+			this.finalCanvas.style.width = `1600px`;
+			this.finalCanvas.style.height = `600px`;
+			this.bufferCanvas.id = `canvas-buffer-${id}`;
+			this.bufferCanvas.width = 1600;
+			this.bufferCanvas.height = 600;
+			this.bufferCanvas.style.width = `1600px`;
+			this.bufferCanvas.style.height = `600px`;
+			this.bufferCanvas.style.display = `hidden`;
 		}
 
 		renderIn(): void {
@@ -26,7 +33,7 @@ export namespace TestJadeTRPG {
 				windowBody.style.height = `${this.cfg.body.initSize.height}px`;
 				windowBody.style.overflowX = 'auto';
 				windowBody.style.overflowY = 'auto';
-				windowBody.appendChild(this.canvas);
+				windowBody.appendChild(this.finalCanvas);
 				return windowBody;
 			}
 
@@ -47,24 +54,22 @@ export namespace TestJadeTRPG {
 
 	export let testTrpgUI = () => {
 		//
-		let desktop01 = document.getElementById(`test-desktop-01`);
-		if (desktop01) {
-			let desktop: UIDesktop = new UIDesktop(desktop01, { dockBar: { range: 300, maxScale: 1.8 } });
-			let canvasWin = new TestCanvasWindow(desktop, "test-canvas-01", "Map-001", {
-				icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
-				body: { initSize: { width: 640, height: 480 }, overflow: "scroll" }
-			});
-			canvasWin.renderIn();
-			//
-			let cvsCtx = canvasWin.canvas.getContext("2d");
-			if (cvsCtx) {
-				let canvas = canvasWin.canvas;
-				canvas.addEventListener("mousedown", e => {
-					let rect = canvas.getBoundingClientRect();
-					CanvasUtils.drawPoint(cvsCtx, { x: e.clientX - rect.left, y: e.clientY - rect.top, radius: 3, fillStyle: "lime" });
-				})
-			}
-		}
+		let desktop01 = document.getElementById(`test-desktop-01`)!;
+		let desktop: UIDesktop = new UIDesktop(desktop01, { dockBar: { range: 300, maxScale: 1.8 } });
+		let canvasWin = new TestCanvasWindow(desktop, "test-canvas-01", "Map-001", {
+			icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
+			body: { initSize: { width: 640, height: 480 }, overflow: "scroll" }
+		});
+		canvasWin.renderIn();
+		//
+		let bufferCanvas = canvasWin.bufferCanvas;
+		let finalCanvas  = canvasWin.finalCanvas;
+		let bufferCvsCtx = canvasWin.bufferCanvas.getContext("2d")!;
+		let finalCvsCtx  = canvasWin.finalCanvas .getContext("2d")!;
+		finalCanvas.addEventListener("mousedown", e => {
+			let rect = finalCanvas.getBoundingClientRect();
+			CanvasUtils.drawPoint(finalCvsCtx, { x: e.clientX - rect.left, y: e.clientY - rect.top, radius: 3, fillStyle: "lime" });
+		})
 	}
 
 
