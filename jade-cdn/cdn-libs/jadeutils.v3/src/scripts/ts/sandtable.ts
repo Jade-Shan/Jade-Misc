@@ -1,6 +1,6 @@
-import { CanvasShape2D, ICanvas2D } from "./canvas";
-import { GeoShape2D, IPoint2D, Point2D } from "./geo2d";
-import { WebUtil } from "./web";
+import { CanvasShape2D, ICanvas2D } from "./canvas.js";
+import { GeoShape2D, IPoint2D, Point2D } from "./geo2d.js";
+import { WebUtil } from "./web.js";
 
 
 export interface IToken2D {
@@ -18,8 +18,6 @@ export abstract class Token2D<T extends CanvasShape2D> implements IToken2D {
 	visiable: boolean;
 	blockView: boolean;
 
-	private shape: CanvasShape2D;
-
 	constructor(id: string, pos: IPoint2D, color: string, visiable: boolean, blockView: boolean) {
 		this.id = id;
 		this.pos = pos;
@@ -29,69 +27,57 @@ export abstract class Token2D<T extends CanvasShape2D> implements IToken2D {
 	}
 
 
-	/**
-	 * 图形的中心
-	 */
-	getCenter(): Point2D { return this.shape.getCenter(); }
-
-	/**
-	 * 对于一个外部的点`(x,y)`，返回这个点到图形近的顶占和距离
-	 * 
-	 * @param x 外部点的坐标x
-	 * @param y 外部点的坐标y
-	 * @returns 最近的点`vertex`和距离`distancd`
-	 */
-	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number } {
-		return this.shape.getMostCloseVertex(x, y);
-	}
-
-
-	/**
-	 * 
-	 * 对于一个外部的点`(x,y)`，返回这个点到图形的多个顶点
-	 * 
-	 * @param x 外部点的坐标x
-	 * @param y 外部点的坐标y
-	 * @returns 多个顶点
-	 */
-	getVertexesFrom(x: number, y: number): Array<Point2D> {
-		return this.shape.getVertexesFrom(x, y);
-	}
-
 }
 
 export interface ISandTable {
-	map: {imageUrl: string, width: number, height: number};
+	map: {imageUrl: string, width: number, height: number, shadowColor: string},
 }
 export class SandTable implements ISandTable {
-	map = {imageUrl: "", width:0, height: 0};
+	map = {imageUrl: "", width:0, height: 0, shadowColor: 'rgba(0, 0, 0, 0.7)'};
 	bufferCanvas: HTMLCanvasElement;
 	finalCanvas : HTMLCanvasElement;
 	bufferCvsCtx: CanvasRenderingContext2D;
 	finalCvsCtx : CanvasRenderingContext2D;
 
 
-	constructor(mapImgUrl: string, bufferCanvas: HTMLCanvasElement, finalCanvas: HTMLCanvasElement) // 
+	constructor(mapImgUrl: string, bufferCanvas: HTMLCanvasElement, finalCanvas: HTMLCanvasElement,
+		bufferCvsCtx: CanvasRenderingContext2D, finalCvsCtx : CanvasRenderingContext2D) // 
 	{
 		this.map.imageUrl = mapImgUrl;
 		this.bufferCanvas = bufferCanvas;
-		this.finalCanvas  = finalCanvas;
-		this.bufferCvsCtx = bufferCanvas.getContext("2d")!;
-		this.finalCvsCtx  = finalCanvas.getContext("2d")!;
+		this.finalCanvas  =  finalCanvas;
+		this.bufferCvsCtx = bufferCvsCtx;
+		this.finalCvsCtx  =  finalCvsCtx;
 	}
 
-	loadSandTableImage() {
+	async loadSandTableImage() {
 		let image = new Image();
-		let imageUrl = "https://s21.ax1x.com/2024/06/29/pk6vkEF.jpg";
-		// let imageUrl = "https://raw.githubusercontent.com/Jade-Shan/Jade-Dungeon/refs/heads/dev/jade-dungeon-page/src/images/sandtable/map.jpg";
 		let proxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
-		WebUtil.loadImageByProxy(image, imageUrl, proxyUrl);
+		await WebUtil.loadImageByProxy(image, this.map.imageUrl, proxyUrl).then();
 		this.map.width  = image.width ;
 		this.map.height = image.height;
-		this.bufferCanvas.setAttribute('width' , `${this.map.width }px`);
-		this.bufferCanvas.setAttribute('height', `${this.map.height}px`);
-		this.bufferCvsCtx.clearRect(0, 0, this.bufferCanvas.width, this.bufferCanvas.height);
+		// this.bufferCanvas.setAttribute('width' , `${this.map.width }px`);
+		// this.bufferCanvas.setAttribute('height', `${this.map.height}px`);
+		this.bufferCanvas.width  = this.map.width ;
+		this.bufferCanvas.height = this.map.height;
+		this.bufferCanvas.style.width  = `${this.map.width }px`;
+		this.bufferCanvas.style.height = `${this.map.height}px`;
+		this.bufferCvsCtx.clearRect(0, 0, this.map.width, this.map.height);
 		this.bufferCvsCtx.drawImage(image, 0, 0);
+		this.bufferCvsCtx.fillStyle = this.map.shadowColor;
+		this.bufferCvsCtx.fillRect(0, 0, this.map.width, this.map.height);
+		let darkMap = new Image();
+		darkMap.crossOrigin = 'Anonymous';
+		await WebUtil.loadImageByProxy(darkMap, this.bufferCanvas.toDataURL('image/png', 1), proxyUrl);
+		// 
+		// this.finalCanvas.setAttribute('width' , `${this.map.width }px`);
+		// this.finalCanvas.setAttribute('height', `${this.map.height}px`);
+		this.finalCanvas.width  = this.map.width ;
+		this.finalCanvas.height = this.map.height;
+		this.finalCanvas.style.width  = `${this.map.width }px`;
+		this.finalCanvas.style.height = `${this.map.height}px`;
+		this.finalCvsCtx.clearRect(0, 0, this.map.width, this.map.height);
+		this.finalCvsCtx.drawImage(image, 0, 0);
 	}
 
 

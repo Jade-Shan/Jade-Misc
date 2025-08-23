@@ -1,5 +1,6 @@
 import { CanvasCircle2D, CanvasRectangle2D, CanvasUtils } from "./canvas.js";
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
+import { SandTable } from "./sandtable.js";
 import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWindow.js";
 
 export namespace TestJadeTRPG {
@@ -52,7 +53,7 @@ export namespace TestJadeTRPG {
 
 	}
 
-	export let testTrpgUI = () => {
+	export let testTrpgUI = async () => {
 		//
 		let desktop01 = document.getElementById(`test-desktop-01`)!;
 		let desktop: UIDesktop = new UIDesktop(desktop01, { dockBar: { range: 300, maxScale: 1.8 } });
@@ -66,6 +67,10 @@ export namespace TestJadeTRPG {
 		let finalCanvas  = canvasWin.finalCanvas;
 		let bufferCvsCtx = canvasWin.bufferCanvas.getContext("2d")!;
 		let finalCvsCtx  = canvasWin.finalCanvas .getContext("2d")!;
+		let sandTable = new SandTable("https://s21.ax1x.com/2024/06/29/pk6vkEF.jpg", //
+			bufferCanvas, finalCanvas, bufferCvsCtx, finalCvsCtx);
+		// console.log(sandTable);
+		await sandTable.loadSandTableImage();
 		finalCanvas.addEventListener("mousedown", e => {
 			let rect = finalCanvas.getBoundingClientRect();
 			CanvasUtils.drawPoint(finalCvsCtx, { x: e.clientX - rect.left, y: e.clientY - rect.top, radius: 3, fillStyle: "lime" });
