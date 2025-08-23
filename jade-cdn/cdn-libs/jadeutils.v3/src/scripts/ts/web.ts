@@ -127,8 +127,9 @@ export class WebUtil {
 		return await doHttp<T, R>(req, hdl).then(resp => resp).catch(resp => resp);
 	}
 
-	static async loadImageByProxy(imageElem: HTMLImageElement, imageUrl: string, proxyUrl: string): Promise<void> {
-		if (imageUrl.indexOf('http') == 0) {
+	static async loadImageByProxy(imageElem: HTMLImageElement, oriImageUrl: string, proxyUrl?: string): Promise<void> {
+		let imageUrl = oriImageUrl;
+		if (proxyUrl && imageUrl.indexOf('http') == 0) {
 			let encodeSrc = encodeURIComponent(imageUrl);
 			imageUrl = proxyUrl + encodeSrc;
 		}

@@ -50,34 +50,32 @@ export class SandTable implements ISandTable {
 		this.finalCvsCtx  =  finalCvsCtx;
 	}
 
-	async loadSandTableImage() {
-		let image = new Image();
-		let proxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
-		await WebUtil.loadImageByProxy(image, this.map.imageUrl, proxyUrl).then();
-		this.map.width  = image.width ;
-		this.map.height = image.height;
-		// this.bufferCanvas.setAttribute('width' , `${this.map.width }px`);
-		// this.bufferCanvas.setAttribute('height', `${this.map.height}px`);
+	async loadSandTableImage(proxyUrl?: string) {
+		// 加载地图
+		let brightMap = new Image();
+		await WebUtil.loadImageByProxy(brightMap, this.map.imageUrl, proxyUrl).then();
+		this.map.width  = brightMap.width ;
+		this.map.height = brightMap.height;
 		this.bufferCanvas.width  = this.map.width ;
 		this.bufferCanvas.height = this.map.height;
 		this.bufferCanvas.style.width  = `${this.map.width }px`;
 		this.bufferCanvas.style.height = `${this.map.height}px`;
 		this.bufferCvsCtx.clearRect(0, 0, this.map.width, this.map.height);
-		this.bufferCvsCtx.drawImage(image, 0, 0);
+		this.bufferCvsCtx.drawImage(brightMap, 0, 0);
+		// 加上一层战争迷雾
 		this.bufferCvsCtx.fillStyle = this.map.shadowColor;
 		this.bufferCvsCtx.fillRect(0, 0, this.map.width, this.map.height);
+		// 读取被遮盖的图片
 		let darkMap = new Image();
 		darkMap.crossOrigin = 'Anonymous';
 		await WebUtil.loadImageByProxy(darkMap, this.bufferCanvas.toDataURL('image/png', 1), proxyUrl);
-		// 
-		// this.finalCanvas.setAttribute('width' , `${this.map.width }px`);
-		// this.finalCanvas.setAttribute('height', `${this.map.height}px`);
+		// 显示到展示的画布上
 		this.finalCanvas.width  = this.map.width ;
 		this.finalCanvas.height = this.map.height;
 		this.finalCanvas.style.width  = `${this.map.width }px`;
 		this.finalCanvas.style.height = `${this.map.height}px`;
 		this.finalCvsCtx.clearRect(0, 0, this.map.width, this.map.height);
-		this.finalCvsCtx.drawImage(image, 0, 0);
+		this.finalCvsCtx.drawImage(darkMap, 0, 0);
 	}
 
 
