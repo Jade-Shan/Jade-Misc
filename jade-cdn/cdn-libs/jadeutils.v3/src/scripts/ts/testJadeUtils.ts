@@ -1,6 +1,6 @@
 import { NumUtil, StrUtil, TimeUtil } from './basic.js';
 import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
-import { WebUtil } from './web.js';
+import { HttpRequest, HttpResponse, WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 import { CanvasCircle2D, CanvasLine2D, CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
@@ -173,12 +173,102 @@ class TestDataStructure {
 
 }
 
+
+interface UserInfoResp {
+	status: string;
+	user: {
+		userName: string;
+		avatar: string;
+		desc: string;
+		joinTime: string;
+		group: string;
+		homePageUrl: string;
+	}
+};
+
 class TestWebUtil {
 
 	static testHtml() {
 		WebUtil.initCustomElements();
 
 		testFunc("Basic YWFhOmJiYg==" === WebUtil.webAuthBasic("aaa", "bbb"), (msg, sty, mk) => { console.log(msg, "WebUtil.webAuthBasic()", sty, mk); });
+	}
+
+	static async testHttpRequest() {
+		//
+		let userInfoResp: HttpResponse<UserInfoResp> = await WebUtil.requestHttp<string, UserInfoResp>({
+			method: "GET", url: `http://www.jade-dungeon.cn:8088/api/blog/loadUserById?userId=guest`
+		}, {
+			onLoad: (evt, xhr, req) => {
+				// console.log(xhr.response);
+				let userInfo = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+				return { statusCode: xhr.status, statusMsg: xhr.statusText, body: userInfo };
+			},
+		});
+		console.log(userInfoResp);
+
+		//
+		let defaultImgData = 'data:image/jpeg;base64,' +
+			'/9j/4AAQSkZJRgABAQEASABIAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc' +
+			'4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2' +
+			'NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAyADIDAREAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAAQCAwUB/' +
+			'8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAB3CoiXnTp0iZJYIEjcLSIuXFIuaJ0gJmeMjY0BEQECRpD' +
+			'YHCozRkaLQAAAAA//8QAIBAAAgICAgIDAAAAAAAAAAAAAgMAARESBBATIBQhMP/aAAgBAQABBQKGwAi3AyZmfR1IAkD' +
+			'HCZkKjqLvI9MELlQ6BsXxAGVWOrlrzd/J20bAbt6ctRtAuIeF02lrr67YOw+F1ylFUEcfl//EABQRAQAAAAAAAAAAAA' +
+			'AAAAAAAFD/2gAIAQMBAT8BR//EABQRAQAAAAAAAAAAAAAAAAAAAFD/2gAIAQIBAT8BR//EACQQAAEDBAEDBQAAAAAAA' +
+			'AAAAAEAAhEDEiAiECEwMUFRYYGR/9oACAEBAAY/Als6FqcpqeSpZ4UvdaFNKvchzvwWOxvLoPp8LV4V9RwuHtiAwrVo' +
+			'/VFX6x6GFtVMKJ7f/8QAIBABAAICAgIDAQAAAAAAAAAAAQARITEQUSBhMEFxgf/aAAgBAQABPyGC4osc9SptOF85yP8' +
+			'ASELu9k31VCyrxGy4jnfIIAfXcAGNQyg+onen6RgCjhULGfDIZt33e4VBGkgsKp8AeFORdwu77HHl1DswgUeCsWO4ur' +
+			'8SAGQ+Mf/aAAwDAQACAAMAAAAQkkkgEEEEgAgEEggEAkEEEAAAn//EABQRAQAAAAAAAAAAAAAAAAAAAFD/2gAIAQMBA' +
+			'T8QR//EABQRAQAAAAAAAAAAAAAAAAAAAFD/2gAIAQIBAT8QR//EACEQAQACAgICAgMAAAAAAAAAAAEAESFBEDFRYSCh' +
+			'gZHR/9oACAEBAAE/EOiWr1a5jXtWKigBL1b3C3SMLcvLT9o/kF1zF1M2HJKCGADILfUUMUZrzwwkAuFtAQABgh1KF27' +
+			'PcBERbSP3AAUHFCFoRshUeovIE8dfhE5nBas2LuI2cBxLiWTKBWkBOoiFCP3KJmwGUyDua4I8TSNM9uhtMRg2r2yick' +
+			'18N8f/2Q==';
+		//
+		let apiRoot = "http://www.jade-dungeon.cn:8088/api/sandtable/";
+		let imgUrl = "https://s21.ax1x.com/2024/06/29/pk6vkEF.jpg";
+		let imageElem =  document.getElementById("imageProxyTest") as HTMLImageElement;
+		if (imageElem) {
+			if (imgUrl.indexOf('http') == 0) {
+				let encodeSrc = encodeURIComponent(imgUrl);
+				imgUrl = apiRoot + 'parseImage?src=' + encodeSrc;
+			}
+			let pm = new Promise((
+				resolve: (imageElem: HTMLImageElement, imgUrl: string) => void,
+				reject : (imageElem: HTMLImageElement, imgUrl: string) => void//
+			) => {
+				imageElem.src = imgUrl;
+				imageElem.crossOrigin = 'Anonymous';
+				// image.crossorigin='anonymous';
+				// image.crossOrigin = "anonymous";
+				// image.setAttribute('crossOrigin', 'anonymous');
+				// image.setAttribute('crossorigin', 'anonymous');
+				imageElem.onload  = () => { resolve(imageElem, imgUrl); };
+				imageElem.onabort = () => {  reject(imageElem, imgUrl); };
+				imageElem.onerror = () => {  reject(imageElem, imgUrl); };
+			});
+			await pm.then((imageElem) => { imageElem; }).catch((imageElem) => {
+				imageElem.src = defaultImgData;
+				imageElem.crossOrigin = 'Anonymous';
+			});
+		}
+
+
+		// let encodeSrc = encodeURIComponent("https://s21.ax1x.com/2024/06/29/pk6vkEF.jpg");
+		// //
+		// let tktkt: HttpResponse<any> = await WebUtil.requestHttp<any, any>({
+		// 	method: "GET", url: `http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=${encodeSrc}`
+		// }, {
+		// 	onLoad: (evt, xhr, req) => {
+		// 		//
+		// 		// 
+		// 		// console.log(xhr.response);
+		// 		let userInfo = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+		// 		return { statusCode: xhr.status, statusMsg: xhr.statusText, body: userInfo };
+		// 	}
+		// });
+		// console.log(tktkt);
+
 	}
 
 }
@@ -839,6 +929,8 @@ export class TestJadeUtils {
 		TestDataStructure.testSimpleQueue();
 		// 
 		TestWebUtil.testHtml();
+		//
+		TestWebUtil.testHttpRequest();
 		//
 		TestWebHtmlPage.testJquery();
 	}

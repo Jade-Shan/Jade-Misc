@@ -91,6 +91,22 @@ gulp.task("process-style-window-ui", gulp.series(
  				.pipe(gulp.dest("webroot/themes/window-ui/styles/"))
 	},
 ));
+themeTasks.push("process-style-window-ui");
+
+// =======================
+// css for TRPG
+// =======================
+gulp.task("process-style-trpg", gulp.series(
+	() => {
+		return gulp.src(['webroot/themes/trpg/images/*'], { read: false, allowEmpty: true })
+			.pipe(clean());
+	}, 
+	() => {
+		return gulp.src(['src/themes/trpg/images/**/*']).pipe(gulp.dest('webroot/themes/window-ui/images/'))
+	},
+));
+themeTasks.push("process-style-trpg");
+
 
 // =======================
 // javascript
