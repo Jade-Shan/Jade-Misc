@@ -69,7 +69,7 @@ export namespace TestJadeTRPG {
 		let finalCvsCtx  = canvasWin.finalCanvas .getContext("2d")!;
 		let mapUrl = "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/map.jpg";
 		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
-		let sandTable = new SandTable({ //
+		let sandTable = new SandTable({ visibility: "default", //
 			map: { imageUrl: mapUrl, width: 0, height: 0, shadowStyle: 'rgba(0, 0, 0, 0.7)' },
 			frame: { 
 				buff: {cvs: bufferCanvas, ctx: bufferCvsCtx},
