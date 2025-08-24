@@ -212,7 +212,7 @@ class TestWebUtil {
 		let imageUrl = "https://s21.ax1x.com/2024/06/29/pk6vkEF.jpg";
 		// let imageUrl = "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/map.jpg";
 		let proxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
-		await WebUtil.loadImageByProxy(imageElem, imageUrl, proxyUrl);
+		await WebUtil.loadImageByProxy(imageElem, imageUrl, {proxyUrl: proxyUrl});
 	}
 
 }

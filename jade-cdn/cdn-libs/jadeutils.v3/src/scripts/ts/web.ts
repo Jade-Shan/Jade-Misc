@@ -113,6 +113,11 @@ let defaultImgData = 'data:image/jpeg;base64,' +
 	'PcBERbSP3AAUHFCFoRshUeovIE8dfhE5nBas2LuI2cBxLiWTKBWkBOoiFCP3KJmwGUyDua4I8TSNM9uhtMRg2r2yick' +
 	'18N8f/2Q==';
 
+export interface ImageProxyConfig {
+	proxyUrl?: string, 
+	proxyFunc?: (url: string) => string 
+};
+
 export class WebUtil {
 
 	/**
@@ -127,25 +132,30 @@ export class WebUtil {
 		return await doHttp<T, R>(req, hdl).then(resp => resp).catch(resp => resp);
 	}
 
-	static async loadImageByProxy(imageElem: HTMLImageElement, oriImageUrl: string, proxyUrl?: string): Promise<void> {
-		let imageUrl = oriImageUrl;
-		if (proxyUrl && imageUrl.indexOf('http') == 0) {
-			let encodeSrc = encodeURIComponent(imageUrl);
-			imageUrl = proxyUrl + encodeSrc;
-		}
+	static async loadImageByProxy(imageElem: HTMLImageElement, oriImageUrl: string, //
+		cfg?: ImageProxyConfig): Promise<void> // 
+	{
+		let proxyFunc = cfg?.proxyFunc ? cfg.proxyFunc : (url: string) => {
+			let newUrl = url;
+			if (cfg?.proxyUrl && url.indexOf('http') == 0) {
+				newUrl = cfg.proxyUrl + encodeURIComponent(url);
+			}
+			return newUrl;
+		};
+		let imageUrl = proxyFunc(oriImageUrl);
 		let pm = new Promise((
-			resolve: (imageElem: HTMLImageElement, imageUrl: string) => void,
-			 reject: (imageElem: HTMLImageElement, imageUrl: string) => void//
+			resolve: (param: {elem: HTMLImageElement, url: string}) => void,
+			 reject: (param: {elem: HTMLImageElement, url: string}) => void//
 		) => {
 			imageElem.src = imageUrl;
 			imageElem.crossOrigin = 'Anonymous';
-			imageElem.onload = () => { resolve(imageElem, imageUrl); };
-			imageElem.onabort = () => { reject(imageElem, imageUrl); };
-			imageElem.onerror = () => { reject(imageElem, imageUrl); };
+			imageElem.onload  = () => { resolve({elem: imageElem, url: imageUrl}); };
+			imageElem.onabort = () => {  reject({elem: imageElem, url: imageUrl}); };
+			imageElem.onerror = () => {  reject({elem: imageElem, url: imageUrl}); };
 		});
-		await pm.then((imageElem) => { imageElem; }).catch((imageElem) => {
-			imageElem.src = defaultImgData;
-			imageElem.crossOrigin = 'Anonymous';
+		await pm.then((param) => { param.elem; }).catch((param) => {
+			param.elem.src = defaultImgData;
+			param.elem.crossOrigin = 'Anonymous';
 		});
 	}
 

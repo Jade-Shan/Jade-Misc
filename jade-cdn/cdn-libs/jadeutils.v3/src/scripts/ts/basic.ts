@@ -435,7 +435,7 @@ export class TimeUtil {
 	static readonly UNIT_DAY: number = 1000 * 60 * 60 * 24;
 
 	static async sleep(milSecs: number): Promise<any> {
-		return new Promise((resolve) => {setTimeout(() => { /* do nothing */}, milSecs);})
+		return new Promise((resolve: (parm: any) => void) => {setTimeout(() => { resolve(null);/* do nothing */}, milSecs);})
 	}
 
 	/**
