@@ -67,12 +67,13 @@ export namespace TestJadeTRPG {
 		let finalCanvas  = canvasWin.finalCanvas;
 		let bufferCvsCtx = canvasWin.bufferCanvas.getContext("2d")!;
 		let finalCvsCtx  = canvasWin.finalCanvas .getContext("2d")!;
-		let sandTable = new SandTable("http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/map.jpg", //
-			bufferCanvas, finalCanvas, bufferCvsCtx, finalCvsCtx);
-		// console.log(sandTable);
+		let mapUrl = "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/map.jpg";
+		let sandTable = new SandTable({ //
+			map: { imageUrl: mapUrl, width: 0, height: 0, shadowColor: 'rgba(0, 0, 0, 0.7)' },
+			elem: { bufferCvs: bufferCanvas, finalCvs: finalCanvas, bufferCtx: bufferCvsCtx, finalCtx: finalCvsCtx }
+		});
 
-		// await sandTable.loadSandTableImage("http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=");
-		await sandTable.loadSandTableImage();
+		await sandTable.loadSandTableImage("http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=");
 		finalCanvas.addEventListener("mousedown", e => {
 			let rect = finalCanvas.getBoundingClientRect();
 			CanvasUtils.drawPoint(finalCvsCtx, { x: e.clientX - rect.left, y: e.clientY - rect.top, radius: 3, fillStyle: "lime" });
