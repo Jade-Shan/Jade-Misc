@@ -160,8 +160,6 @@ export namespace SandTableUtils {
 	{
 		let width  = oriMap.width ;
 		let height = oriMap.height;
-		frame.cvs.style.width  = `${width }px`;
-		frame.cvs.style.height = `${height}px`;
 		frame.ctx.clearRect(0, 0, width, height);
 		frame.ctx.drawImage(oriMap, 0, 0, width, height, 0, 0, width, height);
 		// 加上一层战争迷雾
@@ -182,8 +180,6 @@ export namespace SandTableUtils {
 	{
 		let width  = oriMap.width ;
 		let height = oriMap.height;
-		frame.cvs.style.width  = `${width }px`;
-		frame.cvs.style.height = `${height}px`;
 		frame.ctx.clearRect(0, 0, width, height);
 		frame.ctx.drawImage(oriMap, 0, 0, width, height, 0, 0, width, height);
 
@@ -223,16 +219,22 @@ export namespace SandTableUtils {
 	 * @param oriMap 图片
 	 */
 	export let drawSceneWithUserView = async (scene: IScene, oriMap: HTMLImageElement, observer: IObserver): Promise<void> => {
+		//
+		scene.frame.buff.cvs.width  = scene.map.width ;
+		scene.frame.buff.cvs.height = scene.map.height;
+		scene.frame.buff.cvs.style.width  = `${scene.map.width }px`;
+		scene.frame.buff.cvs.style.height = `${scene.map.height}px`;
+		scene.frame.show.cvs.width  = scene.map.width ;
+		scene.frame.show.cvs.height = scene.map.height;
+		scene.frame.show.cvs.style.width  = `${scene.map.width }px`;
+		scene.frame.show.cvs.style.height = `${scene.map.height}px`;
+		// 
 		let darkMapImage = await drawDarkScene(scene.frame.buff, oriMap, scene.map.shadowStyle); 
 		let brightMapImage = await drawBrightScene(scene.frame.buff, oriMap, async (frame) => { //
 			await TimeUtil.sleep(1000); 
 		});
 		let viewMapImage = await drawScopeOfVisionOnDarkMap(scene.frame.buff, darkMapImage, brightMapImage, observer, scene.visibility);
 		// 显示到展示的画布上
-		scene.frame.show.cvs.width  = scene.map.width ;
-		scene.frame.show.cvs.height = scene.map.height;
-		scene.frame.show.cvs.style.width  = `${scene.map.width }px`;
-		scene.frame.show.cvs.style.height = `${scene.map.height}px`;
 		scene.frame.show.ctx.clearRect(0, 0, scene.map.width, scene.map.height);
 		scene.frame.show.ctx.drawImage(viewMapImage, 0, 0, scene.map.width, scene.map.height, 0, 0, scene.map.width, scene.map.height);
 	}

@@ -34,8 +34,8 @@ export namespace TestJadeTRPG {
 				windowBody.style.overflow = this.cfg.body.overflow;
 				windowBody.style.width = `${this.cfg.body.initSize.width}px`;
 				windowBody.style.height = `${this.cfg.body.initSize.height}px`;
-				windowBody.style.overflowX = 'auto';
-				windowBody.style.overflowY = 'auto';
+				windowBody.style.overflowX = 'scroll';
+				windowBody.style.overflowY = 'scroll';
 				windowBody.appendChild(this.finalCanvas);
 				return windowBody;
 			}
