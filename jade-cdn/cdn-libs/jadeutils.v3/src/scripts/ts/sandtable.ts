@@ -1,38 +1,122 @@
 import { TimeUtil } from "./basic.js";
-import { CanvasShape2D, ICanvas2D } from "./canvas.js";
-import { GeoShape2D, IPoint2D, Point2D } from "./geo2d.js";
+import { CanvasCircle2D, CanvasShape2D, ICanvas2D } from "./canvas.js";
+import { Geo2DUtils, GeoShape2D, IPoint2D, Point2D } from "./geo2d.js";
 import { ImageProxyConfig, WebUtil } from "./web.js";
 
-type VisibilityType = "default" | "glimmer" | "dark";
+export type VisibilityType = "default" | "glimmer" | "dark";
 
 export interface IObserver {
 	pos: IPoint2D,
 	viewRange: (type: VisibilityType) => number
 }
-export interface IToken2D {
-	id: string, 
-	pos: IPoint2D,
+export interface IToken2D extends CanvasShape2D {
+	id: string,
 	color: string,
 	visiable: boolean,
 	blockView: boolean
+
+	toRecord(): ITokenRec;
 }
 
-export abstract class Token2D<T extends CanvasShape2D> implements IToken2D {
-	id: string; 
-	pos: IPoint2D;
-	color: string;
-	visiable: boolean;
-	blockView: boolean;
+/**
+ * 从图片中截取一部分
+ */
+export interface ImageClip {
+	imgKey: string, // 对应的图片ID
+	sx: number,     // 左上角X
+	sy: number,     // 左上角Y
+	width: number,  // 宽度
+	height: number, // 高度
+	imageElem?: HTMLImageElement;
+}
 
-	constructor(id: string, pos: IPoint2D, color: string, visiable: boolean, blockView: boolean) {
+export interface ITokenRec {
+	type: "Circle" | "Rectangle" | "Line",
+	id: string,
+	x: number,
+	y: number,
+	visiable: boolean,
+	blockView: boolean,
+	color: string,
+	img: ImageClip,
+}
+
+export interface ICircleTokenRec extends ITokenRec {
+	type: "Circle",
+	radius: number,
+}
+
+export class CircleToken extends CanvasCircle2D implements IToken2D {
+	id: string = "";
+	color: string;
+	visiable: boolean = true;
+	blockView: boolean = true;
+	imgClip: ImageClip;
+
+	constructor(id: string, x: number, y: number, radius: number, //
+		lineWidth: number, strokeStyle: string, fillStyle: string, //
+		visiable: boolean, blockView: boolean, color: string, image: ImageClip) //
+	{
+		super(x, y, radius, lineWidth, strokeStyle, fillStyle);
 		this.id = id;
-		this.pos = pos;
-		this.color = color;
 		this.visiable = visiable;
 		this.blockView = blockView;
+		this.color = color;
+		this.imgClip = image;
+	}
+
+	toRecord(): ICircleTokenRec {
+		return { "type": "Circle", "id": this.id, "x": this.c.x, "y": this.c.y, "radius": this.radius, // 
+			"visiable": this.visiable, "blockView": this.blockView, "color": this.strokeStyle, "img": this.imgClip };
+	}
+
+	static fromRecord(rec: ICircleTokenRec): CircleToken {
+		return new CircleToken(rec.id, rec.x, rec.y, rec.radius, 0, rec.color, rec.color, // 
+			rec.visiable, rec.blockView, rec.color, rec.img);
+	}
+
+	draw(cvsCtx: CanvasRenderingContext2D): void {
+		cvsCtx.save();
+		cvsCtx.lineWidth = 0;
+		cvsCtx.strokeStyle = this.color;
+		// draw a circle
+		cvsCtx.beginPath();
+		cvsCtx.arc(this.c.x, this.c.y, this.radius, 0, Geo2DUtils.PI_DOUBLE, true);
+		cvsCtx.fillStyle = this.color;
+		cvsCtx.fill();
+		cvsCtx.stroke();
+		// clip Image
+		cvsCtx.beginPath();
+		cvsCtx.arc(this.c.x, this.c.y, this.radius - 3, 0, Geo2DUtils.PI_DOUBLE, true);
+		cvsCtx.stroke();
+		cvsCtx.clip();
+		if (this.imgClip && this.imgClip.imageElem) {
+			let dx = this.c.x - this.radius;
+			let dy = this.c.y - this.radius;
+			let dwidth  = this.radius * 2;
+			let dheight = dwidth;
+			cvsCtx.drawImage(this.imgClip.imageElem, this.imgClip.sx, this.imgClip.sy, 
+				this.imgClip.width, this.imgClip.height, dx, dy, dwidth, dheight);
+		}
+		cvsCtx.restore();
 	}
 
 }
+
+
+export interface IRectangleTokenRec extends ITokenRec {
+	type: "Rectangle",
+	width: number,
+	height: number,
+}
+
+
+export interface ILineTokenRec extends ITokenRec {
+	type: "Line",
+	x2: number,
+	y2: number,
+}
+
 
 export interface ICanvasFrame {
 		cvs: HTMLCanvasElement,
@@ -57,13 +141,13 @@ export class SandTable implements ISandTable {
 		this.scene = scene;
 	}
 
-	async loadSandTableImage(proxyCfg?: ImageProxyConfig) {
+	async drawSceneWithUserView(proxyCfg?: ImageProxyConfig) {
 		// 加载地图
 		let oriMap = new Image();
 		await WebUtil.loadImageByProxy(oriMap, this.scene.map.imageUrl, proxyCfg);
 		this.scene.map.width  = oriMap.width ;
 		this.scene.map.height = oriMap.height;
-		await SandTableUtils.loadSceneMap(this.scene, oriMap, this.observer);
+		await SandTableUtils.drawSceneWithUserView(this.scene, oriMap, this.observer);
 	}
 
 
@@ -79,7 +163,7 @@ export namespace SandTableUtils {
 		frame.cvs.style.width  = `${width }px`;
 		frame.cvs.style.height = `${height}px`;
 		frame.ctx.clearRect(0, 0, width, height);
-		frame.ctx.drawImage(oriMap, 0, 0);
+		frame.ctx.drawImage(oriMap, 0, 0, width, height, 0, 0, width, height);
 		// 加上一层战争迷雾
 		frame.ctx.fillStyle = shadowStyle
 		frame.ctx.fillRect(0, 0, width, height);
@@ -101,7 +185,7 @@ export namespace SandTableUtils {
 		frame.cvs.style.width  = `${width }px`;
 		frame.cvs.style.height = `${height}px`;
 		frame.ctx.clearRect(0, 0, width, height);
-		frame.ctx.drawImage(oriMap, 0, 0);
+		frame.ctx.drawImage(oriMap, 0, 0, width, height, 0, 0, width, height);
 
 		// TODO: add other things
 		await drawItems(frame);
@@ -117,12 +201,14 @@ export namespace SandTableUtils {
 		darkMapImage: HTMLImageElement, brightMapImage: HTMLImageElement, //
 		observer: IObserver, visiable: VisibilityType //
 	): Promise<HTMLImageElement> => {
-		frame.ctx.drawImage(darkMapImage, 0, 0);
+		let width  = darkMapImage.width ;
+		let height = darkMapImage.height;
+		frame.ctx.drawImage(darkMapImage, 0, 0, width, height, 0, 0, width, height);
 		frame.ctx.save();
 		frame.ctx.beginPath();
 		frame.ctx.arc(observer.pos.x, observer.pos.y, observer.viewRange(visiable), 0, Math.PI * 2);
 		frame.ctx.clip();
-		frame.ctx.drawImage(brightMapImage, 0, 0);
+		frame.ctx.drawImage(brightMapImage, 0, 0, width, height, 0, 0, width, height);
 		frame.ctx.restore();	
 		let viewMapData = frame.cvs.toDataURL('image/png', 1);
 		let viewMapImage = new Image();
@@ -136,7 +222,7 @@ export namespace SandTableUtils {
 	 * @param scene 场景
 	 * @param oriMap 图片
 	 */
-	export let loadSceneMap = async (scene: IScene, oriMap: HTMLImageElement, observer: IObserver): Promise<void> => {
+	export let drawSceneWithUserView = async (scene: IScene, oriMap: HTMLImageElement, observer: IObserver): Promise<void> => {
 		let darkMapImage = await drawDarkScene(scene.frame.buff, oriMap, scene.map.shadowStyle); 
 		let brightMapImage = await drawBrightScene(scene.frame.buff, oriMap, async (frame) => { //
 			await TimeUtil.sleep(1000); 
@@ -148,8 +234,7 @@ export namespace SandTableUtils {
 		scene.frame.show.cvs.style.width  = `${scene.map.width }px`;
 		scene.frame.show.cvs.style.height = `${scene.map.height}px`;
 		scene.frame.show.ctx.clearRect(0, 0, scene.map.width, scene.map.height);
-		// scene.frame.show.ctx.drawImage(brightMapImage, 0, 0);
-		scene.frame.show.ctx.drawImage(viewMapImage, 0, 0);
+		scene.frame.show.ctx.drawImage(viewMapImage, 0, 0, scene.map.width, scene.map.height, 0, 0, scene.map.width, scene.map.height);
 	}
 
 
