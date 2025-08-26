@@ -5,17 +5,13 @@ import { ImageProxyConfig, WebUtil } from "./web.js";
 
 export type VisibilityType = "default" | "glimmer" | "dark";
 
-export interface IObserver {
-	pos: IPoint2D,
-	viewRange: (type: VisibilityType) => number
-}
-export interface IToken2D extends CanvasShape2D {
+/* ======================
+ * 序列化的记录
+ * ======================= */
+export interface ImageResource {
+	type: "Image" | "Other",
 	id: string,
-	color: string,
-	visiable: boolean,
-	blockView: boolean
-
-	toRecord(): ITokenRec;
+	url: string,
 }
 
 /**
@@ -38,12 +34,58 @@ export interface ITokenRec {
 	visiable: boolean,
 	blockView: boolean,
 	color: string,
-	img: ImageClip,
 }
 
 export interface ICircleTokenRec extends ITokenRec {
 	type: "Circle",
 	radius: number,
+	img: ImageClip,
+}
+
+export interface IRectangleTokenRec extends ITokenRec {
+	type: "Rectangle",
+	width: number,
+	height: number,
+	img: ImageClip,
+}
+
+export interface ILineTokenRec extends ITokenRec {
+	type: "Line",
+	x2: number,
+	y2: number,
+}
+
+export interface ScenceData {
+	username: string,
+	loginToken: string,
+	imgResources: Array<ImageResource>,
+	mapDatas: {
+		teams: Array<ICircleTokenRec>,
+		creaters: Array<ICircleTokenRec>,
+		furnishings: Array<IRectangleTokenRec>,
+		doors: Array<IRectangleTokenRec>,
+		walls: Array<ILineTokenRec>,
+	}
+}
+
+
+
+
+
+
+
+
+export interface IObserver {
+	pos: IPoint2D,
+	viewRange: (type: VisibilityType) => number
+}
+export interface IToken2D extends CanvasShape2D {
+	id: string,
+	color: string,
+	visiable: boolean,
+	blockView: boolean
+
+	toRecord(): ITokenRec;
 }
 
 export class CircleToken extends CanvasCircle2D implements IToken2D {
