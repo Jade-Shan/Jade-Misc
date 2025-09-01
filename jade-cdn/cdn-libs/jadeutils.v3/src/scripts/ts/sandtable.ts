@@ -55,7 +55,7 @@ export interface ILineTokenRec extends ITokenRec {
 	y2: number,
 }
 
-export interface ScenceData {
+export interface ScenceDataResp {
 	username: string,
 	loginToken: string,
 	imgResources: Array<ImageResource>,
@@ -76,7 +76,7 @@ export interface ScenceData {
 
 
 export interface IObserver {
-	pos: IPoint2D,
+	c: IPoint2D,
 	viewRange: (type: VisibilityType) => number
 }
 export interface IToken2D extends CanvasShape2D {
@@ -145,6 +145,12 @@ export class CircleToken extends CanvasCircle2D implements IToken2D {
 
 }
 
+export class ObserverToken extends CircleToken implements IObserver {
+	pos: IPoint2D;
+	viewRange: (type: VisibilityType) => number;
+
+}
+
 
 export interface IRectangleTokenRec extends ITokenRec {
 	type: "Rectangle",
@@ -174,7 +180,7 @@ export interface ISandTable {
 export class SandTable implements ISandTable {
 	scene: IScene;
 	observer: IObserver = {
-		pos: { x: 250, y: 300 },
+		c: { x: 250, y: 300 },
 		viewRange: (type: string) => { return 150; }
 	};
 
@@ -244,7 +250,7 @@ export namespace SandTableUtils {
 		frame.ctx.drawImage(darkMapImage, 0, 0, width, height, 0, 0, width, height);
 		frame.ctx.save();
 		frame.ctx.beginPath();
-		frame.ctx.arc(observer.pos.x, observer.pos.y, observer.viewRange(visiable), 0, Math.PI * 2);
+		frame.ctx.arc(observer.c.x, observer.c.y, observer.viewRange(visiable), 0, Math.PI * 2);
 		frame.ctx.clip();
 		frame.ctx.drawImage(brightMapImage, 0, 0, width, height, 0, 0, width, height);
 		frame.ctx.restore();	

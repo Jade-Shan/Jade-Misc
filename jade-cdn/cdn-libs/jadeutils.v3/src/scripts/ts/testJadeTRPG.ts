@@ -1,6 +1,6 @@
 import { CanvasCircle2D, CanvasRectangle2D, CanvasUtils } from "./canvas.js";
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
-import { SandTable, ScenceData } from "./sandtable.js";
+import { CircleToken, SandTable, ScenceDataResp } from "./sandtable.js";
 import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWindow.js";
 
 export namespace TestJadeTRPG {
@@ -85,6 +85,9 @@ export namespace TestJadeTRPG {
 				show: {cvs:  finalCanvas, ctx: finalCvsCtx }
 			}
 		});
+		// 
+		let user = CircleToken.fromRecord(testSceneData.mapDatas.teams[2]);
+
 		await sandTable.drawSceneWithUserView({proxyUrl: imgProxyUrl});
 	}
 
@@ -92,7 +95,7 @@ export namespace TestJadeTRPG {
 }
 
 
-let testSceneData: ScenceData = {
+let testSceneData: ScenceDataResp= {
   "username": "jade",
   "loginToken": "jade|a8dce1e8-63c3-4825-8932-5dd8f430aaa4|1747416892778",
   "imgResources": [
