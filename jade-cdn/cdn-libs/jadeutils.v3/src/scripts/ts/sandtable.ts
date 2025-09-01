@@ -145,13 +145,6 @@ export class CircleToken extends CanvasCircle2D implements IToken2D {
 
 }
 
-export class ObserverToken extends CircleToken implements IObserver {
-	pos: IPoint2D;
-	viewRange: (type: VisibilityType) => number;
-
-}
-
-
 export interface IRectangleTokenRec extends ITokenRec {
 	type: "Rectangle",
 	width: number,
@@ -181,7 +174,7 @@ export class SandTable implements ISandTable {
 	scene: IScene;
 	observer: IObserver = {
 		c: { x: 250, y: 300 },
-		viewRange: (type: string) => { return 150; }
+		viewRange: (type: string) => { return 350; }
 	};
 
 	constructor(scene: IScene) // 

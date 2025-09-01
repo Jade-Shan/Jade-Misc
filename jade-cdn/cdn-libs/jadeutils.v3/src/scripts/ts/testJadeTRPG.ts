@@ -87,8 +87,8 @@ export namespace TestJadeTRPG {
 		});
 		// 
 		let user = CircleToken.fromRecord(testSceneData.mapDatas.teams[2]);
-
 		await sandTable.drawSceneWithUserView({proxyUrl: imgProxyUrl});
+		user.draw(finalCvsCtx)
 	}
 
 
