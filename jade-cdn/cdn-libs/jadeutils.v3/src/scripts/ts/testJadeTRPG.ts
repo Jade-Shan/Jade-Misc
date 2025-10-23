@@ -55,6 +55,27 @@ export namespace TestJadeTRPG {
 
 	}
 
+	export let testTrpgCompose = async () => {
+		// window UI
+		let desktop01 = document.getElementById(`test-desktop-01`)!;
+		let desktop: UIDesktop = new UIDesktop(desktop01, { dockBar: { range: 300, maxScale: 1.8 } });
+		let canvasWin = new TestCanvasWindow(desktop, "test-canvas-01", "Map-001", {
+			icons: JadeUIResource.getDefaultIcon(DefaultIconGroup.ELEC_FACE),
+			body: { initSize: { width: 640, height: 480 }, overflow: "scroll" }
+		});
+		canvasWin.renderIn();
+		//
+		let bufferCanvas = canvasWin.bufferCanvas;
+		let finalCanvas  = canvasWin.finalCanvas;
+		let bufferCvsCtx = canvasWin.bufferCanvas.getContext("2d")!;
+		let finalCvsCtx  = canvasWin.finalCanvas .getContext("2d")!;
+		// 
+
+		// load sandtable
+		let mapUrl = "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/map.jpg";
+		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
+	}
+
 	export let testTrpgUI = async () => {
 		// window UI
 		let desktop01 = document.getElementById(`test-desktop-01`)!;
@@ -91,11 +112,10 @@ export namespace TestJadeTRPG {
 		user.draw(finalCvsCtx)
 	}
 
-
 }
 
 
-let testSceneData: ScenceDataResp= {
+let testSceneData: ScenceDataResp = {
   "username": "jade",
   "loginToken": "jade|a8dce1e8-63c3-4825-8932-5dd8f430aaa4|1747416892778",
   "imgResources": [
