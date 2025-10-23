@@ -180,7 +180,7 @@ export namespace TestJadeUI {
 				CanvasUtils.drawPoint(cvsCtx, center);
 				CanvasUtils.drawRectangle(cvsCtx, rect01);
 				CanvasUtils.drawRectangle(cvsCtx, rect03);
-				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect01, 150, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect01, 150, { lineWidth: 1, strokeStyle: "red" , fillStyle: "rgba(100,100,100,0.5)" });
 				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, rect03, 150, { lineWidth: 1, strokeStyle: "blue", fillStyle: "rgba(100,100,100,0.5)" });
 			}
 			if (cvsCtx) {
@@ -210,7 +210,7 @@ export namespace TestJadeUI {
 				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts3[0].x, y: vtxPts3[0].y, radius: 3, fillStyle: "blue" });
 				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts3[1].x, y: vtxPts3[1].y, radius: 3, fillStyle: "blue" });
 				//
-				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, { lineWidth: 1, strokeStyle: "red" , fillStyle: "rgba(100,100,100,0.5)" });
 				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric03, 145, { lineWidth: 1, strokeStyle: "blue", fillStyle: "rgba(100,100,100,0.5)" });
 			}
 			if (null != cvsCtx) {
@@ -247,7 +247,7 @@ export namespace TestJadeUI {
 				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts3[0].x, y: vtxPts3[0].y, radius: 3, fillStyle: "blue" });
 				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts3[1].x, y: vtxPts3[1].y, radius: 3, fillStyle: "blue" });
 				//
-				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, { lineWidth: 1, strokeStyle: "red" , fillStyle: "rgba(100,100,100,0.5)" });
 				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric03, 145, { lineWidth: 1, strokeStyle: "blue", fillStyle: "rgba(100,100,100,0.5)" });
 			}
 			if (null != cvsCtx) {
@@ -280,17 +280,17 @@ export namespace TestJadeUI {
 				//
 				let vtxPts1 = cric01.getVertexesFrom(center.x, center.y);
 				let vtxPts3 = cric03.getVertexesFrom(center.x, center.y);
-				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts1[0].x, y: vtxPts1[0].y, radius: 3, fillStyle: "red" });
-				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts1[1].x, y: vtxPts1[1].y, radius: 3, fillStyle: "red" });
+				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts1[0].x, y: vtxPts1[0].y, radius: 3, fillStyle: "red"  });
+				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts1[1].x, y: vtxPts1[1].y, radius: 3, fillStyle: "red"  });
 				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts3[0].x, y: vtxPts3[0].y, radius: 3, fillStyle: "blue" });
 				CanvasUtils.drawPoint(cvsCtx, { x: vtxPts3[1].x, y: vtxPts3[1].y, radius: 3, fillStyle: "blue" });
 				//
-				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric01, 145, { lineWidth: 1, strokeStyle: "red" , fillStyle: "rgba(100,100,100,0.5)" });
 				CanvasUtils.drawVertexShadowFrom(cvsCtx, center.x, center.y, cric03, 145, { lineWidth: 1, strokeStyle: "blue", fillStyle: "rgba(100,100,100,0.5)" });
 			}
 			if (null != cvsCtx) {
 				let center = { x: 1050, y: 450, radius: 3, fillStyle: "fuchsia" };
-				let cric02 = new CanvasCircle2D(970, 530, 60, 3, "lime", "");
+				let cric02 = new CanvasCircle2D( 970, 530, 60, 3, "lime", "");
 				let cric04 = new CanvasCircle2D(1130, 370, 60, 3, "gray", "");
 				//
 				CanvasUtils.drawPoint(cvsCtx, center);
@@ -321,9 +321,5 @@ export namespace TestJadeUI {
 		}
 		//
 	}
-
-	export let testTrpgUI = () => {
-	}
-
 
 }
