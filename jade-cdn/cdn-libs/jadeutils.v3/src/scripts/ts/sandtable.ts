@@ -88,7 +88,8 @@ export interface IToken2D extends CanvasShape2D {
 	toRecord(): ITokenRec;
 }
 
-export class CircleToken extends CanvasCircle2D implements IToken2D {
+export type ICircleToken = { c: { x: number, y: number }, radius: number, color: string, imgClip: ImageClip };
+export class CircleToken extends CanvasCircle2D implements IToken2D, ICircleToken {
 	id: string = "";
 	color: string;
 	visiable: boolean = true;
@@ -195,6 +196,29 @@ export class SandTable implements ISandTable {
 }
 
 export namespace SandTableUtils {
+
+	export let drawToken = (cvsCtx: CanvasRenderingContext2D, token :ICircleToken): void => {
+			cvsCtx.save();
+			cvsCtx.lineWidth = 0;
+			// draw a circle
+			cvsCtx.beginPath();
+			cvsCtx.arc(token.c.x, token.c.y, token.radius, 0, Geo2DUtils.PI_DOUBLE, true);
+			cvsCtx.fillStyle = token.color;
+			cvsCtx.fill();
+			// clip Image
+			cvsCtx.beginPath();
+			cvsCtx.arc(token.c.x, token.c.y, token.radius - 3, 0, Geo2DUtils.PI_DOUBLE, true);
+			cvsCtx.clip();
+			if (null != token.imgClip && null != token.imgClip.imageElem) {
+				let dx = token.c.x - token.radius;
+				let dy = token.c.y - token.radius;
+				let dwidth = token.radius * 2;
+				let dheight = dwidth;
+				cvsCtx.drawImage(token.imgClip.imageElem, token.imgClip.sx, token.imgClip.sy,
+					token.imgClip.width, token.imgClip.height, dx, dy, dwidth, dheight);
+			}
+			cvsCtx.restore();
+	}
 
 	export let drawDarkScene = async (frame: ICanvasFrame, // 
 		oriMap: HTMLImageElement, shadowStyle: string): Promise<HTMLImageElement> => // 

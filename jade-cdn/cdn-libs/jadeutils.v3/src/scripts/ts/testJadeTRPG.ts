@@ -2,7 +2,7 @@ import { WebUtil } from "./web.js";
 import { Geo2DUtils } from "./geo2d.js";
 import { CanvasCircle2D, CanvasRectangle2D, CanvasUtils } from "./canvas.js";
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
-import { CircleToken, SandTable, ScenceDataResp } from "./sandtable.js";
+import { CircleToken, ImageClip, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
 import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWindow.js";
 
 export namespace TestJadeTRPG {
@@ -64,32 +64,11 @@ export namespace TestJadeTRPG {
 		await WebUtil.loadImageByProxy(tokenImg, tokenImgSrc, { proxyUrl: imgProxyUrl });
 		let token = {
 			c: { x: 120, y: 150 }, radius: 25, color: "#0000FF",
-			imgClip: {imageElem: tokenImg, sx: 100, sy: 50, width: 50, height: 50 }
+			imgClip: {imgKey: "", imageElem: tokenImg, sx: 100, sy: 50, width: 50, height: 50 }
 		};
-
 		let cvsCtx = document.querySelector<HTMLCanvasElement>("#testTrpg001")?.getContext("2d");
 		if (null != cvsCtx) {
-			//
-			cvsCtx.save();
-			cvsCtx.lineWidth = 0;
-			// draw a circle
-			cvsCtx.beginPath();
-			cvsCtx.arc(token.c.x, token.c.y, token.radius, 0, Geo2DUtils.PI_DOUBLE, true);
-			cvsCtx.fillStyle = token.color;
-			cvsCtx.fill();
-			// clip Image
-			cvsCtx.beginPath();
-			cvsCtx.arc(token.c.x, token.c.y, token.radius - 3, 0, Geo2DUtils.PI_DOUBLE, true);
-			cvsCtx.clip();
-			if (null != token.imgClip && null != token.imgClip.imageElem) {
-				let dx = token.c.x - token.radius;
-				let dy = token.c.y - token.radius;
-				let dwidth = token.radius * 2;
-				let dheight = dwidth;
-				cvsCtx.drawImage(token.imgClip.imageElem, token.imgClip.sx, token.imgClip.sy,
-					token.imgClip.width, token.imgClip.height, dx, dy, dwidth, dheight);
-			}
-			cvsCtx.restore();
+			SandTableUtils.drawToken(cvsCtx, token);
 		}
 	}
 
