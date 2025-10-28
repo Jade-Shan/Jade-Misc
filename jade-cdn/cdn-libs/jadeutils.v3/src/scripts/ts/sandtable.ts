@@ -12,6 +12,7 @@ export interface ImageResource {
 	type: "Image" | "Other",
 	id: string,
 	url: string,
+	imgElem?: HTMLImageElement
 }
 
 /**
@@ -113,9 +114,20 @@ export class CircleToken extends CanvasCircle2D implements IToken2D, ICircleToke
 			"visiable": this.visiable, "blockView": this.blockView, "color": this.strokeStyle, "img": this.imgClip };
 	}
 
-	static fromRecord(rec: ICircleTokenRec): CircleToken {
-		return new CircleToken(rec.id, rec.x, rec.y, rec.radius, 0, rec.color, rec.color, // 
+	static fromRecord(rec: ICircleTokenRec, imageRecs: Array<ImageResource>): CircleToken {
+		let cc = new CircleToken(rec.id, rec.x, rec.y, rec.radius, 0, rec.color, rec.color, // 
 			rec.visiable, rec.blockView, rec.color, rec.img);
+		if (null != imageRecs && imageRecs.length > 0) {
+			for (let i = 0; i < imageRecs.length; i++) {
+				let img = imageRecs[i];
+				if (img.id == rec.img.imgKey) {
+					if (img.imgElem) {
+						rec.img.imageElem = img.imgElem;
+					}
+				}
+			}
+		}
+		return cc;
 	}
 
 	draw(cvsCtx: CanvasRenderingContext2D): void {
@@ -197,28 +209,44 @@ export class SandTable implements ISandTable {
 
 export namespace SandTableUtils {
 
-	export let drawToken = (cvsCtx: CanvasRenderingContext2D, token :ICircleToken): void => {
-			cvsCtx.save();
-			cvsCtx.lineWidth = 0;
-			// draw a circle
-			cvsCtx.beginPath();
-			cvsCtx.arc(token.c.x, token.c.y, token.radius, 0, Geo2DUtils.PI_DOUBLE, true);
-			cvsCtx.fillStyle = token.color;
-			cvsCtx.fill();
-			// clip Image
-			cvsCtx.beginPath();
-			cvsCtx.arc(token.c.x, token.c.y, token.radius - 3, 0, Geo2DUtils.PI_DOUBLE, true);
-			cvsCtx.clip();
-			if (null != token.imgClip && null != token.imgClip.imageElem) {
-				let dx = token.c.x - token.radius;
-				let dy = token.c.y - token.radius;
-				let dwidth = token.radius * 2;
-				let dheight = dwidth;
-				cvsCtx.drawImage(token.imgClip.imageElem, token.imgClip.sx, token.imgClip.sy,
-					token.imgClip.width, token.imgClip.height, dx, dy, dwidth, dheight);
+	/**
+	 * 加载图片资源
+	 * @param imageRecs 
+	 * @param imgProxyUrl 
+	 */
+	export let loadImageResources = async (imageRecs: Array<ImageResource>, imgProxyUrl?: string): Promise<void> => {
+		if (null != imageRecs && imageRecs.length > 0) {
+			for (let i = 0; i < imageRecs.length; i++) {
+				let imgElem: HTMLImageElement = new Image();
+				let cc = imageRecs[i];
+				await WebUtil.loadImageByProxy(imgElem, cc.url, {proxyUrl: imgProxyUrl});
+				cc.imgElem = imgElem;
 			}
-			cvsCtx.restore();
-	}
+		}
+	} 
+
+	//export let drawToken = (cvsCtx: CanvasRenderingContext2D, token :ICircleToken): void => {
+	//		cvsCtx.save();
+	//		cvsCtx.lineWidth = 0;
+	//		// draw a circle
+	//		cvsCtx.beginPath();
+	//		cvsCtx.arc(token.c.x, token.c.y, token.radius, 0, Geo2DUtils.PI_DOUBLE, true);
+	//		cvsCtx.fillStyle = token.color;
+	//		cvsCtx.fill();
+	//		// clip Image
+	//		cvsCtx.beginPath();
+	//		cvsCtx.arc(token.c.x, token.c.y, token.radius - 3, 0, Geo2DUtils.PI_DOUBLE, true);
+	//		cvsCtx.clip();
+	//		if (null != token.imgClip && null != token.imgClip.imageElem) {
+	//			let dx = token.c.x - token.radius;
+	//			let dy = token.c.y - token.radius;
+	//			let dwidth = token.radius * 2;
+	//			let dheight = dwidth;
+	//			cvsCtx.drawImage(token.imgClip.imageElem, token.imgClip.sx, token.imgClip.sy,
+	//				token.imgClip.width, token.imgClip.height, dx, dy, dwidth, dheight);
+	//		}
+	//		cvsCtx.restore();
+	//}
 
 	export let drawDarkScene = async (frame: ICanvasFrame, // 
 		oriMap: HTMLImageElement, shadowStyle: string): Promise<HTMLImageElement> => // 

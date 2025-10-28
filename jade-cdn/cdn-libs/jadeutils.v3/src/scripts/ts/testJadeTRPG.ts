@@ -58,18 +58,18 @@ export namespace TestJadeTRPG {
 	}
 
 	export let testTrpgCompose = async () => {
-		let tokenImg = new Image();
-		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
-		let tokenImgSrc = "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/icons.jpg";
-		await WebUtil.loadImageByProxy(tokenImg, tokenImgSrc, { proxyUrl: imgProxyUrl });
-		let token = {
-			c: { x: 120, y: 150 }, radius: 25, color: "#0000FF",
-			imgClip: {imgKey: "", imageElem: tokenImg, sx: 100, sy: 50, width: 50, height: 50 }
-		};
-		let cvsCtx = document.querySelector<HTMLCanvasElement>("#testTrpg001")?.getContext("2d");
-		if (null != cvsCtx) {
-			SandTableUtils.drawToken(cvsCtx, token);
-		}
+		//let tokenImg = new Image();
+		//let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
+		//let tokenImgSrc = "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/icons.jpg";
+		//await WebUtil.loadImageByProxy(tokenImg, tokenImgSrc, { proxyUrl: imgProxyUrl });
+		//let token = {
+		//	c: { x: 120, y: 150 }, radius: 25, color: "#0000FF",
+		//	imgClip: {imgKey: "", imageElem: tokenImg, sx: 100, sy: 50, width: 50, height: 50 }
+		//};
+		//let cvsCtx = document.querySelector<HTMLCanvasElement>("#testTrpg001")?.getContext("2d");
+		//if (null != cvsCtx) {
+		//	SandTableUtils.drawToken(cvsCtx, token);
+		//}
 	}
 
 	export let testTrpgUI = async () => {
@@ -95,6 +95,9 @@ export namespace TestJadeTRPG {
 		// load sandtable
 		let mapUrl = "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/map.jpg";
 		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
+		// load image resource
+		await SandTableUtils.loadImageResources(testSceneData.imgResources, imgProxyUrl);
+		//
 		let sandTable = new SandTable({ visibility: "default", //
 			map: { imageUrl: mapUrl, width: 0, height: 0, shadowStyle: 'rgba(0, 0, 0, 0.7)' },
 			frame: { 
@@ -103,8 +106,9 @@ export namespace TestJadeTRPG {
 			}
 		});
 		// 
-		let user = CircleToken.fromRecord(testSceneData.mapDatas.teams[2]);
+		let user = CircleToken.fromRecord(testSceneData.mapDatas.teams[2], testSceneData.imgResources);
 		await sandTable.drawSceneWithUserView({proxyUrl: imgProxyUrl});
+		//
 		user.draw(finalCvsCtx)
 	}
 
