@@ -4,7 +4,7 @@
 三角函数备忘图
 -----------------
 
-![circ.angle](images/geo/circ.angle.03.png "sample image")
+![circ.angle](img-plt/geo/circ.angle.03.png "sample image")
 
 计算点到图形的切线
 -----------------
@@ -16,7 +16,7 @@
 ```javascript
 Circle2D.getVertexesFrom(x: number, y: number): Array<Point2D>;
 ```
-![sample-img](images/geo/circ_cut_01.plt.png "sample image")
+![sample-img](img-plt/geo/circ_cut_01.plt.png "sample image")
 
 注意：
 
@@ -64,7 +64,7 @@ export function checkPointLineSide(
 
 假设`A.y < B.y`的情况下，`(A.y < P.y) && (P.y < B.y)`：
 
-![sample-img](images/geo/point_side_line.01.plt.png "sample image")
+![sample-img](img-plt/geo/point_side_line.01.plt.png "sample image")
 
 * 如果`A->B`的角度大于`A->P`则说明点在线段的右方
 * 如果`A->B`的角度小于`A->P`则说明点在线段的左方
@@ -73,7 +73,7 @@ export function checkPointLineSide(
 
 延长`B->A`到与`y=P.y`相交的点`C`
 
-![sample-img](images/geo/point_side_line.02.plt.png "sample image")
+![sample-img](img-plt/geo/point_side_line.02.plt.png "sample image")
 
 
 1. `(ll.a.x - c.x) / (ll.a.y - c.y) = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y)`
@@ -88,7 +88,7 @@ export function checkPointLineSide(
 
 延长`A->B`到与`y=P.y`相交的点`C`
 
-![sample-img](images/geo/point_side_line.03.plt.png "sample image")
+![sample-img](img-plt/geo/point_side_line.03.plt.png "sample image")
 
 
 1. `(c.x - ll.a.x) / (c.y - ll.a.y) = (ll.b.x - ll.a.x) / (ll.b.y - ll.a.y)`
@@ -133,4 +133,4 @@ export function revolveRay(
 	): IRevolveOption;
 ```
 
-![sample-img](images/geo/rote_ray_01.plt.png "sample image")
+![sample-img](img-plt/geo/rote_ray_01.plt.png "sample image")
