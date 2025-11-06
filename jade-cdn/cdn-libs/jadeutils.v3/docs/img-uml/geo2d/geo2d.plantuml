@@ -1,0 +1,109 @@
+@startuml geo2d
+
+
+enum QuadPos {
+	QUAD_1ST 
+	QUAD_2ND 
+	QUAD_3RD 
+	QUAD_4TH 
+	ORIG_PNT 
+	AXIS_X_POS
+	AXIS_X_NAG
+	AXIS_Y_POS
+	AXIS_Y_NAG
+}
+
+interface IAngle {
+	oriAgl: number
+	fmtAgl: number
+	oriDgr: number
+	fmtDgr: number
+}
+
+interface IRevolveOption {
+	start: number
+	end  : number
+	diff : number
+}
+
+
+interface IGeo2D
+
+interface GeoShape2D {
+	getCenter() : Point2D
+	getMostCloseVertex(x: number, y: number) : {vertex: Point2D, distance: number}
+	getVertexesFrom(x: number, y: number) : Array<Point2D>
+}
+IGeo2D <|-- GeoShape2D
+
+interface GeoCurve2D {
+}
+GeoShape2D <|-- GeoCurve2D
+
+interface GeoPolygon2D {
+	getVertex(): Array<Point2D>
+}
+GeoShape2D <|-- GeoPolygon2D
+
+
+record ICircle2D {
+	c : Point2D
+	radius : number 
+}
+class Circle2D {
+	constructor(x: number, y: number, radius: number): Circle2D
+}
+GeoCurve2D <|.. Circle2D
+ICircle2D  <|.. Circle2D
+
+record IPoint2D { 
+	x: number
+	y: number 
+}
+class Point2D {
+	constructor(x: number, y: number) : Point2D
+}
+IPoint2D   <|.. Point2D
+GeoCurve2D <|.. Point2D
+
+record ILine2D {
+	a: IPoint2D
+	b: IPoint2D 
+}
+class Line2D {
+	constructor(a: IPoint2D, b: IPoint2D): Line2D 
+}
+ILine2D      <|.. Line2D
+GeoPolygon2D <|.. Line2D
+
+record IRay2D {
+	start   : IPoint2D
+	mid     : IPoint2D  
+	angle   : number  
+	cAngle  : number 
+	angleStr: string
+	length  : number
+}
+class Ray2D {
+	constructor(start: IPoint2D, mid: IPoint2D): Ray2D
+}
+IRay2D       <|.. Ray2D
+GeoPolygon2D <|.. Ray2D
+
+record IRectangle2D {
+	x     : number
+	y     : number
+	width : number
+	height: number 
+}
+class Rectangle2D implements GeoPolygon2D, IRectangle2D {
+	center : Point2D
+	vertexs: Array<Point2D>
+	sides  : Array<Line2D>
+
+	constructor(x: number, y: number, width: number, height: number): Rectangle2D 
+}
+IRectangle2D <|.. Rectangle2D
+GeoPolygon2D <|.. Rectangle2D
+
+@enduml

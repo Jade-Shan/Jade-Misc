@@ -52,7 +52,7 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 
 	getCenter(): Point2D { return this.c; }
 
-	getMostCloseVertex(x: number, y: number): { vertex: Point2D; distance: number; } {
+	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number } {
 		let dx = this.c.x - x;
 		let dy = this.c.y - y;
 		let cDist = Math.round(Math.sqrt(dx * dx + dy * dy)); // 点到圆心的距离
@@ -365,8 +365,8 @@ export interface IAngle {
 
 export interface IRevolveOption {
 	start: number;
-	end: number;
-	diff: number;
+	end  : number;
+	diff : number;
 }
 
 export namespace Geo2DUtils {
