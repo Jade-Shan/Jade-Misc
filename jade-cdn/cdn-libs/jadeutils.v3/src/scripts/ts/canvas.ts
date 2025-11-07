@@ -3,18 +3,21 @@ import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D,
 	IRevolveOption, ICircle2D, Circle2D } from './geo2d.js';
 
 export interface ICanvasStyle {
-	lineWidth?: number;
+	lineWidth  ?: number;
 	strokeStyle?: string;
-	fillStyle?: string;
+	fillStyle  ?: string;
 }
 
 export namespace CanvasUtils {
 
-	function drawWithCanvas(cvsCtx: CanvasRenderingContext2D, func: (cvs: CanvasRenderingContext2D) => void, style?: ICanvasStyle): void {
+	function drawWithCanvas(cvsCtx: CanvasRenderingContext2D, // 
+		func: (cvs: CanvasRenderingContext2D) => void, style?: ICanvasStyle //
+	): void //
+	{
 		cvsCtx.save();
-		if (style?.lineWidth) { cvsCtx.lineWidth = style.lineWidth; }
+		if (style?.lineWidth  ) { cvsCtx.lineWidth   = style.lineWidth  ; }
 		if (style?.strokeStyle) { cvsCtx.strokeStyle = style.strokeStyle; }
-		if (style?.fillStyle) { cvsCtx.fillStyle = style.fillStyle; }
+		if (style?.fillStyle  ) { cvsCtx.fillStyle   = style.fillStyle  ; }
 		cvsCtx.beginPath();
 		func(cvsCtx);
 		if (style?.lineWidth && style.lineWidth > 0) { cvsCtx.stroke(); }
@@ -22,7 +25,10 @@ export namespace CanvasUtils {
 		cvsCtx.restore();
 	}
 
-	export function drawArc(cvsCtx: CanvasRenderingContext2D, center: IPoint2D, radius: number, revole: IRevolveOption, style?: ICanvasStyle): void {
+	export function drawArc(cvsCtx: CanvasRenderingContext2D, // 
+		center: IPoint2D, radius: number, revole: IRevolveOption, style?: ICanvasStyle // 
+	): void //
+	{
 		//drawWithCanvas(cvsCtx, (cvsCtx) => {
 		//	// 因为Canvas的原点坐标是在左上角，所以顺时钟和逆时钟的方向和笛卡尔坐标系是反的
 		//	cvsCtx.arc(center.x, center.y, radius, revole.start, revole.end, revole.diff < 0);
@@ -135,7 +141,9 @@ export namespace CanvasUtils {
 		cvsCtx.restore();
 	}
 
-	export function genVertexes(shape: CanvasPolygon2D, radius: number, fillStyle: string): Array<CanvasPoint2D> {
+	export function genVertexes(shape: CanvasPolygon2D, radius: number, fillStyle: string): //
+		Array<CanvasPoint2D> //
+	{
 		let result: Array<CanvasPoint2D> = [];
 		let vtxs = shape.getVertex();
 		if (vtxs && vtxs.length > 0) {
@@ -147,7 +155,9 @@ export namespace CanvasUtils {
 		return result;
 	}
 
-	export function drawShapeVertexes(cvsCtx: CanvasRenderingContext2D, shape: CanvasPolygon2D, radius: number, fillStyle: string): void {
+	export function drawShapeVertexes(cvsCtx: CanvasRenderingContext2D, // 
+		shape: CanvasPolygon2D, radius: number, fillStyle: string): void //
+	{
 		let vtxs: Array<CanvasPoint2D> = genVertexes(shape, radius, fillStyle);
 		drawPoints(cvsCtx, vtxs);
 	}
@@ -204,7 +214,9 @@ export namespace CanvasUtils {
 		}, style);
 	}
 
-	export function genShapeTengentLine(x: number, y: number, shape: CanvasShape2D, length: number, lineWidth: number, strokeStyle: string): Array<CanvasRay2D> {
+	export function genShapeTengentLine(x: number, y: number, shape: CanvasShape2D, // 
+		length: number, lineWidth: number, strokeStyle: string): Array<CanvasRay2D> //
+	{
 		let result: Array<CanvasRay2D> = [];
 		// TODO: 
 		//let rays: Array<Ray2D> = Geo2DUtils.genTengentRays(x, y, shape, length);
@@ -217,7 +229,9 @@ export namespace CanvasUtils {
 		return result;
 	}
 
-	export function drawShapeTengentRays(cvsCtx: CanvasRenderingContext2D, x: number, y: number, shape: CanvasShape2D, length: number, lineWidth: number, strokeStyle: string) {
+	export function drawShapeTengentRays(cvsCtx: CanvasRenderingContext2D, x: number, y: number, // 
+		shape: CanvasShape2D, length: number, lineWidth: number, strokeStyle: string) // 
+	{
 		let rays: Array<CanvasRay2D> = genShapeTengentLine(x, y, shape, length, lineWidth, strokeStyle);
 		drawRays(cvsCtx, rays);
 	}
@@ -233,18 +247,18 @@ export interface CanvasCurve2D extends CanvasShape2D, GeoCurve2D { }
 export interface CanvasPolygon2D extends CanvasShape2D, GeoPolygon2D { }
 
 export interface ICanvasPoint2D extends ICanvas2D, IPoint2D {
-	readonly radius: number;
+	readonly radius   : number;
 	readonly fillStyle: string;
 }
 export class CanvasPoint2D extends Point2D //
 	implements CanvasCurve2D, ICanvasPoint2D // 
 {
-	readonly radius: number;
+	readonly radius   : number;
 	readonly fillStyle: string;
 
 	constructor(x: number, y: number, radius: number, fillStyle: string) {
 		super(x, y);
-		this.radius = radius;
+		this.radius    = radius;
 		this.fillStyle = fillStyle;
 	}
 
@@ -254,9 +268,9 @@ export class CanvasPoint2D extends Point2D //
 }
 
 export interface ICanvasLine2D extends ICanvas2D, ILine2D {
-	readonly lineWidth: number;
-	readonly lineCap?: "butt" | "round" | "square";
-	readonly lineJoin?: "miter" | "round" | "bevel";
+	readonly lineWidth : number;
+	readonly lineCap   ?: "butt"  | "round" | "square";
+	readonly lineJoin  ?: "miter" | "round" | "bevel" ;
 	readonly strokeStyle: string;
 }
 export class CanvasLine2D extends Line2D implements CanvasPolygon2D, ICanvasLine2D {
@@ -277,34 +291,34 @@ export class CanvasLine2D extends Line2D implements CanvasPolygon2D, ICanvasLine
 }
 
 export interface ICanvasRay2D extends IRay2D {
-	readonly lineWidth: number;
-	readonly lineCap?: "butt" | "round" | "square";
-	readonly lineJoin?: "miter" | "round" | "bevel";
+	readonly lineWidth  : number;
+	readonly lineCap   ?: "butt"  | "round" | "square";
+	readonly lineJoin  ?: "miter" | "round" | "bevel" ;
 	readonly strokeStyle: string;
 }
 export class CanvasRay2D extends Ray2D implements CanvasPolygon2D, ICanvasRay2D {
-	readonly lineWidth: number;
+	readonly lineWidth  : number;
 	readonly strokeStyle: string;
 
 	constructor(start: IPoint2D, mid: IPoint2D, lineWidth: number, strokeStyle: string) {
 		super(start, mid);
 		this.strokeStyle = strokeStyle;
-		this.lineWidth = lineWidth;
+		this.lineWidth   = lineWidth  ;
 	}
 
 }
 
 export interface ICanvasRectangle2D extends IRectangle2D {
-	readonly lineWidth: number;
+	readonly lineWidth  : number;
 	readonly strokeStyle: string;
-	readonly fillStyle: string;
+	readonly fillStyle  : string;
 }
 export class CanvasRectangle2D extends Rectangle2D //
 	implements CanvasPolygon2D, ICanvasRectangle2D //
 {
-	readonly lineWidth: number;
+	readonly lineWidth  : number;
 	readonly strokeStyle: string;
-	readonly fillStyle: string;
+	readonly fillStyle  : string;
 
 	constructor(x: number, y: number, width: number, height: number, //
 		lineWidth: number, strokeStyle: string, fillStyle: string) {
@@ -323,17 +337,17 @@ export class CanvasRectangle2D extends Rectangle2D //
 
 
 export interface ICanvasCircle2D extends ICanvas2D, ICircle2D {
-	readonly lineWidth: number;
+	readonly lineWidth  : number;
 	readonly strokeStyle: string;
-	readonly fillStyle: string;
+	readonly fillStyle  : string;
 
 }
 export class CanvasCircle2D extends Circle2D // 
 	implements CanvasCurve2D, ICanvasCircle2D // 
 {
-	readonly lineWidth: number;
+	readonly lineWidth  : number;
 	readonly strokeStyle: string;
-	readonly fillStyle: string;
+	readonly fillStyle  : string;
 
 	constructor(x: number, y: number, radius: number, lineWidth: number, strokeStyle: string, fillStyle: string) {
 		super(x, y, radius);

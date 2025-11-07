@@ -42,20 +42,20 @@ export interface GeoPolygon2D extends GeoShape2D {
 
 export type ICircle2D = { readonly c: Point2D, readonly radius: number }
 export class Circle2D implements GeoCurve2D, ICircle2D {
-	readonly c: Point2D;
+	readonly c     : Point2D;
 	readonly radius: number;
 
 	constructor(x: number, y: number, radius: number) {
-		this.c = new Point2D(x, y);
+		this.c      = new Point2D(x, y);
 		this.radius = radius;
 	}
 
 	getCenter(): Point2D { return this.c; }
 
 	getMostCloseVertex(x: number, y: number): { vertex: Point2D, distance: number } {
-		let dx = this.c.x - x;
-		let dy = this.c.y - y;
-		let cDist = Math.round(Math.sqrt(dx * dx + dy * dy)); // 点到圆心的距离
+		let dx      = this.c.x - x;
+		let dy      = this.c.y - y;
+		let cDist   = Math.round(Math.sqrt(dx * dx + dy * dy)); // 点到圆心的距离
 		let minDist = cDist - this.radius // 点到圆的距离
 
 		if (cDist == 0) {
@@ -128,21 +128,19 @@ export class Circle2D implements GeoCurve2D, ICircle2D {
 
 export type IPoint2D = { readonly x: number, readonly y: number };
 export class Point2D implements GeoCurve2D, IPoint2D {
-	readonly x: number;
-	readonly y: number;
+	readonly x    : number;
+	readonly y    : number;
 	private center: Point2D | null;
 
 	constructor(x: number, y: number) {
-		this.x = x;
-		this.y = y;
+		this.x      = x;
+		this.y      = y;
 		this.center = null;
 	}
 
 	getCenter() {
 		let center: Point2D = this.center == null ? new Point2D(this.x, this.y) : this.center;
-		if (null == this.center) {
-			this.center = center;
-		}
+		if (null == this.center) { this.center = center; }
 		return center;
 	}
 
@@ -219,31 +217,31 @@ export class Line2D implements GeoPolygon2D, ILine2D {
 }
 
 export type IRay2D = {
-	readonly start: IPoint2D, // 起点
-	readonly mid: IPoint2D, // 经过的点
-	readonly angle: number,  // 角度
-	readonly cAngle: number, // 规范后的角度
+	readonly start   : IPoint2D, // 起点
+	readonly mid     : IPoint2D, // 经过的点
+	readonly angle   : number,  // 角度
+	readonly cAngle  : number, // 规范后的角度
 	readonly angleStr: string, //
-	readonly length: number, // start 到 end 的距离
+	readonly length  : number, // start 到 end 的距离
 }
 export class Ray2D implements GeoPolygon2D, IRay2D {
-	readonly start: IPoint2D; // 起点
-	readonly mid: IPoint2D; // 经过的点
-	readonly angle: number;  // 角度
-	readonly cAngle: number; // 规范后的角度
+	readonly start   : IPoint2D; // 起点
+	readonly mid     : IPoint2D; // 经过的点
+	readonly angle   : number;  // 角度
+	readonly cAngle  : number; // 规范后的角度
 	readonly angleStr: string; //
-	readonly length: number; // start 到 mid 的距离
-	private center: Point2D;
+	readonly length  : number; // start 到 mid 的距离
+	private  center  : Point2D;
 
 	constructor(start: IPoint2D, mid: IPoint2D) {
-		this.start = start;
-		this.mid = mid;
+		this.start  = start;
+		this.mid    = mid;
 		this.center = new Point2D(start.x, start.y);
 		let dx = start.x - mid.x;
 		let dy = start.y - mid.y;
-		this.angle = Math.atan2(dy, dx);
+		this.angle  = Math.atan2(dy, dx);
 		this.cAngle = this.angle < 0 ? Geo2DUtils.PI_DOUBLE + this.angle : this.angle;
-		let ccg = this.cAngle * 180 / Math.PI;
+		let ccg     = this.cAngle * 180 / Math.PI;
 		this.angleStr = ``;
 		// `(${NumUtil.toFixed(dx, 2)}, ${NumUtil.toFixed(dy, 2)})` +
 		// 	` = ${NumUtil.toFixed(this.angle, 2)} = ${NumUtil.toFixed(this.cAngle, 2)}` +
@@ -270,32 +268,32 @@ export class Ray2D implements GeoPolygon2D, IRay2D {
 
 export type IRectangle2D = { readonly x: number, readonly y: number, readonly width: number, readonly height: number }
 export class Rectangle2D implements GeoPolygon2D, IRectangle2D {
-	readonly x: number;
-	readonly y: number;
-	readonly width: number;
-	readonly height: number;
-	private readonly center: Point2D;
+	readonly x      : number;
+	readonly y      : number;
+	readonly width  : number;
+	readonly height : number;
 
+	private readonly center : Point2D;
 	private readonly vertexs: Array<Point2D>;
-	private readonly sides: Array<Line2D>;
+	private readonly sides  : Array<Line2D>;
 
 	constructor(x: number, y: number, width: number, height: number) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
+		this.x      = x;
+		this.y      = y;
+		this.width  = width;
 		this.height = height;
 		this.center = new Point2D((this.x + this.width) / 2, (this.y + this.height) / 2);
 		this.vertexs = [ //
-			new Point2D(this.x, this.y), //
+			new Point2D(this.x             , this.y), //
 			new Point2D(this.x + this.width, this.y), //
 			new Point2D(this.x + this.width, this.y + this.height), //
-			new Point2D(this.x, this.y + this.height)//
+			new Point2D(this.x             , this.y + this.height)  //
 		];
 		this.sides = [ //
 			new Line2D(this.vertexs[0], this.vertexs[1]), //
 			new Line2D(this.vertexs[1], this.vertexs[2]), //
 			new Line2D(this.vertexs[2], this.vertexs[3]), //
-			new Line2D(this.vertexs[3], this.vertexs[0]) //
+			new Line2D(this.vertexs[3], this.vertexs[0])  //
 		];
 	}
 
@@ -341,11 +339,11 @@ export class Rectangle2D implements GeoPolygon2D, IRectangle2D {
  * 比如X轴正方向上的点，都同时属于第一与第四象限。
  */
 export enum QuadPos {
-	/** 第一象限 */ QUAD_1ST = 0b0001,
-	/** 第二象限 */ QUAD_2ND = 0b0010,
-	/** 第三象限 */ QUAD_3RD = 0b0100,
-	/** 第四象限 */ QUAD_4TH = 0b1000,
-	/** 原点    */  ORIG_PNT = 0b1111,
+	/** 第一象限 */ QUAD_1ST   = 0b0001,
+	/** 第二象限 */ QUAD_2ND   = 0b0010,
+	/** 第三象限 */ QUAD_3RD   = 0b0100,
+	/** 第四象限 */ QUAD_4TH   = 0b1000,
+	/** 原点    */ ORIG_PNT   = 0b1111,
 	/** X轴正   */ AXIS_X_POS = 0b1001,
 	/** X轴负   */ AXIS_X_NAG = 0b0110,
 	/** Y轴正   */ AXIS_Y_POS = 0b0011,
@@ -370,9 +368,9 @@ export interface IRevolveOption {
 }
 
 export namespace Geo2DUtils {
-	export const PI_HALF = Math.PI / 2;
+	export const PI_HALF     = Math.PI / 2;
 	export const PI_ONE_HALF = Math.PI + PI_HALF;
-	export const PI_DOUBLE = Math.PI * 2;
+	export const PI_DOUBLE   = Math.PI * 2;
 
 	export function formatAngle(angle: number): IAngle {
 		let fmtAgl = angle < 0 ? Geo2DUtils.PI_DOUBLE + angle : angle;
@@ -405,9 +403,7 @@ export namespace Geo2DUtils {
 	 * @param p point
 	 * @returns  result > 0为左， < 0为右， =0为线上
 	 */
-	export function pointOfLineSide(line: { a: IPoint2D, b: IPoint2D }, // 
-		p: IPoint2D): number //
-	{
+	export function pointOfLineSide(line: ILine2D, p: IPoint2D): number {
 		return (line.a.y - line.b.y) * p.x + // 
 			(line.b.x - line.a.x) * p.y + line.a.x * line.a.y - //
 			line.b.x * line.a.y;
@@ -502,15 +498,15 @@ export namespace Geo2DUtils {
 	 * @returns location
 	 */
 	export function quadOfPoint(p: IPoint2D): QuadPos {
-		if (p.x > 0 && p.y > 0) { return QuadPos.QUAD_1ST; }
-		else if (p.x < 0 && p.y > 0) { return QuadPos.QUAD_2ND; }
-		else if (p.x < 0 && p.y < 0) { return QuadPos.QUAD_3RD; }
-		else if (p.x > 0 && p.y < 0) { return QuadPos.QUAD_4TH; }
-		else if (p.x == 0 && p.y == 0) { return QuadPos.ORIG_PNT; }
-		else if (p.x > 0 && p.y == 0) { return QuadPos.AXIS_X_POS; }
-		else if (p.x < 0 && p.y == 0) { return QuadPos.AXIS_X_NAG; }
-		else if (p.x == 0 && p.y > 0) { return QuadPos.AXIS_Y_POS; }
-		else /*if (x == 0 && y < 0)*/ { return QuadPos.AXIS_Y_NAG; }
+		if      (p.x >  0 && p.y >  0) { return QuadPos.QUAD_1ST  ; }
+		else if (p.x <  0 && p.y >  0) { return QuadPos.QUAD_2ND  ; }
+		else if (p.x <  0 && p.y <  0) { return QuadPos.QUAD_3RD  ; }
+		else if (p.x >  0 && p.y <  0) { return QuadPos.QUAD_4TH  ; }
+		else if (p.x == 0 && p.y == 0) { return QuadPos.ORIG_PNT  ; }
+		else if (p.x >  0 && p.y == 0) { return QuadPos.AXIS_X_POS; }
+		else if (p.x <  0 && p.y == 0) { return QuadPos.AXIS_X_NAG; }
+		else if (p.x == 0 && p.y >  0) { return QuadPos.AXIS_Y_POS; }
+		else /*if (x == 0 && y < 0) */ { return QuadPos.AXIS_Y_NAG; }
 	}
 
 	/**
@@ -552,7 +548,7 @@ export namespace Geo2DUtils {
 			let k = (line.a.y - line.b.y) / diffX;
 			let b = (line.a.x * line.b.y - line.b.x * line.a.y) / diffX;
 
-			if (k > 0 && b > 0) { quad = 0b0010 | quad; } // 函数过 1, 2, 3 象限
+			if      (k > 0 && b > 0) { quad = 0b0010 | quad; } // 函数过 1, 2, 3 象限
 			else if (k > 0 && b < 0) { quad = 0b1000 | quad; } // 函数过 1, 3, 4 象限
 			else if (k < 0 && b > 0) { quad = 0b0001 | quad; } // 函数过 1, 2, 4 象限
 			else if (k < 0 && b < 0) { quad = 0b0100 | quad; } // 函数过 2, 3, 4 象限
@@ -581,7 +577,9 @@ export namespace Geo2DUtils {
 	 * @param length 
 	 * @returns 
 	 */
-	export function genVertexRaysFrom(x: number, y: number, shape: GeoShape2D, length?: number): Array<{ vertex: Point2D, ray: Ray2D }> {
+	export function genVertexRaysFrom(x: number, y: number, shape: GeoShape2D, length?: number): 
+		Array<{ vertex: Point2D, ray: Ray2D }> //
+	{
 		let results: Array<{ vertex: Point2D, ray: Ray2D }> = [];
 		let vertexes = shape.getVertexesFrom(x, y);
 		for (let i = 0; i < vertexes.length; i++) {
@@ -628,8 +626,8 @@ export namespace Geo2DUtils {
 
 		// 从角度最小的顶点顺时针遍历到角度最大的顶点
 		// 就是所有面向外部点的顶点
-		let loopStart = minIdx > maxIdx ? minIdx : rays.length + minIdx;
-		let loopEnd = maxIdx > -1 ? maxIdx - 1 : rays.length - 1;
+		let loopStart = minIdx > maxIdx ? minIdx     : rays.length + minIdx;
+		let loopEnd   = maxIdx > -1     ? maxIdx - 1 : rays.length - 1     ;
 		for (let i = loopStart; i > loopEnd; i--) {
 			let idx = i < rays.length ? i : i - rays.length;
 			let rr = rays[idx];
@@ -678,10 +676,10 @@ export namespace Geo2DUtils {
 	 */
 	export function revolveRay(c: IPoint2D, startPoint: IPoint2D, endPoint: IPoint2D): IRevolveOption {
 		let d1 = { x: startPoint.x - c.x, y: startPoint.y - c.y };
-		let d2 = { x: endPoint.x - c.x, y: endPoint.y - c.y };
+		let d2 = { x: endPoint.x   - c.x, y: endPoint.y   - c.y };
 		let startAngle = Math.atan2(d1.y, d1.x);
-		let endAngle = Math.atan2(d2.y, d2.x);
-		let diffAngle = endAngle - startAngle;
+		let endAngle   = Math.atan2(d2.y, d2.x);
+		let diffAngle  = endAngle - startAngle;
 
 		if (d1.x * d2.x < 0 && d1.y * d2.y < 0) {
 			// 跨三个象限

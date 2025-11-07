@@ -24,23 +24,25 @@ Circle2D.getVertexesFrom(x: number, y: number): Array<Point2D>;
 计算以圆心为顶点的角的角度；
 如果用以点P作为新坐标系的原点，计算以P为顶点的角的角度来计算，
 就要考虑到可考虑到圆在新的坐标系中不同象限时，
-三角函数诱导公式的变化与符号的变化。会更加复杂
+三角函数诱导公式的变化与符号的变化。会更加复杂。
 
-1. 计算线段`dx`与`dy`的长度分别为`C.x - P.x`与`C.y - P.y`。
-	（注意：以圆心`C`为起点）
-2. 计算线段`C->P`的长度`sqrt(dx^2 + dy^2)`。
-3. 计算射线`C->P`的角度`alpha`等于`arctan(dy, dx)`。
-4. `C->Q1`和`C->Q2`这两个射线与`C->P`的夹角`beta`
-	分别为`arcos(CQ / CP)`，等于`arcos(r / CP)`。
-5. 得到了`beta`这个`C->Q1`和`C->Q2`相对于`C->P`的夹角后，
-	再加上`C->P`在坐标系中的角度`alpha`，
-	就是`C->Q1`和`C->Q2`在整个坐标系中的角度：
-	`beta1 = alpha + beta`和`beta2 = alpha - beta`
-6. 通过`beta1`和`beta2`的角度与圆的半径，
-	可以得到`Q1`和`Q2`相对于圆心的坐标。
+步骤：
+
+1. 计算线段 $dx$ 与 $dy$ 的长度分别为 $C.x - P.x$ 与 $C.y - P.y$ 。
+	（注意：以圆心 $C$ 为起点）
+2. 计算线段 $C \to P$ 的长度 $sqrt(dx^2 + dy^2)$ 。
+3. 计算射线 $C \to P$ 的角度 $\alpha$ 等于 $arctan(dy, dx)$ 。
+4. $C \to Q_1$ 和 $C \to Q_2$ 这两个射线与 $C \to P$ 的夹角 $\beta$
+	分别为 $arcos(CQ / CP)$ ，等于 $arcos(r / CP)$ 。
+5. 得到了 $\beta$ 这个 $C \to Q_1$ 和 $C \to Q_2$ 相对于 $C \to P$ 的夹角后，
+	再加上 $C \to P$ 在坐标系中的角度 $\alpha$ ，
+	就是 $C \to Q_1$ 和 $C \to Q_2$ 在整个坐标系中的角度：
+	$\beta_1 = \alpha + \beta$ 和 $\beta_2 = \alpha - \beta$
+6. 通过 $\beta_1$ 和 $\beta_2$ 的角度与圆的半径，
+	可以得到 $Q_1$ 和 $Q_2$ 相对于圆心的坐标。
 	然后再加上圆心在坐标系中的坐标就可以到`Q1`和`Q2`在坐标系中的坐标:
-	`Q1:(c.x + r * cos(beta1), c.y + r * sin(beta1))` ， 
-	`Q2:(c.x + r * cos(beta2), c.y + r * sin(beta2))`
+	* $Q_1:(c.x + r \cdot cos( \beta_1), c.y + r \cdot sin(\beta_1))$ ， 
+	* $Q_2:(c.x + r \cdot cos( \beta_2), c.y + r \cdot sin(\beta_2))$
 
 ### 点到图形的切线
 
@@ -139,6 +141,8 @@ export function revolveRay(
 
 常用类型
 -----------------
+
+[UML说明](https://plantuml.com/zh/class-diagram)
 
 2D常用几何类型：
 

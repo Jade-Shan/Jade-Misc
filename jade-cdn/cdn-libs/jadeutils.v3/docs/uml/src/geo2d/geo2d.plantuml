@@ -169,7 +169,7 @@ package canvas {
 	CanvasPolygon2D <|.. CanvasLine2D
 	ICanvasLine2D   <|.. CanvasLine2D
 
-	interface ICanvasRay2D {
+	record ICanvasRay2D {
 		lineWidth  : number
 		lineCap   ?: "butt" | "round" | "square"
 		lineJoin  ?: "miter" | "round" | "bevel"
@@ -184,7 +184,7 @@ package canvas {
 	CanvasPolygon2D <|.. CanvasRay2D
 	ICanvasRay2D    <|.. CanvasRay2D
 
-	interface ICanvasRectangle2D {
+	record ICanvasRectangle2D {
 		lineWidth  : number
 		strokeStyle: string
 		fillStyle  : string
