@@ -198,7 +198,19 @@ package canvas {
 	CanvasPolygon2D    <|.. CanvasRectangle2D
 	ICanvasRectangle2D <|.. CanvasRectangle2D
 
-
-
+	record ICanvasCircle2D {
+		lineWidth  : number;
+		strokeStyle: string;
+		fillStyle  : string;
+	}
+	ICanvas2D <|-- ICanvasCircle2D
+	ICircle2D <|-- ICanvasCircle2D
+	class CanvasCircle2D 
+	{
+		constructor(x: number, y: number, radius: number, lineWidth: number, strokeStyle: string, fillStyle: string): CanvasCircle2D
+	}
+	Circle2D         <|-- CanvasCircle2D
+	CanvasCurve2D    <|.. CanvasCircle2D
+	ICanvasCircle2D  <|.. CanvasCircle2D
 
 @enduml
