@@ -134,3 +134,12 @@ export function revolveRay(
 ```
 
 ![sample-img](img-plt/geo/rote_ray_01.plt.png "sample image")
+
+
+
+常用类型
+-----------------
+
+2D常用几何类型：
+
+![sample-img](img-uml/geo2d/geo2d.svg "sample image")
