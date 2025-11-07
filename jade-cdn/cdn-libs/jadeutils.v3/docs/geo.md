@@ -142,4 +142,4 @@ export function revolveRay(
 
 2D常用几何类型：
 
-![sample-img](img-uml/geo2d/geo2d.svg "sample image")
+![sample-img](uml/out/geo2d/geo2d.svg "sample image")
