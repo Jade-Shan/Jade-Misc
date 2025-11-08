@@ -5,13 +5,18 @@ import { ImageProxyConfig, WebUtil } from "./web.js";
 
 export type VisibilityType = "default" | "glimmer" | "dark";
 
+export interface IObserver {
+	c: IPoint2D,
+	viewRange: (type: VisibilityType) => number
+};
+
 /* ======================
  * 序列化的记录
  * ======================= */
 export interface ImageResource {
-	type: "Image" | "Other",
-	id: string,
-	url: string,
+	type    : "Image" | "Other",
+	id      : string,
+	url     : string,
 	imgElem?: HTMLImageElement
 }
 
@@ -19,74 +24,37 @@ export interface ImageResource {
  * 从图片中截取一部分
  */
 export interface ImageClip {
-	imgKey: string, // 对应的图片ID
-	sx: number,     // 左上角X
-	sy: number,     // 左上角Y
-	width: number,  // 宽度
-	height: number, // 高度
+	imgKey    : string, // 对应的图片ID
+	sx        : number, // 左上角X
+	sy        : number, // 左上角Y
+	width     : number, // 宽度
+	height    : number, // 高度
 	imageElem?: HTMLImageElement;
-}
+};
 
-export interface ITokenRec {
-	type: "Circle" | "Rectangle" | "Line",
-	id: string,
-	x: number,
-	y: number,
-	visiable: boolean,
+
+export interface IToken2DRec {
+	type     : "Circle" | "Rectangle" | "Line",
+	id       : string,
+	x        : number,
+	y        : number,
+	visiable : boolean,
 	blockView: boolean,
-	color: string,
-}
-
-export interface ICircleTokenRec extends ITokenRec {
-	type: "Circle",
-	radius: number,
-	img: ImageClip,
-}
-
-export interface IRectangleTokenRec extends ITokenRec {
-	type: "Rectangle",
-	width: number,
-	height: number,
-	img: ImageClip,
-}
-
-export interface ILineTokenRec extends ITokenRec {
-	type: "Line",
-	x2: number,
-	y2: number,
-}
-
-export interface ScenceDataResp {
-	username: string,
-	loginToken: string,
-	imgResources: Array<ImageResource>,
-	mapDatas: {
-		teams: Array<ICircleTokenRec>,
-		creaters: Array<ICircleTokenRec>,
-		furnishings: Array<IRectangleTokenRec>,
-		doors: Array<IRectangleTokenRec>,
-		walls: Array<ILineTokenRec>,
-	}
-}
-
-
-
-
-
-
-
-
-export interface IObserver {
-	c: IPoint2D,
-	viewRange: (type: VisibilityType) => number
+	color    : string,
 }
 export interface IToken2D extends CanvasShape2D {
-	id: string,
-	color: string,
-	visiable: boolean,
+	id       : string,
+	color    : string,
+	visiable : boolean,
 	blockView: boolean
 
-	toRecord(): ITokenRec;
+	toRecord(): IToken2DRec;
+}
+
+export interface ICircleTokenRec extends IToken2DRec {
+	type  : "Circle",
+	radius: number,
+	img   : ImageClip,
 }
 
 export type ICircleToken = { c: { x: number, y: number }, radius: number, color: string, imgClip: ImageClip };
@@ -158,17 +126,32 @@ export class CircleToken extends CanvasCircle2D implements IToken2D, ICircleToke
 
 }
 
-export interface IRectangleTokenRec extends ITokenRec {
-	type: "Rectangle",
-	width: number,
+export interface IRectangleTokenRec extends IToken2DRec {
+	type  : "Rectangle",
+	width : number,
 	height: number,
+	img   : ImageClip,
+};
+
+export interface ILineTokenRec extends IToken2DRec {
+	type: "Line",
+	x2  : number,
+	y2  : number,
 }
 
 
-export interface ILineTokenRec extends ITokenRec {
-	type: "Line",
-	x2: number,
-	y2: number,
+
+export interface ScenceDataResp {
+	username    : string,
+	loginToken  : string,
+	imgResources: Array<ImageResource>,
+	mapDatas: {
+		teams      : Array<ICircleTokenRec>,
+		creaters   : Array<ICircleTokenRec>,
+		furnishings: Array<IRectangleTokenRec>,
+		doors      : Array<IRectangleTokenRec>,
+		walls      : Array<ILineTokenRec>,
+	}
 }
 
 
