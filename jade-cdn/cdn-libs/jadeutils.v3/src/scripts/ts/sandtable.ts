@@ -1,5 +1,5 @@
 import { TimeUtil } from "./basic.js";
-import { CanvasCircle2D, CanvasShape2D, ICanvas2D } from "./canvas.js";
+import { CanvasCircle2D, CanvasRectangle2D, CanvasShape2D, ICanvas2D, ICanvasCircle2D, ICanvasRectangle2D } from "./canvas.js";
 import { Geo2DUtils, GeoShape2D, IPoint2D, Point2D } from "./geo2d.js";
 import { ImageProxyConfig, WebUtil } from "./web.js";
 
@@ -57,13 +57,13 @@ export interface ICircleTokenRec extends IToken2DRec {
 	img   : ImageClip,
 }
 
-export type ICircleToken = { c: { x: number, y: number }, radius: number, color: string, imgClip: ImageClip };
+export interface ICircleToken extends ICanvasCircle2D { color: string, imgClip: ImageClip };
 export class CircleToken extends CanvasCircle2D implements IToken2D, ICircleToken {
-	id: string = "";
-	color: string;
-	visiable: boolean = true;
+	id       : string = "";
+	color    : string;
+	visiable : boolean = true;
 	blockView: boolean = true;
-	imgClip: ImageClip;
+	imgClip  : ImageClip;
 
 	constructor(id: string, x: number, y: number, radius: number, //
 		lineWidth: number, strokeStyle: string, fillStyle: string, //
@@ -132,6 +132,76 @@ export interface IRectangleTokenRec extends IToken2DRec {
 	height: number,
 	img   : ImageClip,
 };
+export interface IRectangleToken extends ICanvasRectangle2D { color: string, imgClip: ImageClip }
+
+export class RectangleToken extends CanvasRectangle2D implements IToken2D, IRectangleToken {
+	id       : string = "";
+	color    : string;
+	visiable : boolean = true;
+	blockView: boolean = true;
+	imgClip  : ImageClip;
+
+	constructor(id: string, x: number, y: number, width: number, heigh: number,//
+		lineWidth: number, strokeStyle: string, fillStyle: string, //
+		visiable: boolean, blockView: boolean, color: string, image: ImageClip) //
+	{
+		super(x, y, width, heigh, lineWidth, strokeStyle, fillStyle);
+		this.id        = id;
+		this.visiable  = visiable;
+		this.blockView = blockView;
+		this.color     = color;
+		this.imgClip   = image;
+	}
+
+	static fromRecord(rec: IRectangleTokenRec, imageRecs: Array<ImageResource>): RectangleToken {
+		let rtg = new RectangleToken(rec.id, rec.x, rec.y, rec.width, rec.height, 0, //
+			rec.color, rec.color, rec.visiable, rec.blockView, rec.color, rec.img);
+		if (null != imageRecs && imageRecs.length > 0) {
+			for (let i = 0; i < imageRecs.length; i++) {
+				let img = imageRecs[i];
+				if (img.id == rec.img.imgKey) {
+					if (img.imgElem) {
+						rec.img.imageElem = img.imgElem;
+					}
+				}
+			}
+		}
+		return rtg;
+	}
+
+	toRecord(): IRectangleTokenRec {
+		return {
+			"type": "Rectangle", "id": this.id, "x": this.x, "y": this.y, //
+			"width": this.width, "height": this.height, "visiable": this.visiable, // 
+			"blockView": this.blockView, "color": this.color, //
+			"img": { "imgKey": "icons", "sx": 0, "sy": 0, "width": 50, "height": 50 }
+		};
+	}
+
+	draw(cvsCtx: CanvasRenderingContext2D): void {
+		cvsCtx.save();
+		cvsCtx.lineWidth = 0;
+		// draw a rectangle
+		cvsCtx.beginPath();
+		cvsCtx.fillStyle = this.color;
+		cvsCtx.fillRect(this.x, this.y, this.width, this.height);
+		cvsCtx.fill();
+		// clip Image
+		// cvsCtx.beginPath();
+		cvsCtx.rect(this.x + 3, this.y + 3, this.width - 6, this.height - 6);
+		// cvsCtx.stroke();
+		// cvsCtx.clip();
+		if (this.imgClip && this.imgClip.imageElem) {
+			let dx = this.x + 3;
+			let dy = this.y + 3;
+			let dwidth  = this.width  - 6;
+			let dheight = this.height - 6;
+			cvsCtx.drawImage(this.imgClip.imageElem, this.imgClip.sx, this.imgClip.sy, 
+				this.imgClip.width, this.imgClip.height, dx, dy, dwidth, dheight);
+		}
+		cvsCtx.restore();
+	}
+}
 
 export interface ILineTokenRec extends IToken2DRec {
 	type: "Line",

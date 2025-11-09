@@ -227,40 +227,8 @@ package canvas {
 		width     : number
 		height    : number
 		imageElem?: HTMLImageElement
-	}
+	};
 
-	record IToken2DRec {
-		type     : "Circle" | "Rectangle" | "Line",
-		id       : string,
-		x        : number,
-		y        : number,
-		visiable : boolean,
-		blockView: boolean,
-		color    : string,
-	}
-
-
-	record ICircleTokenRec {
-		type  : "Circle",
-		radius: number,
-		img   : ImageClip,
-	}
-	IToken2DRec <|-- ICircleTokenRec
-
-	record IRectangleTokenRec {
-		type  : "Rectangle",
-		width : number,
-		height: number,
-		img   : ImageClip,
-	}
-	IToken2DRec <|-- IRectangleTokenRec
-
-	record ILineTokenRec {
-		type: "Line",
-		x2  : number,
-		y2  : number,
-	}
-	IToken2DRec <|-- IRectangleTokenRec
 
 
 
