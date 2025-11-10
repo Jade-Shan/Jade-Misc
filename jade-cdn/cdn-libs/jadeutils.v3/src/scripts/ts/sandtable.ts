@@ -239,8 +239,10 @@ export class LineToken extends CanvasLine2D implements IToken2D, ILineToken {
 		cvsCtx.save();
 		// 
 		cvsCtx.lineWidth = 5;
+		let nc = this.oppColor(this.color, -15);
+		console.log(`cal opp color: \n${this.color}\n${nc}`);
 		// cvsCtx.fillStyle = this.color;
-		cvsCtx.strokeStyle = this.oppColor(this.color, -15);
+		cvsCtx.strokeStyle = nc;
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(this.a.x, this.a.y);
 		cvsCtx.lineTo(this.b.x, this.b.y);
