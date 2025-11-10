@@ -1,5 +1,5 @@
 import { TimeUtil } from "./basic.js";
-import { CanvasCircle2D, CanvasRectangle2D, CanvasShape2D, ICanvas2D, ICanvasCircle2D, ICanvasRectangle2D } from "./canvas.js";
+import { CanvasCircle2D, CanvasLine2D, CanvasRectangle2D, CanvasShape2D, ICanvas2D, ICanvasCircle2D, ICanvasLine2D, ICanvasRectangle2D } from "./canvas.js";
 import { Geo2DUtils, GeoShape2D, IPoint2D, Point2D } from "./geo2d.js";
 import { ImageProxyConfig, WebUtil } from "./web.js";
 
@@ -208,7 +208,78 @@ export interface ILineTokenRec extends IToken2DRec {
 	x2  : number,
 	y2  : number,
 }
+export interface ILineToken extends ICanvasLine2D { color: string }
+export class LineToken extends CanvasLine2D implements IToken2D, ILineToken {
+	id: string = "";
+	color: string;
+	visiable: boolean = true;
+	blockView: boolean = true;
 
+	constructor(id: string, x1: number, y1: number, x2: number, y2: number, // 
+		lineWidth: number, strokeStyle: string, color: string, // 
+		visiable: boolean, blockView: boolean ) // 
+	{
+		super({x: x1, y: y1}, {x: x2, y: y2}, lineWidth, strokeStyle);
+		this.id        = id;
+		this.color     = color;
+		this.visiable  = visiable;
+		this.blockView = blockView;
+	}
+
+	static fromRecord(rec: ILineTokenRec): LineToken {
+		return new LineToken(rec.id, rec.x, rec.y, rec.x2, rec.y2, 6, "", rec.color, rec.visiable, rec.blockView);
+	}
+
+	toRecord(): ILineTokenRec {
+		return {"type": "Line", "id": this.id, "x": this.a.x, "y": this.a.y, "x2":this.b.x, "y2": this.b.y,
+			"color": this.color, "visiable": this.visiable, "blockView": this.blockView };
+	}
+
+	draw(cvsCtx: CanvasRenderingContext2D): void {
+		cvsCtx.save();
+		// 
+		cvsCtx.lineWidth = 5;
+		// cvsCtx.fillStyle = this.color;
+		cvsCtx.strokeStyle = this.oppColor(this.color, -15);
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(this.a.x, this.a.y);
+		cvsCtx.lineTo(this.b.x, this.b.y);
+		cvsCtx.closePath();
+		cvsCtx.stroke();
+		// cvsCtx.fill();
+		//
+		cvsCtx.lineWidth = 3;
+		// cvsCtx.fillStyle = this.color;
+		cvsCtx.strokeStyle = this.color;
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(this.a.x, this.a.y);
+		cvsCtx.lineTo(this.b.x, this.b.y);
+		cvsCtx.closePath();
+		cvsCtx.stroke();
+		// cvsCtx.fill();
+		cvsCtx.restore();
+	}
+
+	// ilighten为对比度，范围从(-1 ~ -15)
+	oppColor(color: string,ilighten: number){
+		let a = color.replace('#','');
+		let max16 = Math.floor(15 + (ilighten || 0));
+		if (max16 < 0 || max16 > 15) {
+			max16 = 15;
+		}
+		let c16 = 0, c10 = 0, b=[];
+		for (let i =0; i< a.length; i++) {
+			c16 = parseInt(a.charAt(i), 16);
+			c10 = max16 - c16;
+			if (c10 < 0) {
+				c10 = Math.abs(c10);
+			}
+			b.push(c10.toString(16));
+		}
+		return '#' + b.join('');
+	}
+
+}
 
 
 export interface ScenceDataResp {

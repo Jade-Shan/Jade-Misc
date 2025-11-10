@@ -1,11 +1,8 @@
 @startuml geo2d
 
-package geo2d {
-
-}
-
-package canvas {
-}
+package geo2d { }
+package canvas { }
+package sandtable { }
 
 	enum QuadPos {
 		QUAD_1ST 
@@ -125,6 +122,7 @@ package canvas {
 	}
 
 
+
 	interface ICanvas2D {}
 	IGeo2D <|-down- ICanvas2D
 
@@ -230,6 +228,64 @@ package canvas {
 	};
 
 
+
+	record ICircleToken 
+	{
+		color  : string;
+		imgClip: ImageClip;
+	};
+	ICanvasCircle2D <|-- ICircleToken;
+	class CircleToken 
+	{
+		id       : string;
+		color    : string;
+		visiable : boolean;
+		blockView: boolean;
+		imgClip  : ImageClip;
+
+		draw(cvsCtx: CanvasRenderingContext2D): void;
+	}
+	CanvasCircle2D <|-- CircleToken
+	IToken2D       <|.. CircleToken
+	ICircleToken   <|.. CircleToken
+
+
+	record IRectangleToken {
+		color  : string; 
+		imgClip: ImageClip;
+	};
+	ICanvasRectangle2D <|-- IRectangleToken;
+	class RectangleToken
+	{
+		id       : string;
+		color    : string;
+		visiable : boolean;
+		blockView: boolean;
+		imgClip  : ImageClip;
+
+		draw(cvsCtx: CanvasRenderingContext2D): void;
+	}
+	CanvasRectangle2D <|-- RectangleToken
+	IToken2D          <|.. RectangleToken
+	IRectangleToken   <|.. RectangleToken
+
+	record ILineToken 
+	{
+		color: string
+	}
+	ICanvasLine2D <|-- ILineToken
+	class LineToken  
+	{
+		id       : string = "";
+		color    : string;
+		visiable : boolean = true;
+		blockView: boolean = true;
+
+		draw(cvsCtx: CanvasRenderingContext2D): void;
+	}
+	CanvasLine2D <|-- LineToken 
+	IToken2D     <|.. LineToken 
+	ILineToken   <|.. LineToken 
 
 
 

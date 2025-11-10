@@ -2,7 +2,7 @@ import { WebUtil } from "./web.js";
 import { Geo2DUtils } from "./geo2d.js";
 import { CanvasCircle2D, CanvasRectangle2D, CanvasUtils } from "./canvas.js";
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
-import { CircleToken, ImageClip, RectangleToken, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
+import { CircleToken, ImageClip, LineToken, RectangleToken, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
 import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWindow.js";
 
 export namespace TestJadeTRPG {
@@ -66,7 +66,9 @@ export namespace TestJadeTRPG {
 		}];
 		await SandTableUtils.loadImageResources(testSceneData.imgResources, imgProxyUrl);
 
+		/* ========================== */
 		// test 001
+		/* ========================== */
 		let cvsCtx001 = document.querySelector<HTMLCanvasElement>("#testTrpg001")?.getContext("2d");
 		if (null != cvsCtx001) {
 			// load token from json
@@ -81,7 +83,9 @@ export namespace TestJadeTRPG {
 			user.draw(cvsCtx001);
 		}
 
+		/* ========================== */
 		// test 002
+		/* ========================== */
 		let cvsCtx002 = document.querySelector<HTMLCanvasElement>("#testTrpg002")?.getContext("2d");
 		if (null != cvsCtx002) {
 			// load token from json
@@ -89,10 +93,25 @@ export namespace TestJadeTRPG {
 				"type": "Rectangle", "id": "furnishing-1696391644699", //
 				"x": 156, "y": 190, "width": 50, "height": 50, //
 				"visiable": true, "blockView": false, "color": "#0000FF", //
-				"img": {"imgKey": "icons", "sx": 0, "sy": 0, "width": 50, "height": 50}
+				"img": { "imgKey": "icons", "sx": 0, "sy": 0, "width": 50, "height": 50 }
 			}, testSceneData.imgResources);
 			// draw image
 			fnt.draw(cvsCtx002);
+		}
+
+		/* ========================== */
+		// test 003
+		/* ========================== */
+		let cvsCtx003 = document.querySelector<HTMLCanvasElement>("#testTrpg003")?.getContext("2d");
+		if (null != cvsCtx003) {
+			// load token from json
+			let line = LineToken.fromRecord({
+				"type": "Line", "id": "wall-1653882430769", //
+				"x": 53, "y": 112, "x2": 160, "y2": 214, "color": "#0000FF", // 
+				"visiable": false, "blockView": true
+			});
+			// draw image
+			line.draw(cvsCtx003);
 		}
 	}
 
