@@ -414,6 +414,26 @@ class ColorRGB implements IColorRGB {
 		return namedRGBColor[idx];
 	}
 
+	oppColor(ilighten: number){
+		// 互补色的查询
+		// https://htmlcolorcodes.com/zh/yanse-xuanze-qi/
+		let color = this.toStrHex();
+		let asHex = '0123456789ABCDEF';
+		let sResult = '#';
+		let iTemp = 0;
+		for (let i=1; i<7;i++) {
+			iTemp = parseInt(`0x${color.substring(i, 1)}`) + ilighten;
+			if (iTemp > 15) {
+				iTemp = 15;
+			} else if (iTemp < 0) {
+				iTemp= 0;
+			}
+			sResult = sResult + asHex.charAt(iTemp);
+		}
+		let result = ColorRGB.fromStrHex(sResult);
+		return result;
+	}
+
 }
 
 let RGBColorMap = {
@@ -700,6 +720,19 @@ namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFF00'), name: 'Yellow'       
 namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFFE0'), name: 'LightYellow'         });
 namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFFF0'), name: 'Ivory'               });
 namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFFFF'), name: 'White'               });
+
+for (let i = 0; i < namedRGBColor.length; i++) {
+	let c1 = namedRGBColor[i].color;
+	let c2 = c1.oppColor( 4);
+	let c3 = c1.oppColor(-4);
+	let c4 = c1.oppColor(-2);
+
+	console.log(`${c1.toStrHex()}%c${c2.toStrHex()}%c${c3.toStrHex()}%c${c4.toStrHex()}`, //
+	`color:${c1.toStrHex()}; background:${c2.toStrHex()};`, //
+	`color:${c1.toStrHex()}; background:${c3.toStrHex()};`, //
+	`color:${c1.toStrHex()}; background:${c4.toStrHex()};`);
+	//console.log('%cabc123', 'color:#FFFF00; background:#0000FF' )  
+}
 
 export namespace SandTableUtils {
 
