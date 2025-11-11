@@ -236,13 +236,15 @@ export class LineToken extends CanvasLine2D implements IToken2D, ILineToken {
 	}
 
 	draw(cvsCtx: CanvasRenderingContext2D): void {
+		console.log(`cal opp color: \n${this.color}\n${
+			this.oppColor(this.color, 4)}\n${
+			this.oppColor(this.color,-4)}\n${
+			this.oppColor(this.color,-2)}\n`);
 		cvsCtx.save();
 		// 
-		cvsCtx.lineWidth = 5;
-		let nc = this.oppColor(this.color, -15);
-		console.log(`cal opp color: \n${this.color}\n${nc}`);
+		cvsCtx.lineWidth = 7;
 		// cvsCtx.fillStyle = this.color;
-		cvsCtx.strokeStyle = nc;
+		cvsCtx.strokeStyle = this.oppColor(this.color,  4);
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(this.a.x, this.a.y);
 		cvsCtx.lineTo(this.b.x, this.b.y);
@@ -263,7 +265,7 @@ export class LineToken extends CanvasLine2D implements IToken2D, ILineToken {
 	}
 
 	// ilighten为对比度，范围从(-1 ~ -15)
-	oppColor(color: string,ilighten: number){
+	oppColor2(color: string,ilighten: number){
 		let a = color.replace('#','');
 		let max16 = Math.floor(15 + (ilighten || 0));
 		if (max16 < 0 || max16 > 15) {
@@ -279,6 +281,22 @@ export class LineToken extends CanvasLine2D implements IToken2D, ILineToken {
 			b.push(c10.toString(16));
 		}
 		return '#' + b.join('');
+	}
+
+	oppColor(color: string,ilighten: number){
+		let asHex = '0123456789ABCDEF';
+		let sResult = '#';
+		let iTemp = 0;
+		for (let i=1; i<7;i++) {
+			iTemp = parseInt(`0x${color.substring(i, 1)}`) + ilighten;
+			if (iTemp > 15) {
+				iTemp = 15;
+			} else if (iTemp < 0) {
+				iTemp= 0;
+			}
+			sResult = sResult + asHex.charAt(iTemp);
+		}
+		return sResult;
 	}
 
 }
@@ -333,7 +351,366 @@ export class SandTable implements ISandTable {
 
 }
 
+interface IColorRGB { readonly r: number, readonly g: number, readonly b: number }
+class ColorRGB implements IColorRGB {
+	readonly r: number;
+	readonly g: number;
+	readonly b: number;
+
+	constructor(r: number, g: number, b: number) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
+	}
+
+	static fromStrHex(str: string): ColorRGB {
+		let r = 0, g = 0, b = 0;
+		if (!str) {
+			// do nothing
+		} else if (str.length > 6) {
+			r = parseInt(`0x${str.substring(1, 3)}`);
+			g = parseInt(`0x${str.substring(3, 5)}`);
+			b = parseInt(`0x${str.substring(5, 7)}`);
+		}
+		return new ColorRGB(r, g, b);
+	}
+
+	static fromName(name: string): ColorRGB {
+		let r = 0, g = 0, b = 0;
+		for (let i = 0; i< namedRGBColor.length; i++) {
+			let color = namedRGBColor[i];
+			if (name == color.name) {
+				r = color.color.r;
+				g = color.color.g;
+				b = color.color.b;
+			}
+		}
+		return new ColorRGB(r, g, b);
+	}
+
+	toStrRGB(): string { return `rgb(${this.r},${this.g},${this.b})`; }
+
+	toStrHex(): string {
+		let r = this.r.toString(16);
+		let g = this.g.toString(16);
+		let b = this.b.toString(16);
+		r = r.length > 1 ? r : "0" + r;
+		g = g.length > 1 ? g : "0" + g;
+		b = b.length > 1 ? b : "0" + b;
+		return `#${r}${g}${b}`;
+	}
+
+	toName(): {color: ColorRGB, name: string} {
+		let idx = 0;
+		while ((idx + 1) < namedRGBColor.length) {
+			if (this.r > namedRGBColor[idx + 1].color.r) { break; } else { idx++ }
+		}
+		while ((idx + 1) < namedRGBColor.length) {
+			if (this.g > namedRGBColor[idx + 1].color.g) { break; } else { idx++ }
+		}
+		while ((idx + 1) < namedRGBColor.length) {
+			if (this.b > namedRGBColor[idx + 1].color.b) { break; } else { idx++ }
+		}
+		return namedRGBColor[idx];
+	}
+
+}
+
+let RGBColorMap = {
+Black                : ColorRGB.fromStrHex('#000000'),
+Navy                 : ColorRGB.fromStrHex('#000080'),
+DarkBlue             : ColorRGB.fromStrHex('#00008B'),
+MediumBlue           : ColorRGB.fromStrHex('#0000CD'),
+Blue                 : ColorRGB.fromStrHex('#0000FF'),
+DarkGreen            : ColorRGB.fromStrHex('#006400'),
+Green                : ColorRGB.fromStrHex('#008000'),
+Teal                 : ColorRGB.fromStrHex('#008080'),
+DarkCyan             : ColorRGB.fromStrHex('#008B8B'),
+DeepSkyBlue          : ColorRGB.fromStrHex('#00BFFF'),
+DarkTurquoise        : ColorRGB.fromStrHex('#00CED1'),
+MediumSpringGreen    : ColorRGB.fromStrHex('#00FA9A'),
+Lime                 : ColorRGB.fromStrHex('#00FF00'),
+SpringGreen          : ColorRGB.fromStrHex('#00FF7F'),
+Aqua                 : ColorRGB.fromStrHex('#00FFFF'),
+Cyan                 : ColorRGB.fromStrHex('#00FFFF'),
+MidnightBlue         : ColorRGB.fromStrHex('#191970'),
+DodgerBlue           : ColorRGB.fromStrHex('#1E90FF'),
+LightSeaGreen        : ColorRGB.fromStrHex('#20B2AA'),
+ForestGreen          : ColorRGB.fromStrHex('#228B22'),
+SeaGreen             : ColorRGB.fromStrHex('#2E8B57'),
+DarkSlateGray        : ColorRGB.fromStrHex('#2F4F4F'),
+LimeGreen            : ColorRGB.fromStrHex('#32CD32'),
+MediumSeaGreen       : ColorRGB.fromStrHex('#3CB371'),
+Turquoise            : ColorRGB.fromStrHex('#40E0D0'),
+RoyalBlue            : ColorRGB.fromStrHex('#4169E1'),
+SteelBlue            : ColorRGB.fromStrHex('#4682B4'),
+DarkSlateBlue        : ColorRGB.fromStrHex('#483D8B'),
+MediumTurquoise      : ColorRGB.fromStrHex('#48D1CC'),
+Indigo               : ColorRGB.fromStrHex('#4B0082'),
+DarkOliveGreen       : ColorRGB.fromStrHex('#556B2F'),
+CadetBlue            : ColorRGB.fromStrHex('#5F9EA0'),
+CornflowerBlue       : ColorRGB.fromStrHex('#6495ED'),
+MediumAquaMarine     : ColorRGB.fromStrHex('#66CDAA'),
+DimGray              : ColorRGB.fromStrHex('#696969'),
+SlateBlue            : ColorRGB.fromStrHex('#6A5ACD'),
+OliveDrab            : ColorRGB.fromStrHex('#6B8E23'),
+SlateGray            : ColorRGB.fromStrHex('#708090'),
+LightSlateGray       : ColorRGB.fromStrHex('#778899'),
+MediumSlateBlue      : ColorRGB.fromStrHex('#7B68EE'),
+LawnGreen            : ColorRGB.fromStrHex('#7CFC00'),
+Chartreuse           : ColorRGB.fromStrHex('#7FFF00'),
+Aquamarine           : ColorRGB.fromStrHex('#7FFFD4'),
+Maroon               : ColorRGB.fromStrHex('#800000'),
+Purple               : ColorRGB.fromStrHex('#800080'),
+Olive                : ColorRGB.fromStrHex('#808000'),
+Gray                 : ColorRGB.fromStrHex('#808080'),
+SkyBlue              : ColorRGB.fromStrHex('#87CEEB'),
+LightSkyBlue         : ColorRGB.fromStrHex('#87CEFA'),
+BlueViolet           : ColorRGB.fromStrHex('#8A2BE2'),
+DarkRed              : ColorRGB.fromStrHex('#8B0000'),
+DarkMagenta          : ColorRGB.fromStrHex('#8B008B'),
+SaddleBrown          : ColorRGB.fromStrHex('#8B4513'),
+DarkSeaGreen         : ColorRGB.fromStrHex('#8FBC8F'),
+LightGreen           : ColorRGB.fromStrHex('#90EE90'),
+MediumPurple         : ColorRGB.fromStrHex('#9370DB'),
+DarkViolet           : ColorRGB.fromStrHex('#9400D3'),
+PaleGreen            : ColorRGB.fromStrHex('#98FB98'),
+DarkOrchid           : ColorRGB.fromStrHex('#9932CC'),
+YellowGreen          : ColorRGB.fromStrHex('#9ACD32'),
+Sienna               : ColorRGB.fromStrHex('#A0522D'),
+Brown                : ColorRGB.fromStrHex('#A52A2A'),
+DarkGray             : ColorRGB.fromStrHex('#A9A9A9'),
+LightBlue            : ColorRGB.fromStrHex('#ADD8E6'),
+GreenYellow          : ColorRGB.fromStrHex('#ADFF2F'),
+PaleTurquoise        : ColorRGB.fromStrHex('#AFEEEE'),
+LightSteelBlue       : ColorRGB.fromStrHex('#B0C4DE'),
+PowderBlue           : ColorRGB.fromStrHex('#B0E0E6'),
+FireBrick            : ColorRGB.fromStrHex('#B22222'),
+DarkGoldenRod        : ColorRGB.fromStrHex('#B8860B'),
+MediumOrchid         : ColorRGB.fromStrHex('#BA55D3'),
+RosyBrown            : ColorRGB.fromStrHex('#BC8F8F'),
+DarkKhaki            : ColorRGB.fromStrHex('#BDB76B'),
+Silver               : ColorRGB.fromStrHex('#C0C0C0'),
+MediumVioletRed      : ColorRGB.fromStrHex('#C71585'),
+IndianRed            : ColorRGB.fromStrHex('#CD5C5C'),
+Peru                 : ColorRGB.fromStrHex('#CD853F'),
+Chocolate            : ColorRGB.fromStrHex('#D2691E'),
+Tan                  : ColorRGB.fromStrHex('#D2B48C'),
+LightGray            : ColorRGB.fromStrHex('#D3D3D3'),
+Thistle              : ColorRGB.fromStrHex('#D8BFD8'),
+Orchid               : ColorRGB.fromStrHex('#DA70D6'),
+GoldenRod            : ColorRGB.fromStrHex('#DAA520'),
+PaleVioletRed        : ColorRGB.fromStrHex('#DB7093'),
+Crimson              : ColorRGB.fromStrHex('#DC143C'),
+Gainsboro            : ColorRGB.fromStrHex('#DCDCDC'),
+Plum                 : ColorRGB.fromStrHex('#DDA0DD'),
+BurlyWood            : ColorRGB.fromStrHex('#DEB887'),
+LightCyan            : ColorRGB.fromStrHex('#E0FFFF'),
+Lavender             : ColorRGB.fromStrHex('#E6E6FA'),
+DarkSalmon           : ColorRGB.fromStrHex('#E9967A'),
+Violet               : ColorRGB.fromStrHex('#EE82EE'),
+PaleGoldenRod        : ColorRGB.fromStrHex('#EEE8AA'),
+LightCoral           : ColorRGB.fromStrHex('#F08080'),
+Khaki                : ColorRGB.fromStrHex('#F0E68C'),
+AliceBlue            : ColorRGB.fromStrHex('#F0F8FF'),
+HoneyDew             : ColorRGB.fromStrHex('#F0FFF0'),
+Azure                : ColorRGB.fromStrHex('#F0FFFF'),
+SandyBrown           : ColorRGB.fromStrHex('#F4A460'),
+Wheat                : ColorRGB.fromStrHex('#F5DEB3'),
+Beige                : ColorRGB.fromStrHex('#F5F5DC'),
+WhiteSmoke           : ColorRGB.fromStrHex('#F5F5F5'),
+MintCream            : ColorRGB.fromStrHex('#F5FFFA'),
+GhostWhite           : ColorRGB.fromStrHex('#F8F8FF'),
+Salmon               : ColorRGB.fromStrHex('#FA8072'),
+AntiqueWhite         : ColorRGB.fromStrHex('#FAEBD7'),
+Linen                : ColorRGB.fromStrHex('#FAF0E6'),
+LightGoldenRodYellow : ColorRGB.fromStrHex('#FAFAD2'),
+OldLace              : ColorRGB.fromStrHex('#FDF5E6'),
+Red                  : ColorRGB.fromStrHex('#FF0000'),
+Fuchsia              : ColorRGB.fromStrHex('#FF00FF'),
+Magenta              : ColorRGB.fromStrHex('#FF00FF'),
+DeepPink             : ColorRGB.fromStrHex('#FF1493'),
+OrangeRed            : ColorRGB.fromStrHex('#FF4500'),
+Tomato               : ColorRGB.fromStrHex('#FF6347'),
+HotPink              : ColorRGB.fromStrHex('#FF69B4'),
+Coral                : ColorRGB.fromStrHex('#FF7F50'),
+DarkOrange           : ColorRGB.fromStrHex('#FF8C00'),
+LightSalmon          : ColorRGB.fromStrHex('#FFA07A'),
+Orange               : ColorRGB.fromStrHex('#FFA500'),
+LightPink            : ColorRGB.fromStrHex('#FFB6C1'),
+Pink                 : ColorRGB.fromStrHex('#FFC0CB'),
+Gold                 : ColorRGB.fromStrHex('#FFD700'),
+PeachPuff            : ColorRGB.fromStrHex('#FFDAB9'),
+NavajoWhite          : ColorRGB.fromStrHex('#FFDEAD'),
+Moccasin             : ColorRGB.fromStrHex('#FFE4B5'),
+Bisque               : ColorRGB.fromStrHex('#FFE4C4'),
+MistyRose            : ColorRGB.fromStrHex('#FFE4E1'),
+BlanchedAlmond       : ColorRGB.fromStrHex('#FFEBCD'),
+PapayaWhip           : ColorRGB.fromStrHex('#FFEFD5'),
+LavenderBlush        : ColorRGB.fromStrHex('#FFF0F5'),
+SeaShell             : ColorRGB.fromStrHex('#FFF5EE'),
+Cornsilk             : ColorRGB.fromStrHex('#FFF8DC'),
+LemonChiffon         : ColorRGB.fromStrHex('#FFFACD'),
+FloralWhite          : ColorRGB.fromStrHex('#FFFAF0'),
+Snow                 : ColorRGB.fromStrHex('#FFFAFA'),
+Yellow               : ColorRGB.fromStrHex('#FFFF00'),
+LightYellow          : ColorRGB.fromStrHex('#FFFFE0'),
+Ivory                : ColorRGB.fromStrHex('#FFFFF0'),
+White                : ColorRGB.fromStrHex('#FFFFFF'),
+};
+
+let namedRGBColor:Array<{color: ColorRGB, name: string}> = []; 
+namedRGBColor.push({color: ColorRGB.fromStrHex('#000000'), name: 'Black'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#000080'), name: 'Navy'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#00008B'), name: 'DarkBlue'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#0000CD'), name: 'MediumBlue'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#0000FF'), name: 'Blue'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#006400'), name: 'DarkGreen'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#008000'), name: 'Green'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#008080'), name: 'Teal'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#008B8B'), name: 'DarkCyan'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#00BFFF'), name: 'DeepSkyBlue'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#00CED1'), name: 'DarkTurquoise'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#00FA9A'), name: 'MediumSpringGreen'   });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#00FF00'), name: 'Lime'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#00FF7F'), name: 'SpringGreen'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#00FFFF'), name: 'Aqua'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#00FFFF'), name: 'Cyan'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#191970'), name: 'MidnightBlue'        });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#1E90FF'), name: 'DodgerBlue'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#20B2AA'), name: 'LightSeaGreen'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#228B22'), name: 'ForestGreen'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#2E8B57'), name: 'SeaGreen'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#2F4F4F'), name: 'DarkSlateGray'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#32CD32'), name: 'LimeGreen'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#3CB371'), name: 'MediumSeaGreen'      });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#40E0D0'), name: 'Turquoise'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#4169E1'), name: 'RoyalBlue'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#4682B4'), name: 'SteelBlue'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#483D8B'), name: 'DarkSlateBlue'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#48D1CC'), name: 'MediumTurquoise'     });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#4B0082'), name: 'Indigo'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#556B2F'), name: 'DarkOliveGreen'      });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#5F9EA0'), name: 'CadetBlue'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#6495ED'), name: 'CornflowerBlue'      });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#66CDAA'), name: 'MediumAquaMarine'    });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#696969'), name: 'DimGray'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#6A5ACD'), name: 'SlateBlue'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#6B8E23'), name: 'OliveDrab'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#708090'), name: 'SlateGray'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#778899'), name: 'LightSlateGray'      });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#7B68EE'), name: 'MediumSlateBlue'     });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#7CFC00'), name: 'LawnGreen'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#7FFF00'), name: 'Chartreuse'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#7FFFD4'), name: 'Aquamarine'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#800000'), name: 'Maroon'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#800080'), name: 'Purple'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#808000'), name: 'Olive'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#808080'), name: 'Gray'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#87CEEB'), name: 'SkyBlue'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#87CEFA'), name: 'LightSkyBlue'        });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#8A2BE2'), name: 'BlueViolet'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#8B0000'), name: 'DarkRed'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#8B008B'), name: 'DarkMagenta'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#8B4513'), name: 'SaddleBrown'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#8FBC8F'), name: 'DarkSeaGreen'        });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#90EE90'), name: 'LightGreen'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#9370DB'), name: 'MediumPurple'        });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#9400D3'), name: 'DarkViolet'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#98FB98'), name: 'PaleGreen'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#9932CC'), name: 'DarkOrchid'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#9ACD32'), name: 'YellowGreen'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#A0522D'), name: 'Sienna'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#A52A2A'), name: 'Brown'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#A9A9A9'), name: 'DarkGray'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#ADD8E6'), name: 'LightBlue'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#ADFF2F'), name: 'GreenYellow'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#AFEEEE'), name: 'PaleTurquoise'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#B0C4DE'), name: 'LightSteelBlue'      });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#B0E0E6'), name: 'PowderBlue'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#B22222'), name: 'FireBrick'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#B8860B'), name: 'DarkGoldenRod'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#BA55D3'), name: 'MediumOrchid'        });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#BC8F8F'), name: 'RosyBrown'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#BDB76B'), name: 'DarkKhaki'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#C0C0C0'), name: 'Silver'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#C71585'), name: 'MediumVioletRed'     });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#CD5C5C'), name: 'IndianRed'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#CD853F'), name: 'Peru'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#D2691E'), name: 'Chocolate'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#D2B48C'), name: 'Tan'                 });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#D3D3D3'), name: 'LightGray'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#D8BFD8'), name: 'Thistle'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#DA70D6'), name: 'Orchid'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#DAA520'), name: 'GoldenRod'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#DB7093'), name: 'PaleVioletRed'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#DC143C'), name: 'Crimson'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#DCDCDC'), name: 'Gainsboro'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#DDA0DD'), name: 'Plum'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#DEB887'), name: 'BurlyWood'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#E0FFFF'), name: 'LightCyan'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#E6E6FA'), name: 'Lavender'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#E9967A'), name: 'DarkSalmon'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#EE82EE'), name: 'Violet'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#EEE8AA'), name: 'PaleGoldenRod'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F08080'), name: 'LightCoral'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F0E68C'), name: 'Khaki'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F0F8FF'), name: 'AliceBlue'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F0FFF0'), name: 'HoneyDew'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F0FFFF'), name: 'Azure'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F4A460'), name: 'SandyBrown'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F5DEB3'), name: 'Wheat'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F5F5DC'), name: 'Beige'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F5F5F5'), name: 'WhiteSmoke'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F5FFFA'), name: 'MintCream'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#F8F8FF'), name: 'GhostWhite'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FA8072'), name: 'Salmon'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FAEBD7'), name: 'AntiqueWhite'        });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FAF0E6'), name: 'Linen'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FAFAD2'), name: 'LightGoldenRodYellow'});
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FDF5E6'), name: 'OldLace'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF0000'), name: 'Red'                 });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF00FF'), name: 'Fuchsia'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF00FF'), name: 'Magenta'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF1493'), name: 'DeepPink'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF4500'), name: 'OrangeRed'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF6347'), name: 'Tomato'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF69B4'), name: 'HotPink'             });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF7F50'), name: 'Coral'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FF8C00'), name: 'DarkOrange'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFA07A'), name: 'LightSalmon'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFA500'), name: 'Orange'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFB6C1'), name: 'LightPink'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFC0CB'), name: 'Pink'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFD700'), name: 'Gold'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFDAB9'), name: 'PeachPuff'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFDEAD'), name: 'NavajoWhite'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFE4B5'), name: 'Moccasin'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFE4C4'), name: 'Bisque'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFE4E1'), name: 'MistyRose'           });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFEBCD'), name: 'BlanchedAlmond'      });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFEFD5'), name: 'PapayaWhip'          });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFF0F5'), name: 'LavenderBlush'       });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFF5EE'), name: 'SeaShell'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFF8DC'), name: 'Cornsilk'            });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFACD'), name: 'LemonChiffon'        });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFAF0'), name: 'FloralWhite'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFAFA'), name: 'Snow'                });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFF00'), name: 'Yellow'              });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFFE0'), name: 'LightYellow'         });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFFF0'), name: 'Ivory'               });
+namedRGBColor.push({color: ColorRGB.fromStrHex('#FFFFFF'), name: 'White'               });
+
 export namespace SandTableUtils {
+
+	export let colorToRgbNum = (str: string): {r:number, g: number, b: number}  => {
+		let result = {r: 0, g:0, b:0};
+		if (str.length > 6) {
+
+		}
+
+		return result;
+	}
 
 	/**
 	 * 加载图片资源
