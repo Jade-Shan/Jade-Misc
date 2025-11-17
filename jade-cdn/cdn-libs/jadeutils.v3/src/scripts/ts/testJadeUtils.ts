@@ -118,24 +118,42 @@ class TestBasicUtil {
 
 	static testColor() {
 // 		//
- 		let namedRGBColor = ColorUtil.namedRGBColor;
- 		for (let i = 0; i < namedRGBColor.length; i++) {
-			let name = namedRGBColor[i].name;
- 			let c1 = namedRGBColor[i].color;
- 			let c2 = namedRGBColor[i].rev;
- 			//
+ 		//let namedRGBColor = ColorUtil.namedRGBColor;
+ 		//for (let i = 0; i < namedRGBColor.length; i++) {
+		//	let name = namedRGBColor[i].name;
+ 		//	let c1 = namedRGBColor[i].color;
+ 		//	let c2 = namedRGBColor[i].rev;
+ 		//	//
+ 		//	//console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${namedRGBColor[i].name}`, //
+ 		//	//`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 		//	//`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 		//	//`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
+ 		//	//
+		//	let rvC = c2.to140Color();
+ 		//	let c3 = rvC.color;
+		//	let name2 = rvC.name;
+ 		//	console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${c3.toStrHex()}%c${name}                    ${name2}`, //
+ 		//		`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 		//		`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 		//		`color:${c1.toStrHex()}; background:${c3.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 		//		`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
+ 		//}
+		//
+ 		let color140Arr = ColorUtil.color140Arr;
+ 		for (let i = 0; i < color140Arr.length; i++) {
+			let rec = color140Arr[i];
+			let name = rec.name;
+ 			let c1   = rec.color.color;
+ 			let c2   = rec.rev.color;
+			let name2  = rec.rev.name 			//
  			//console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${namedRGBColor[i].name}`, //
  			//`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
  			//`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
  			//`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
  			//
-			let rvC = c2.toNameColor();
- 			let c3 = rvC.color;
-			let name2 = rvC.name;
- 			console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${c3.toStrHex()}%c${name}                    ${name2}`, //
+ 			console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${name}                    ${name2}`, //
  				`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
  				`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 				`color:${c1.toStrHex()}; background:${c3.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
  				`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
  		}
 // 		//
