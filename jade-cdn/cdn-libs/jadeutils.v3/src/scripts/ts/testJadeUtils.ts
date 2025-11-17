@@ -1,10 +1,11 @@
-import { ColorUtil, NumUtil, StrUtil, TimeUtil } from './basic.js';
+import { ColorRGB, NumUtil, StrUtil, TimeUtil } from './basic.js';
 import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
 import { HttpRequest, HttpResponse, WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
 import { SyntaxHighlighterHelper, MathJaxHelper, BootStrapHelper, DataTableHelper } from './3rdLibTool.js';
 import { CanvasCircle2D, CanvasLine2D, CanvasPoint2D, CanvasRay2D, CanvasRectangle2D, CanvasUtils, ICanvasRay2D, ICanvasRectangle2D } from './canvas.js';
 import { Circle2D, Geo2DUtils, GeoShape2D, IRay2D, Line2D, Point2D, Ray2D } from './geo2d.js';
+
 
 let testFunc = (isPassed: boolean, log: (msg: string, sty: string, mk: string) => void) => {
 	let sty = isPassed ?
@@ -117,62 +118,48 @@ class TestBasicUtil {
 	}
 
 	static testColor() {
-// 		//
- 		//let namedRGBColor = ColorUtil.namedRGBColor;
- 		//for (let i = 0; i < namedRGBColor.length; i++) {
-		//	let name = namedRGBColor[i].name;
- 		//	let c1 = namedRGBColor[i].color;
- 		//	let c2 = namedRGBColor[i].rev;
- 		//	//
- 		//	//console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${namedRGBColor[i].name}`, //
- 		//	//`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 		//	//`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 		//	//`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
- 		//	//
-		//	let rvC = c2.to140Color();
- 		//	let c3 = rvC.color;
-		//	let name2 = rvC.name;
- 		//	console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${c3.toStrHex()}%c${name}                    ${name2}`, //
- 		//		`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 		//		`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 		//		`color:${c1.toStrHex()}; background:${c3.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 		//		`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
- 		//}
-		//
- 		let color140Arr = ColorUtil.color140Arr;
- 		for (let i = 0; i < color140Arr.length; i++) {
-			let rec = color140Arr[i];
-			let name = rec.name;
- 			let c1   = rec.color.color;
- 			let c2   = rec.rev.color;
-			let name2  = rec.rev.name 			//
- 			//console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${namedRGBColor[i].name}`, //
- 			//`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 			//`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 			//`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
- 			//
- 			console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${name}                    ${name2}`, //
- 				`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 				`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 				`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
- 		}
-// 		//
-		//let RGBColorMap = ColorUtil.RGBColorMap;
-		//let RGBColorArr = [
-		//	{ name: "LightSeaGreen ", nc: RGBColorMap.LightSeaGreen }];  
-		//for (let i = 0; i< RGBColorArr.length; i++) {
-		//	let rec = RGBColorArr[i];
-		//	let name = rec.name;
-		//	let c1 = rec.nc.color;
-		//	let c2 = rec.nc.rev;
- 		//	console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${name}`, //
- 		//		`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 		//		`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
- 		//		`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
-		//}
+		let testArr = [
+			ColorRGB.fromStrHex('#010000'), ColorRGB.fromStrHex('#000180'), ColorRGB.fromStrHex('#000081'), ColorRGB.fromStrHex('#0100CD'), ColorRGB.fromStrHex('#0001FF'), ColorRGB.fromStrHex('#006401'),
+			ColorRGB.fromStrHex('#018000'), ColorRGB.fromStrHex('#008180'), ColorRGB.fromStrHex('#008B81'), ColorRGB.fromStrHex('#01BFFF'), ColorRGB.fromStrHex('#00C1D1'), ColorRGB.fromStrHex('#00FA91'),
+			ColorRGB.fromStrHex('#01FF00'), ColorRGB.fromStrHex('#00F17F'), ColorRGB.fromStrHex('#00FFF1'), ColorRGB.fromStrHex('#01FFFF'), ColorRGB.fromStrHex('#191170'), ColorRGB.fromStrHex('#1E90F1'),
+			ColorRGB.fromStrHex('#21B2AA'), ColorRGB.fromStrHex('#228122'), ColorRGB.fromStrHex('#2E8B51'), ColorRGB.fromStrHex('#214F4F'), ColorRGB.fromStrHex('#32C132'), ColorRGB.fromStrHex('#3CB371'),
+			ColorRGB.fromStrHex('#41E0D0'), ColorRGB.fromStrHex('#4161E1'), ColorRGB.fromStrHex('#4682B1'), ColorRGB.fromStrHex('#413D8B'), ColorRGB.fromStrHex('#48D1CC'), ColorRGB.fromStrHex('#4B0081'),
+			ColorRGB.fromStrHex('#516B2F'), ColorRGB.fromStrHex('#5F91A0'), ColorRGB.fromStrHex('#6495E1'), ColorRGB.fromStrHex('#61CDAA'), ColorRGB.fromStrHex('#696169'), ColorRGB.fromStrHex('#6A5AC1'),
+			ColorRGB.fromStrHex('#618E23'), ColorRGB.fromStrHex('#708190'), ColorRGB.fromStrHex('#778891'), ColorRGB.fromStrHex('#7168EE'), ColorRGB.fromStrHex('#7CF100'), ColorRGB.fromStrHex('#7FFF01'),
+			ColorRGB.fromStrHex('#71FFD4'), ColorRGB.fromStrHex('#800100'), ColorRGB.fromStrHex('#800081'), ColorRGB.fromStrHex('#818000'), ColorRGB.fromStrHex('#808180'), ColorRGB.fromStrHex('#87CEE1'),
+			ColorRGB.fromStrHex('#81CEFA'), ColorRGB.fromStrHex('#8A21E2'), ColorRGB.fromStrHex('#8B0001'), ColorRGB.fromStrHex('#81008B'), ColorRGB.fromStrHex('#8B4113'), ColorRGB.fromStrHex('#8FBC81'),
+			ColorRGB.fromStrHex('#91EE90'), ColorRGB.fromStrHex('#9371DB'), ColorRGB.fromStrHex('#9400D1'), ColorRGB.fromStrHex('#91FB98'), ColorRGB.fromStrHex('#9931CC'), ColorRGB.fromStrHex('#9ACD31'),
+			ColorRGB.fromStrHex('#A1522D'), ColorRGB.fromStrHex('#A5212A'), ColorRGB.fromStrHex('#A9A9A1'), ColorRGB.fromStrHex('#A1D8E6'), ColorRGB.fromStrHex('#ADF12F'), ColorRGB.fromStrHex('#AFEEE1'),
+			ColorRGB.fromStrHex('#B1C4DE'), ColorRGB.fromStrHex('#B0E1E6'), ColorRGB.fromStrHex('#B22221'), ColorRGB.fromStrHex('#B1860B'), ColorRGB.fromStrHex('#BA51D3'), ColorRGB.fromStrHex('#BC8F81'),
+			ColorRGB.fromStrHex('#B1B76B'), ColorRGB.fromStrHex('#C0C1C0'), ColorRGB.fromStrHex('#C71581'), ColorRGB.fromStrHex('#C15C5C'), ColorRGB.fromStrHex('#CD813F'), ColorRGB.fromStrHex('#D26911'),
+			ColorRGB.fromStrHex('#D1B48C'), ColorRGB.fromStrHex('#D3D1D3'), ColorRGB.fromStrHex('#D8BFD1'), ColorRGB.fromStrHex('#D170D6'), ColorRGB.fromStrHex('#DAA120'), ColorRGB.fromStrHex('#DB7091'),
+			ColorRGB.fromStrHex('#D1143C'), ColorRGB.fromStrHex('#DCD1DC'), ColorRGB.fromStrHex('#DDA0D1'), ColorRGB.fromStrHex('#D1B887'), ColorRGB.fromStrHex('#E0F1FF'), ColorRGB.fromStrHex('#E6E6F1'),
+			ColorRGB.fromStrHex('#E1967A'), ColorRGB.fromStrHex('#EE81EE'), ColorRGB.fromStrHex('#EEE8A1'), ColorRGB.fromStrHex('#F18080'), ColorRGB.fromStrHex('#F0E18C'), ColorRGB.fromStrHex('#F0F8F1'),
+			ColorRGB.fromStrHex('#F1FFF0'), ColorRGB.fromStrHex('#F0F1FF'), ColorRGB.fromStrHex('#F4A461'), ColorRGB.fromStrHex('#F1DEB3'), ColorRGB.fromStrHex('#F5F1DC'), ColorRGB.fromStrHex('#F5F5F1'),
+			ColorRGB.fromStrHex('#F1FFFA'), ColorRGB.fromStrHex('#F8F1FF'), ColorRGB.fromStrHex('#FA8071'), ColorRGB.fromStrHex('#F1EBD7'), ColorRGB.fromStrHex('#FAF1E6'), ColorRGB.fromStrHex('#FAFAD1'),
+			ColorRGB.fromStrHex('#F1F5E6'), ColorRGB.fromStrHex('#FF0100'), ColorRGB.fromStrHex('#FF00F1'), ColorRGB.fromStrHex('#F100FF'), ColorRGB.fromStrHex('#FF1193'), ColorRGB.fromStrHex('#FF4501'),
+			ColorRGB.fromStrHex('#F16347'), ColorRGB.fromStrHex('#FF61B4'), ColorRGB.fromStrHex('#FF7F51'), ColorRGB.fromStrHex('#F18C00'), ColorRGB.fromStrHex('#FFA17A'), ColorRGB.fromStrHex('#FFA501'),
+			ColorRGB.fromStrHex('#F1B6C1'), ColorRGB.fromStrHex('#FFC1CB'), ColorRGB.fromStrHex('#FFD701'), ColorRGB.fromStrHex('#F1DAB9'), ColorRGB.fromStrHex('#FFD1AD'), ColorRGB.fromStrHex('#FFE4B1'),
+			ColorRGB.fromStrHex('#F1E4C4'), ColorRGB.fromStrHex('#FFE1E1'), ColorRGB.fromStrHex('#FFEBC1'), ColorRGB.fromStrHex('#F1EFD5'), ColorRGB.fromStrHex('#FFF1F5'), ColorRGB.fromStrHex('#FFF5E1'),
+			ColorRGB.fromStrHex('#F1F8DC'), ColorRGB.fromStrHex('#FFF1CD'), ColorRGB.fromStrHex('#FFFAF1'), ColorRGB.fromStrHex('#F1FAFA'), ColorRGB.fromStrHex('#FFF100'), ColorRGB.fromStrHex('#FFFFE1'),
+			ColorRGB.fromStrHex('#F1FFF0'), ColorRGB.fromStrHex('#FFF1FF')];
+
+		for (let i = 0; i < testArr.length; i++) {
+			let rec = testArr[i];
+			let aa = rec.to140Color();
+			let c1 = aa.color;
+			let n1 = aa.name;
+
+			let bb = c1.oppColor();
+			let c2 = bb.color;
+			let n2 = bb.name;
+			console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${n1}                    ${n2}`, //
+				`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+				`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+				`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
+		}
+
 	}
-
-
 
 }
 
