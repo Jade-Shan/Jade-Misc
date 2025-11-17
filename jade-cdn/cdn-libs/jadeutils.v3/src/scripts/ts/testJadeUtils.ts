@@ -1,4 +1,4 @@
-import { NumUtil, StrUtil, TimeUtil } from './basic.js';
+import { ColorUtil, NumUtil, StrUtil, TimeUtil } from './basic.js';
 import { SimpleMap, SimpleStack, SimpleQueue } from './dataStructure.js'
 import { HttpRequest, HttpResponse, WebUtil } from './web.js';
 import { PageConfig, WebHtmlPage } from './webHtmlPage.js';
@@ -115,6 +115,45 @@ class TestBasicUtil {
 		console.log(TimeUtil.getLocalTimeZoneName());
 		console.log(TimeUtil.getLocalTimeZone()    );
 	}
+
+	static testColor() {
+// 		//
+ 		let namedRGBColor = ColorUtil.namedRGBColor;
+ 		for (let i = 0; i < namedRGBColor.length; i++) {
+			let name = namedRGBColor[i].name;
+ 			let c1 = namedRGBColor[i].color;
+ 			let c2 = namedRGBColor[i].rev;
+ 			//
+ 			//console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${namedRGBColor[i].name}`, //
+ 			//`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 			//`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 			//`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
+ 			//
+			let rvC = c2.toNameColor();
+ 			let c3 = rvC.color;
+			let name2 = rvC.name;
+ 			console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${c3.toStrHex()}%c${name}                    ${name2}`, //
+ 				`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 				`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 				`color:${c1.toStrHex()}; background:${c3.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 				`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
+ 		}
+// 		//
+		//let RGBColorMap = ColorUtil.RGBColorMap;
+		//let RGBColorArr = [
+		//	{ name: "LightSeaGreen ", nc: RGBColorMap.LightSeaGreen }];  
+		//for (let i = 0; i< RGBColorArr.length; i++) {
+		//	let rec = RGBColorArr[i];
+		//	let name = rec.name;
+		//	let c1 = rec.nc.color;
+		//	let c2 = rec.nc.rev;
+ 		//	console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${name}`, //
+ 		//		`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 		//		`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
+ 		//		`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
+		//}
+	}
+
 
 
 }
@@ -867,6 +906,7 @@ export class TestJadeUtils {
 		TestBasicUtil.testNum();
 		TestBasicUtil.testStr();
 		TestBasicUtil.testTime();
+		TestBasicUtil.testColor();
 		//
 		TestDataStructure.testSimpleMap();
 		TestDataStructure.testSimpleStack();
