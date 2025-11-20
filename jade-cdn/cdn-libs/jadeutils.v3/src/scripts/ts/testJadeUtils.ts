@@ -148,15 +148,14 @@ class TestBasicUtil {
 			let rec = testArr[i];
 			let aa = rec.to140Color();
 			let c1 = aa.color;
-			let n1 = aa.name;
+			let n1 = StrUtil.leftPad(aa.name, 20, ' ');
 
 			let bb = c1.oppColor();
 			let c2 = bb.color;
-			let n2 = bb.name;
-			console.log(`%c${c1.toStrHex()}%c${c2.toStrHex()}%c${n1}                    ${n2}`, //
+			let n2 = StrUtil.rightPad(bb.name, 20, ' ');
+			console.log(`%c${n1} ${c1.toStrHex()}%c${c2.toStrHex()} ${n2}`, //
 				`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
-				`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
-				`color: Black          ; background: White          ; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
+				`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
 		}
 
 	}
