@@ -412,5 +412,71 @@ export class WebUtil {
 		return msgMap.get(key);
 	}
 
+	/**
+	 * 下载blog文件
+	 * 
+	 * @param content 内容
+	 * @param blobOption blob文件配置
+	 * @param filename 文件名
+	 */
+	static downloadBlob(content: any, blobOption?: BlobPropertyBag, filename?: string) {
+		const fName = filename ? filename : "default.download";
+		const opts = blobOption ? blobOption : { type: "application/octet-stream" };
+		const blob = new Blob([content], opts);
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = fName;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
+
+	/**
+	 * 创建临时对象的URL
+	 * 
+	 * @param blob Blob 对象
+	 * @param idleOption 超时配置
+	 * @returns URL字符串
+	 */
+	static createTmpBlobURL(blob: Blob, idleOption?: IdleRequestOptions): string {
+		const url = URL.createObjectURL(blob);
+		requestIdleCallback(() => URL.revokeObjectURL(url), idleOption);
+		return url;
+	}
+
+	/**
+	 * 
+	 * @param uploader 上传图片的HTMLInput
+	 * @param images 显示上传图片的HTMLImage
+	 */
+	static previewLocalImage(uploader: HTMLInputElement, images: Array<HTMLImageElement>) {
+		uploader.onchange = (ev: Event) => {
+			if (uploader.files && uploader.files.length > 0 && images.length > 0) {
+				const count = uploader.files.length > images.length ? uploader.files.length : images.length;
+				for (let i = 0; i < count; i++) {
+					const file = uploader.files[i];
+					const image = images[i];
+					if (file) {
+						const url = URL.createObjectURL(file);
+						image.src = url;
+						uploader.onload = () => URL.revokeObjectURL(url);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * 预览远程的图片
+	 * @param url 图片URL
+	 * @param image 显示图片的HTMLImage
+	 */
+	static previewRemoteImage(url: string, image: HTMLImageElement) {
+		fetch(url, { mode: 'cors' }).then(resp => resp.blob()).then(blob => {
+			const url = URL.createObjectURL(blob);
+			image.src = url;
+			image.onload = () => URL.revokeObjectURL(url);
+		});
+	}
 
 }
