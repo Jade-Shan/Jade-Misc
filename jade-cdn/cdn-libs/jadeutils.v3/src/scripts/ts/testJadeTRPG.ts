@@ -167,6 +167,162 @@ export namespace TestJadeTRPG {
 			enm03.draw(cvsCtx005);
 			enm04.draw(cvsCtx005);
 		}
+		/* ========================== */
+		// test 006
+		/* ========================== */
+		let cvsCtx006 = document.querySelector<HTMLCanvasElement>("#testTrpg006")?.getContext("2d");
+		if (null != cvsCtx006) {
+			// load token from json
+			let user = CircleToken.fromRecord({ // 
+				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm01 = CircleToken.fromRecord({ // 
+				"id": "enm01", "x": 100, "y": 100, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm02 = CircleToken.fromRecord({ // 
+				"id": "enm02", "x": 200, "y": 100, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm03 = CircleToken.fromRecord({ // 
+				"id": "enm03", "x": 100, "y": 200, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm04 = CircleToken.fromRecord({ // 
+				"id": "enm04", "x": 200, "y": 200, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let bgImgClip: ImageClip = { //
+				"imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, // 
+				"imageElem": testSceneData.imgResources[1].imgElem //
+			};
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm01, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm02, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm03, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm04, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			//
+			user.draw(cvsCtx006);
+			enm01.draw(cvsCtx006);
+			enm02.draw(cvsCtx006);
+			enm03.draw(cvsCtx006);
+			enm04.draw(cvsCtx006);
+		}
+		/* ========================== */
+		// test 007
+		/* ========================== */
+		let cvsCtx007 = document.querySelector<HTMLCanvasElement>("#testTrpg007")?.getContext("2d");
+		if (null != cvsCtx007) {
+			// load token from json
+			let user = CircleToken.fromRecord({ // 
+				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let fnt01 = RectangleToken.fromRecord({ // 
+				"id": "fnt01", "x": 125, "y": 50, "visiable": true, "blockView": true, //
+				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
+			}, testSceneData.imgResources);
+			//
+			let fnt02 = RectangleToken.fromRecord({ // 
+				"id": "fnt02", "x": 50, "y": 125, "visiable": true, "blockView": true, //
+				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
+			}, testSceneData.imgResources);
+			//
+			let fnt03 = RectangleToken.fromRecord({ // 
+				"id": "fnt03", "x": 200, "y": 125, "visiable": true, "blockView": true, //
+				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
+			}, testSceneData.imgResources);
+			//
+			let fnt04 = RectangleToken.fromRecord({ // 
+				"id": "fnt04", "x": 125, "y": 200, "visiable": true, "blockView": true, //
+				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
+			}, testSceneData.imgResources);
+			//
+			let bgImgClip: ImageClip = { //
+				"imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, // 
+				"imageElem": testSceneData.imgResources[1].imgElem //
+			};
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt01, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt02, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt03, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt04, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			//
+			user.draw(cvsCtx007);
+			fnt01.draw(cvsCtx007);
+			fnt02.draw(cvsCtx007);
+			fnt03.draw(cvsCtx007);
+			fnt04.draw(cvsCtx007);
+		}
+		/* ========================== */
+		// test 008
+		/* ========================== */
+		let cvsCtx008 = document.querySelector<HTMLCanvasElement>("#testTrpg008")?.getContext("2d");
+		if (null != cvsCtx008) {
+			// load token from json
+			let user = CircleToken.fromRecord({ // 
+				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let fnt01 = RectangleToken.fromRecord({ // 
+				"id": "fnt01", "x": 60, "y": 60, "visiable": true, "blockView": true, //
+				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
+			}, testSceneData.imgResources);
+			//
+			let fnt02 = RectangleToken.fromRecord({ // 
+				"id": "fnt02", "x": 180, "y": 60, "visiable": true, "blockView": true, //
+				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
+			}, testSceneData.imgResources);
+			//
+			let fnt03 = RectangleToken.fromRecord({ // 
+				"id": "fnt03", "x":  60, "y": 190, "visiable": true, "blockView": true, //
+				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
+			}, testSceneData.imgResources);
+			//
+			let fnt04 = RectangleToken.fromRecord({ // 
+				"id": "fnt04", "x": 180, "y": 190, "visiable": true, "blockView": true, //
+				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
+			}, testSceneData.imgResources);
+			//
+			let bgImgClip: ImageClip = { //
+				"imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, // 
+				"imageElem": testSceneData.imgResources[1].imgElem //
+			};
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt01, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt02, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt03, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt04, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			//
+			user.draw(cvsCtx008);
+			fnt01.draw(cvsCtx008);
+			fnt02.draw(cvsCtx008);
+			fnt03.draw(cvsCtx008);
+			fnt04.draw(cvsCtx008);
+		}
 	}
 
 	class TestCanvasWindow extends UIWindowAdpt {
