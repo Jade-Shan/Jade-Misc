@@ -1,5 +1,5 @@
 import { ColorRGB, TimeUtil } from "./basic.js";
-import { CanvasCircle2D, CanvasLine2D, CanvasRectangle2D, CanvasShape2D, ICanvas2D, ICanvasCircle2D, ICanvasLine2D, ICanvasRectangle2D } from "./canvas.js";
+import { CanvasCircle2D, CanvasLine2D, CanvasRectangle2D, CanvasShape2D, ICanvas2D, ICanvasCircle2D, ICanvasLine2D, ICanvasRectangle2D, ImageClip } from "./canvas.js";
 import { Geo2DUtils, IPoint2D} from "./geo2d.js";
 import { ImageProxyConfig, WebUtil } from "./web.js";
 
@@ -19,19 +19,6 @@ export interface ImageResource {
 	url     : string,
 	imgElem?: HTMLImageElement
 }
-
-/**
- * 从图片中截取一部分
- */
-export interface ImageClip {
-	imgKey    : string, // 对应的图片ID
-	sx        : number, // 左上角X
-	sy        : number, // 左上角Y
-	width     : number, // 宽度
-	height    : number, // 高度
-	imageElem?: HTMLImageElement;
-};
-
 
 export interface IToken2DRec {
 	type     : "Circle" | "Rectangle" | "Line",

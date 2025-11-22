@@ -3,10 +3,23 @@ import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D,
 	IRevolveOption, ICircle2D, Circle2D } from './geo2d.js';
 import { WebUtil } from './web.js';
 
+/**
+ * 从图片中截取一部分
+ */
+export interface ImageClip {
+	imgKey    : string, // 对应的图片ID
+	sx        : number, // 左上角X
+	sy        : number, // 左上角Y
+	width     : number, // 宽度
+	height    : number, // 高度
+	imageElem?: HTMLImageElement;
+};
+
 export interface ICanvasStyle {
 	lineWidth  ?: number;
 	strokeStyle?: string;
 	fillStyle  ?: string;
+	imgClip    ?: ImageClip;
 }
 
 export namespace CanvasUtils {
@@ -40,6 +53,15 @@ export namespace CanvasUtils {
 		func(cvsCtx);
 		if (style?.lineWidth && style.lineWidth > 0) { cvsCtx.stroke(); }
 		if (style?.fillStyle) { cvsCtx.fill(); }
+		if (style?.imgClip?.imageElem) {
+			cvsCtx.stroke();
+			cvsCtx.clip();
+			cvsCtx.drawImage(style.imgClip.imageElem, 
+				style.imgClip.sx, style.imgClip.sy, //
+				style.imgClip.width, style.imgClip.height, //
+				style.imgClip.sx, style.imgClip.sy, //
+				style.imgClip.width, style.imgClip.height);
+		}
 		cvsCtx.restore();
 	}
 

@@ -1,8 +1,6 @@
-import { WebUtil } from "./web.js";
-import { Geo2DUtils } from "./geo2d.js";
-import { CanvasCircle2D, CanvasRectangle2D, CanvasUtils } from "./canvas.js";
+import { CanvasUtils, ImageClip } from "./canvas.js";
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
-import { CircleToken, ImageClip, LineToken, RectangleToken, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
+import { CircleToken, LineToken, RectangleToken, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
 import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWindow.js";
 
 export namespace TestJadeTRPG {
@@ -12,7 +10,9 @@ export namespace TestJadeTRPG {
 		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
 		let imgResources = [{
 			"id": "icons", "type": "Image", // 
-			"url": "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/icons.jpg"
+			"url": "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/icons.jpg"},{
+			"id": "map"  , "type": "Image", //
+			"url": "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/map.jpg"
 		}];
 		await SandTableUtils.loadImageResources(testSceneData.imgResources, imgProxyUrl);
 
@@ -32,11 +32,11 @@ export namespace TestJadeTRPG {
 			// draw image
 			user.draw(cvsCtx001);
 		}
-		// test download
-		let testDownload = document.querySelector<HTMLCanvasElement>("#testTrpg001");
-		if (testDownload) {
-			CanvasUtils.downloadCanvasImage(testDownload, 'png');
-		}
+		// // test download
+		// let testDownload = document.querySelector<HTMLCanvasElement>("#testTrpg001");
+		// if (testDownload) {
+		// 	CanvasUtils.downloadCanvasImage(testDownload, 'png');
+		// }
 
 		/* ========================== */
 		// test 002
@@ -67,6 +67,105 @@ export namespace TestJadeTRPG {
 			});
 			// draw image
 			line.draw(cvsCtx003);
+		}
+		/* ========================== */
+		// test 004
+		/* ========================== */
+		let cvsCtx004 = document.querySelector<HTMLCanvasElement>("#testTrpg004")?.getContext("2d");
+		if (null != cvsCtx004) {
+			// load token from json
+			let user = CircleToken.fromRecord({ // 
+				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm01 = CircleToken.fromRecord({ // 
+				"id": "enm01", "x": 150, "y": 80, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm02 = CircleToken.fromRecord({ // 
+				"id": "enm02", "x": 80, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm03 = CircleToken.fromRecord({ // 
+				"id": "enm03", "x": 220, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm04 = CircleToken.fromRecord({ // 
+				"id": "enm04", "x": 150, "y": 220, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			user.draw(cvsCtx004);
+			enm01.draw(cvsCtx004);
+			enm02.draw(cvsCtx004);
+			enm03.draw(cvsCtx004);
+			enm04.draw(cvsCtx004);
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm01, 139, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm02, 139, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm03, 139, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm04, 139, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+		}
+		/* ========================== */
+		// test 005
+		/* ========================== */
+		let cvsCtx005 = document.querySelector<HTMLCanvasElement>("#testTrpg005")?.getContext("2d");
+		if (null != cvsCtx005) {
+			// load token from json
+			let user = CircleToken.fromRecord({ // 
+				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm01 = CircleToken.fromRecord({ // 
+				"id": "enm01", "x": 150, "y": 80, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm02 = CircleToken.fromRecord({ // 
+				"id": "enm02", "x": 80, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm03 = CircleToken.fromRecord({ // 
+				"id": "enm03", "x": 220, "y": 150, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let enm04 = CircleToken.fromRecord({ // 
+				"id": "enm04", "x": 150, "y": 220, "visiable": true, "blockView": true, //
+				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
+					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
+			}, testSceneData.imgResources);
+			//
+			let bgImgClip: ImageClip = { //
+				"imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, // 
+				"imageElem": testSceneData.imgResources[1].imgElem //
+			};
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm01, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm02, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm03, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm04, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			//
+			user.draw(cvsCtx005);
+			enm01.draw(cvsCtx005);
+			enm02.draw(cvsCtx005);
+			enm03.draw(cvsCtx005);
+			enm04.draw(cvsCtx005);
 		}
 	}
 
