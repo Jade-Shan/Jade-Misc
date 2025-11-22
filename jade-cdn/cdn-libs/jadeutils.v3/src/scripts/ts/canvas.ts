@@ -1,6 +1,7 @@
 import { GeoShape2D, GeoPolygon2D, Geo2DUtils, Point2D, Line2D, IRay2D, 
 	IPoint2D, ILine2D, IRectangle2D, Rectangle2D, Ray2D, IGeo2D, GeoCurve2D, 
 	IRevolveOption, ICircle2D, Circle2D } from './geo2d.js';
+import { WebUtil } from './web.js';
 
 export interface ICanvasStyle {
 	lineWidth  ?: number;
@@ -9,6 +10,23 @@ export interface ICanvasStyle {
 }
 
 export namespace CanvasUtils {
+
+
+	/**
+	 * 下载canvas所转的图片
+	 * @param cvsElem canvas element
+	 * @param type image type
+	 * @param filename file name
+	 */
+	export let downloadCanvasImage = (cvsElem: HTMLCanvasElement, type?: string, filename?: string) => {
+		const fileType = type && type.length > 2 ? type.toLowerCase() : 'png';
+		const mimeType = `image/${fileType}`;
+		const fileName = filename ? filename : `download-${(new Date()).getTime()}.${fileType}`;
+		cvsElem.toBlob((blob) => {
+			if (blob) { WebUtil.downloadBlob(blob, fileName); }
+		}, mimeType);
+	}
+
 
 	function drawWithCanvas(cvsCtx: CanvasRenderingContext2D, // 
 		func: (cvs: CanvasRenderingContext2D) => void, style?: ICanvasStyle //

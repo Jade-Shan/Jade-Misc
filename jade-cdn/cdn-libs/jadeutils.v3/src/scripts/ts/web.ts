@@ -415,20 +415,32 @@ export class WebUtil {
 	/**
 	 * 下载blog文件
 	 * 
-	 * @param content 内容
-	 * @param blobOption blob文件配置
+	 * @param blob Blob文件
 	 * @param filename 文件名
 	 */
-	static downloadBlob(content: any, blobOption?: BlobPropertyBag, filename?: string) {
+	static downloadBlob(blob: Blob, filename?: string) {
 		const fName = filename ? filename : "default.download";
-		const opts = blobOption ? blobOption : { type: "application/octet-stream" };
-		const blob = new Blob([content], opts);
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
 		a.href = url;
 		a.download = fName;
 		a.click();
 		URL.revokeObjectURL(url);
+		a.remove();
+	}
+
+	/**
+	 * 下载blog文件
+	 * 
+	 * @param content 内容
+	 * @param blobOption blob文件配置
+	 * @param filename 文件名
+	 */
+	static downloadBlobContent(content: any, blobOption?: BlobPropertyBag, filename?: string) {
+		const fileName = filename ? filename : `default-${(new Date()).getTime()}.download`;
+		const opts = blobOption ? blobOption : { type: "application/octet-stream" };
+		const blob = new Blob([content], opts);
+		this.downloadBlob(blob, fileName);
 	}
 
 	/**

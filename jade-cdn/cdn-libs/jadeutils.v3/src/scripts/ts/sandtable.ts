@@ -1,6 +1,6 @@
-import { TimeUtil } from "./basic.js";
+import { ColorRGB, TimeUtil } from "./basic.js";
 import { CanvasCircle2D, CanvasLine2D, CanvasRectangle2D, CanvasShape2D, ICanvas2D, ICanvasCircle2D, ICanvasLine2D, ICanvasRectangle2D } from "./canvas.js";
-import { Geo2DUtils, GeoShape2D, IPoint2D, Point2D } from "./geo2d.js";
+import { Geo2DUtils, IPoint2D} from "./geo2d.js";
 import { ImageProxyConfig, WebUtil } from "./web.js";
 
 export type VisibilityType = "default" | "glimmer" | "dark";
@@ -236,15 +236,12 @@ export class LineToken extends CanvasLine2D implements IToken2D, ILineToken {
 	}
 
 	draw(cvsCtx: CanvasRenderingContext2D): void {
-		console.log(`cal opp color: \n${this.color}\n${
-			this.oppColor(this.color, 4)}\n${
-			this.oppColor(this.color,-4)}\n${
-			this.oppColor(this.color,-2)}\n`);
 		cvsCtx.save();
 		// 
 		cvsCtx.lineWidth = 7;
 		// cvsCtx.fillStyle = this.color;
-		cvsCtx.strokeStyle = this.oppColor(this.color,  4);
+		let color = ColorRGB.fromHexTo140(this.color);
+		cvsCtx.strokeStyle = color.color.oppColor.toString();
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(this.a.x, this.a.y);
 		cvsCtx.lineTo(this.b.x, this.b.y);
@@ -262,41 +259,6 @@ export class LineToken extends CanvasLine2D implements IToken2D, ILineToken {
 		cvsCtx.stroke();
 		// cvsCtx.fill();
 		cvsCtx.restore();
-	}
-
-	// ilighten为对比度，范围从(-1 ~ -15)
-	oppColor2(color: string,ilighten: number){
-		let a = color.replace('#','');
-		let max16 = Math.floor(15 + (ilighten || 0));
-		if (max16 < 0 || max16 > 15) {
-			max16 = 15;
-		}
-		let c16 = 0, c10 = 0, b=[];
-		for (let i =0; i< a.length; i++) {
-			c16 = parseInt(a.charAt(i), 16);
-			c10 = max16 - c16;
-			if (c10 < 0) {
-				c10 = Math.abs(c10);
-			}
-			b.push(c10.toString(16));
-		}
-		return '#' + b.join('');
-	}
-
-	oppColor(color: string,ilighten: number){
-		let asHex = '0123456789ABCDEF';
-		let sResult = '#';
-		let iTemp = 0;
-		for (let i=1; i<7;i++) {
-			iTemp = parseInt(`0x${color.substring(i, 1)}`) + ilighten;
-			if (iTemp > 15) {
-				iTemp = 15;
-			} else if (iTemp < 0) {
-				iTemp= 0;
-			}
-			sResult = sResult + asHex.charAt(iTemp);
-		}
-		return sResult;
 	}
 
 }
@@ -367,7 +329,6 @@ export class SandTable implements ISandTable {
 
 
 export namespace SandTableUtils {
-
 
 	/**
 	 * 加载图片资源

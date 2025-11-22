@@ -7,6 +7,68 @@ import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWind
 
 export namespace TestJadeTRPG {
 
+	export let testTrpgCompose = async () => {
+		// load image resource
+		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
+		let imgResources = [{
+			"id": "icons", "type": "Image", // 
+			"url": "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/icons.jpg"
+		}];
+		await SandTableUtils.loadImageResources(testSceneData.imgResources, imgProxyUrl);
+
+		/* ========================== */
+		// test 001
+		/* ========================== */
+		let cvsCtx001 = document.querySelector<HTMLCanvasElement>("#testTrpg001")?.getContext("2d");
+		if (null != cvsCtx001) {
+			// load token from json
+			let user = CircleToken.fromRecord({ // 
+				"id": "jade", "x": 153, "y": 152, "visiable": true, "blockView": true, //
+				"color": "#0000FF", "img": { //
+					"imgKey": "icons", "sx": 100, "sy": 100, // 
+					"width": 50, "height": 50 //
+				}, "type": "Circle", "radius": 25
+			}, testSceneData.imgResources);
+			// draw image
+			user.draw(cvsCtx001);
+		}
+		// test download
+		let testDownload = document.querySelector<HTMLCanvasElement>("#testTrpg001");
+		if (testDownload) {
+			CanvasUtils.downloadCanvasImage(testDownload, 'png');
+		}
+
+		/* ========================== */
+		// test 002
+		/* ========================== */
+		let cvsCtx002 = document.querySelector<HTMLCanvasElement>("#testTrpg002")?.getContext("2d");
+		if (null != cvsCtx002) {
+			// load token from json
+			let fnt = RectangleToken.fromRecord({ // 
+				"type": "Rectangle", "id": "furnishing-1696391644699", //
+				"x": 156, "y": 190, "width": 50, "height": 50, //
+				"visiable": true, "blockView": false, "color": "#0000FF", //
+				"img": { "imgKey": "icons", "sx": 0, "sy": 0, "width": 50, "height": 50 }
+			}, testSceneData.imgResources);
+			// draw image
+			fnt.draw(cvsCtx002);
+		}
+
+		/* ========================== */
+		// test 003
+		/* ========================== */
+		let cvsCtx003 = document.querySelector<HTMLCanvasElement>("#testTrpg003")?.getContext("2d");
+		if (null != cvsCtx003) {
+			// load token from json
+			let line = LineToken.fromRecord({
+				"type": "Line", "id": "wall-1653882430769", //
+				"x": 53, "y": 112, "x2": 160, "y2": 214, "color": "#0000FF", // 
+				"visiable": false, "blockView": true
+			});
+			// draw image
+			line.draw(cvsCtx003);
+		}
+	}
 
 	class TestCanvasWindow extends UIWindowAdpt {
 
@@ -55,64 +117,6 @@ export namespace TestJadeTRPG {
 			JadeWindowUI.renderWindowTplt(this, renderWindowBody, renderStatusBar);
 		}
 
-	}
-
-	export let testTrpgCompose = async () => {
-		// load image resource
-		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
-		let imgResources = [{
-			"id": "icons", "type": "Image", // 
-			"url": "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/icons.jpg"
-		}];
-		await SandTableUtils.loadImageResources(testSceneData.imgResources, imgProxyUrl);
-
-		/* ========================== */
-		// test 001
-		/* ========================== */
-		let cvsCtx001 = document.querySelector<HTMLCanvasElement>("#testTrpg001")?.getContext("2d");
-		if (null != cvsCtx001) {
-			// load token from json
-			let user = CircleToken.fromRecord({ // 
-				"id": "jade", "x": 153, "y": 152, "visiable": true, "blockView": true, //
-				"color": "#0000FF", "img": { //
-					"imgKey": "icons", "sx": 100, "sy": 100, // 
-					"width": 50, "height": 50 //
-				}, "type": "Circle", "radius": 25
-			}, testSceneData.imgResources);
-			// draw image
-			user.draw(cvsCtx001);
-		}
-
-		/* ========================== */
-		// test 002
-		/* ========================== */
-		let cvsCtx002 = document.querySelector<HTMLCanvasElement>("#testTrpg002")?.getContext("2d");
-		if (null != cvsCtx002) {
-			// load token from json
-			let fnt = RectangleToken.fromRecord({ // 
-				"type": "Rectangle", "id": "furnishing-1696391644699", //
-				"x": 156, "y": 190, "width": 50, "height": 50, //
-				"visiable": true, "blockView": false, "color": "#0000FF", //
-				"img": { "imgKey": "icons", "sx": 0, "sy": 0, "width": 50, "height": 50 }
-			}, testSceneData.imgResources);
-			// draw image
-			fnt.draw(cvsCtx002);
-		}
-
-		/* ========================== */
-		// test 003
-		/* ========================== */
-		let cvsCtx003 = document.querySelector<HTMLCanvasElement>("#testTrpg003")?.getContext("2d");
-		if (null != cvsCtx003) {
-			// load token from json
-			let line = LineToken.fromRecord({
-				"type": "Line", "id": "wall-1653882430769", //
-				"x": 53, "y": 112, "x2": 160, "y2": 214, "color": "#0000FF", // 
-				"visiable": false, "blockView": true
-			});
-			// draw image
-			line.draw(cvsCtx003);
-		}
 	}
 
 	export let testTrpgUI = async () => {
