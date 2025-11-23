@@ -154,8 +154,8 @@ class TestBasicUtil {
 			let c2 = bb.color;
 			let n2 = StrUtil.rightPad(bb.name, 20, ' ');
 			console.log(`%c${n1} ${c1.toStrHex()}%c${c2.toStrHex()} ${n2}`, //
-				`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`, //
-				`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.5em;`);
+				`color:${c2.toStrHex()}; background:${c1.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.0em;`, //
+				`color:${c1.toStrHex()}; background:${c2.toStrHex()}; padding: 5px 7px; border-radius: 3px; font-weight: bold; font-size: 2.0em;`);
 		}
 
 	}
