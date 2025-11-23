@@ -6,6 +6,7 @@ import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWind
 export namespace TestJadeTRPG {
 
 	export let testTrpgCompose = async () => {
+		let viewSize = 139;
 		// load image resource
 		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
 		let imgResources: ImageResource[] = [{
@@ -78,10 +79,10 @@ export namespace TestJadeTRPG {
 			enm03.draw(cvsCtx004);
 			enm04.draw(cvsCtx004);
 			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm01, 139, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
-			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm02, 139, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
-			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm03, 139, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
-			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm04, 139, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm01, viewSize, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm02, viewSize, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm03, viewSize, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm04, viewSize, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
 		}
 		/* ========================== */
 		// test 005
@@ -93,10 +94,10 @@ export namespace TestJadeTRPG {
 			let enm03 = CircleToken.fromRecord({"type": "Circle", "id": "enm03", "x": 220, "y": 150, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
 			let enm04 = CircleToken.fromRecord({"type": "Circle", "id": "enm04", "x": 150, "y": 220, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
 			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm01, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm02, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm03, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm04, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm01, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm02, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm03, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm04, viewSize, styleMith);
 			//
 			user.draw(cvsCtx005);
 			enm01.draw(cvsCtx005);
@@ -114,10 +115,10 @@ export namespace TestJadeTRPG {
 			let enm03 = CircleToken.fromRecord({"type": "Circle", "id": "enm03", "x": 100, "y": 200, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
 			let enm04 = CircleToken.fromRecord({"type": "Circle", "id": "enm04", "x": 200, "y": 200, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
 			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm01, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm02, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm03, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm04, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm01, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm02, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm03, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm04, viewSize, styleMith);
 			//
 			user.draw(cvsCtx006);
 			enm01.draw(cvsCtx006);
@@ -136,10 +137,10 @@ export namespace TestJadeTRPG {
 			let fnt03 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt03", "x": 200, "y": 125, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
 			let fnt04 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt04", "x": 125, "y": 200, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
 			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt01, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt02, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt03, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt04, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt01, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt02, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt03, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt04, viewSize, styleMith);
 			//
 			user.draw(cvsCtx007);
 			fnt01.draw(cvsCtx007);
@@ -157,10 +158,10 @@ export namespace TestJadeTRPG {
 			let fnt03 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt03", "x":  60, "y": 190, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
 			let fnt04 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt04", "x": 180, "y": 190, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
 			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt01, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt02, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt03, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt04, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt01, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt02, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt03, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt04, viewSize, styleMith);
 			//
 			user.draw(cvsCtx008);
 			fnt01.draw(cvsCtx008);
@@ -178,10 +179,10 @@ export namespace TestJadeTRPG {
 			let wall03 = LineToken.fromRecord({"type": "Line", "id": "wall003", "x": 120, "y": 220, "x2": 180, "y2": 220, "visiable": true, "blockView": true, "color": "Lime"});
 			let wall04 = LineToken.fromRecord({"type": "Line", "id": "wall002", "x":  80, "y": 120, "x2":  80, "y2": 180, "visiable": true, "blockView": true, "color": "Lime"});
 			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall01, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall02, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall03, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall04, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall01, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall02, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall03, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall04, viewSize, styleMith);
 			//
 			user.draw(cvsCtx009);
 			wall01.draw(cvsCtx009);
@@ -199,10 +200,10 @@ export namespace TestJadeTRPG {
 			let wall03 = LineToken.fromRecord({"type": "Line", "id": "wall003", "x": 120, "y": 220, "x2":  80, "y2": 180, "visiable": true, "blockView": true, "color": "Lime"});
 			let wall04 = LineToken.fromRecord({"type": "Line", "id": "wall002", "x":  80, "y": 120, "x2": 120, "y2":  80, "visiable": true, "blockView": true, "color": "Lime"});
 			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall01, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall02, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall03, 139, styleMith);
-			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall04, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall01, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall02, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall03, viewSize, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall04, viewSize, styleMith);
 			//
 			user.draw(cvsCtx010);
 			wall01.draw(cvsCtx010);
@@ -210,6 +211,19 @@ export namespace TestJadeTRPG {
 			wall03.draw(cvsCtx010);
 			wall04.draw(cvsCtx010);
 		}
+		/* ========================== */
+		// test 011
+		/* ========================== */
+		let cvsCtx011 = document.querySelector<HTMLCanvasElement>("#testTrpg011")?.getContext("2d");
+		if (null != cvsCtx011) {
+			//
+			user.draw(cvsCtx011);
+			user.drawNextLocation(cvsCtx011,  80,  80);
+			user.drawNextLocation(cvsCtx011, 220,  80);
+			user.drawNextLocation(cvsCtx011,  80, 220);
+			user.drawNextLocation(cvsCtx011, 220, 220);
+		}
+
 
 		/* ================== */
 		// test download

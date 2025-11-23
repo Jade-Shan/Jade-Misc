@@ -111,6 +111,40 @@ export class CircleToken extends CanvasCircle2D implements IToken2D, ICircleToke
 		cvsCtx.restore();
 	}
 
+	drawNextLocation(cvsCtx: CanvasRenderingContext2D, x: number, y: number): void {
+		cvsCtx.save();
+		cvsCtx.fillStyle = "rgba(0,0,255,0.5)";
+		// draw a circle out
+		cvsCtx.beginPath();
+		cvsCtx.arc(x, y, this.radius, 0, Geo2DUtils.PI_DOUBLE, true);
+		cvsCtx.closePath();
+		cvsCtx.fill();
+		// draw a circle inside 
+		cvsCtx.fillStyle = "rgba(255,255,0,0.5)";
+		cvsCtx.beginPath();
+		cvsCtx.arc(x, y, this.radius - 3, 0, Geo2DUtils.PI_DOUBLE, true);
+		cvsCtx.closePath();
+		cvsCtx.fill();
+		//
+		cvsCtx.lineWidth = 5;
+		cvsCtx.strokeStyle= "rgba(255,0,255,0.5)";
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(this.c.x, this.c.y);
+		cvsCtx.lineTo(x, y);
+		cvsCtx.closePath();
+		cvsCtx.stroke();
+		//
+		cvsCtx.lineWidth = 3;
+		cvsCtx.strokeStyle= "rgba(0,255,0,0.5)";
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(this.c.x, this.c.y);
+		cvsCtx.lineTo(x, y);
+		cvsCtx.closePath();
+		cvsCtx.stroke();
+		//
+		cvsCtx.restore();
+	}
+
 }
 
 export interface IRectangleTokenRec extends IToken2DRec {
