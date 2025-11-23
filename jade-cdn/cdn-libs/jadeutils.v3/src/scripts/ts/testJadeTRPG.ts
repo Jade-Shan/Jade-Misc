@@ -1,6 +1,6 @@
 import { CanvasUtils, ImageClip } from "./canvas.js";
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
-import { CircleToken, LineToken, RectangleToken, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
+import { CircleToken, ImageResource, LineToken, RectangleToken, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
 import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWindow.js";
 
 export namespace TestJadeTRPG {
@@ -8,48 +8,43 @@ export namespace TestJadeTRPG {
 	export let testTrpgCompose = async () => {
 		// load image resource
 		let imgProxyUrl = "http://www.jade-dungeon.cn:8088/api/sandtable/parseImage?src=";
-		let imgResources = [{
+		let imgResources: ImageResource[] = [{
 			"id": "icons", "type": "Image", // 
 			"url": "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/icons.jpg"},{
 			"id": "map"  , "type": "Image", //
 			"url": "http://www.jade-dungeon.cn:8081/jadeutils.v3/themes/trpg/images/map.jpg"
 		}];
-		await SandTableUtils.loadImageResources(testSceneData.imgResources, imgProxyUrl);
-
+		await SandTableUtils.loadImageResources(imgResources, imgProxyUrl);
+		//
+		let imgUsr01 = { "imgKey": "icons", "sx": 100, "sy": 100, "width": 50, "height": 50 };
+		let imgFnt01 = { "imgKey": "icons", "sx":   0, "sy":   0, "width": 50, "height": 50 };
+		let imgEnm01 = { "imgKey": "icons", "sx": 100, "sy":   0, "width": 50, "height": 50 };
+		//
+		let bgImgClip: ImageClip = { "imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, "imageElem": imgResources[1].imgElem };
+		let user = CircleToken.fromRecord({
+			"type": "Circle", "id": "jade", "x": 153, "y": 152, "visiable": true, "blockView": true, "color": "Blue", //
+			"img": imgUsr01, "radius": 25 //
+		}, imgResources);
+		//
+		let styleMith = {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip };
 		/* ========================== */
 		// test 001
 		/* ========================== */
 		let cvsCtx001 = document.querySelector<HTMLCanvasElement>("#testTrpg001")?.getContext("2d");
 		if (null != cvsCtx001) {
 			// load token from json
-			let user = CircleToken.fromRecord({ // 
-				"id": "jade", "x": 153, "y": 152, "visiable": true, "blockView": true, //
-				"color": "#0000FF", "img": { //
-					"imgKey": "icons", "sx": 100, "sy": 100, // 
-					"width": 50, "height": 50 //
-				}, "type": "Circle", "radius": 25
-			}, testSceneData.imgResources);
-			// draw image
 			user.draw(cvsCtx001);
 		}
-		// // test download
-		// let testDownload = document.querySelector<HTMLCanvasElement>("#testTrpg001");
-		// if (testDownload) {
-		// 	CanvasUtils.downloadCanvasImage(testDownload, 'png');
-		// }
-
 		/* ========================== */
 		// test 002
 		/* ========================== */
 		let cvsCtx002 = document.querySelector<HTMLCanvasElement>("#testTrpg002")?.getContext("2d");
 		if (null != cvsCtx002) {
 			// load token from json
-			let fnt = RectangleToken.fromRecord({ // 
-				"type": "Rectangle", "id": "furnishing-1696391644699", //
-				"x": 156, "y": 190, "width": 50, "height": 50, //
-				"visiable": true, "blockView": false, "color": "#0000FF", //
-				"img": { "imgKey": "icons", "sx": 0, "sy": 0, "width": 50, "height": 50 }
-			}, testSceneData.imgResources);
+			let fnt = RectangleToken.fromRecord({ "type": "Rectangle", "id": "furnishing-1696391644699", //
+				"x": 156, "y": 190, "width": 50, "height": 50, "visiable": true, "blockView": false, "color": "Blue", //
+				"img": imgFnt01
+			}, imgResources);
 			// draw image
 			fnt.draw(cvsCtx002);
 		}
@@ -60,10 +55,8 @@ export namespace TestJadeTRPG {
 		let cvsCtx003 = document.querySelector<HTMLCanvasElement>("#testTrpg003")?.getContext("2d");
 		if (null != cvsCtx003) {
 			// load token from json
-			let line = LineToken.fromRecord({
-				"type": "Line", "id": "wall-1653882430769", //
-				"x": 53, "y": 112, "x2": 160, "y2": 214, "color": "#0000FF", // 
-				"visiable": false, "blockView": true
+			let line = LineToken.fromRecord({ "type": "Line", "id": "wall-1653882430769", 
+				"x": 53, "y": 112, "x2": 160, "y2": 214, "color": "#0000FF", "visiable": false, "blockView": true
 			});
 			// draw image
 			line.draw(cvsCtx003);
@@ -73,36 +66,11 @@ export namespace TestJadeTRPG {
 		/* ========================== */
 		let cvsCtx004 = document.querySelector<HTMLCanvasElement>("#testTrpg004")?.getContext("2d");
 		if (null != cvsCtx004) {
-			// load token from json
-			let user = CircleToken.fromRecord({ // 
-				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
 			//
-			let enm01 = CircleToken.fromRecord({ // 
-				"id": "enm01", "x": 150, "y": 80, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm02 = CircleToken.fromRecord({ // 
-				"id": "enm02", "x": 80, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm03 = CircleToken.fromRecord({ // 
-				"id": "enm03", "x": 220, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm04 = CircleToken.fromRecord({ // 
-				"id": "enm04", "x": 150, "y": 220, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
+			let enm01 = CircleToken.fromRecord({"type": "Circle", "id": "enm01", "x": 150, "y":  80, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm02 = CircleToken.fromRecord({"type": "Circle", "id": "enm02", "x":  80, "y": 150, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm03 = CircleToken.fromRecord({"type": "Circle", "id": "enm03", "x": 220, "y": 150, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm04 = CircleToken.fromRecord({"type": "Circle", "id": "enm04", "x": 150, "y": 220, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
 			//
 			user.draw(cvsCtx004);
 			enm01.draw(cvsCtx004);
@@ -110,56 +78,25 @@ export namespace TestJadeTRPG {
 			enm03.draw(cvsCtx004);
 			enm04.draw(cvsCtx004);
 			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm01, 139, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm02, 139, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm03, 139, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm04, 139, { lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)" });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm01, 139, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm02, 139, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm03, 139, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
+			CanvasUtils.drawVertexShadowFrom(cvsCtx004, user.c.x, user.c.y, enm04, 139, {lineWidth: 1, strokeStyle: "red", fillStyle: "rgba(100,100,100,0.5)"});
 		}
 		/* ========================== */
 		// test 005
 		/* ========================== */
 		let cvsCtx005 = document.querySelector<HTMLCanvasElement>("#testTrpg005")?.getContext("2d");
 		if (null != cvsCtx005) {
-			// load token from json
-			let user = CircleToken.fromRecord({ // 
-				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
+			let enm01 = CircleToken.fromRecord({"type": "Circle", "id": "enm01", "x": 150, "y":  80, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm02 = CircleToken.fromRecord({"type": "Circle", "id": "enm02", "x":  80, "y": 150, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm03 = CircleToken.fromRecord({"type": "Circle", "id": "enm03", "x": 220, "y": 150, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm04 = CircleToken.fromRecord({"type": "Circle", "id": "enm04", "x": 150, "y": 220, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
 			//
-			let enm01 = CircleToken.fromRecord({ // 
-				"id": "enm01", "x": 150, "y": 80, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm02 = CircleToken.fromRecord({ // 
-				"id": "enm02", "x": 80, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm03 = CircleToken.fromRecord({ // 
-				"id": "enm03", "x": 220, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm04 = CircleToken.fromRecord({ // 
-				"id": "enm04", "x": 150, "y": 220, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let bgImgClip: ImageClip = { //
-				"imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, // 
-				"imageElem": testSceneData.imgResources[1].imgElem //
-			};
-			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm01, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm02, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm03, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm04, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm01, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm02, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm03, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx005, user.c.x, user.c.y, enm04, 139, styleMith);
 			//
 			user.draw(cvsCtx005);
 			enm01.draw(cvsCtx005);
@@ -172,46 +109,15 @@ export namespace TestJadeTRPG {
 		/* ========================== */
 		let cvsCtx006 = document.querySelector<HTMLCanvasElement>("#testTrpg006")?.getContext("2d");
 		if (null != cvsCtx006) {
-			// load token from json
-			let user = CircleToken.fromRecord({ // 
-				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
+			let enm01 = CircleToken.fromRecord({"type": "Circle", "id": "enm01", "x": 100, "y": 100, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm02 = CircleToken.fromRecord({"type": "Circle", "id": "enm02", "x": 200, "y": 100, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm03 = CircleToken.fromRecord({"type": "Circle", "id": "enm03", "x": 100, "y": 200, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+			let enm04 = CircleToken.fromRecord({"type": "Circle", "id": "enm04", "x": 200, "y": 200, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
 			//
-			let enm01 = CircleToken.fromRecord({ // 
-				"id": "enm01", "x": 100, "y": 100, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm02 = CircleToken.fromRecord({ // 
-				"id": "enm02", "x": 200, "y": 100, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm03 = CircleToken.fromRecord({ // 
-				"id": "enm03", "x": 100, "y": 200, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let enm04 = CircleToken.fromRecord({ // 
-				"id": "enm04", "x": 200, "y": 200, "visiable": true, "blockView": true, //
-				"color": "#FF0000", "img": { "imgKey": "icons", "sx": 100, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
-			//
-			let bgImgClip: ImageClip = { //
-				"imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, // 
-				"imageElem": testSceneData.imgResources[1].imgElem //
-			};
-			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm01, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm02, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm03, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm04, 139, {lineWidth: 3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm01, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm02, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm03, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx006, user.c.x, user.c.y, enm04, 139, styleMith);
 			//
 			user.draw(cvsCtx006);
 			enm01.draw(cvsCtx006);
@@ -224,46 +130,16 @@ export namespace TestJadeTRPG {
 		/* ========================== */
 		let cvsCtx007 = document.querySelector<HTMLCanvasElement>("#testTrpg007")?.getContext("2d");
 		if (null != cvsCtx007) {
-			// load token from json
-			let user = CircleToken.fromRecord({ // 
-				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
 			//
-			let fnt01 = RectangleToken.fromRecord({ // 
-				"id": "fnt01", "x": 125, "y": 50, "visiable": true, "blockView": true, //
-				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
-			}, testSceneData.imgResources);
+			let fnt01 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt01", "x": 125, "y":  50, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
+			let fnt02 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt02", "x":  50, "y": 125, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
+			let fnt03 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt03", "x": 200, "y": 125, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
+			let fnt04 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt04", "x": 125, "y": 200, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
 			//
-			let fnt02 = RectangleToken.fromRecord({ // 
-				"id": "fnt02", "x": 50, "y": 125, "visiable": true, "blockView": true, //
-				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
-			}, testSceneData.imgResources);
-			//
-			let fnt03 = RectangleToken.fromRecord({ // 
-				"id": "fnt03", "x": 200, "y": 125, "visiable": true, "blockView": true, //
-				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
-			}, testSceneData.imgResources);
-			//
-			let fnt04 = RectangleToken.fromRecord({ // 
-				"id": "fnt04", "x": 125, "y": 200, "visiable": true, "blockView": true, //
-				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
-			}, testSceneData.imgResources);
-			//
-			let bgImgClip: ImageClip = { //
-				"imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, // 
-				"imageElem": testSceneData.imgResources[1].imgElem //
-			};
-			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt01, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt02, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt03, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt04, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt01, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt02, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt03, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx007, user.c.x, user.c.y, fnt04, 139, styleMith);
 			//
 			user.draw(cvsCtx007);
 			fnt01.draw(cvsCtx007);
@@ -276,46 +152,15 @@ export namespace TestJadeTRPG {
 		/* ========================== */
 		let cvsCtx008 = document.querySelector<HTMLCanvasElement>("#testTrpg008")?.getContext("2d");
 		if (null != cvsCtx008) {
-			// load token from json
-			let user = CircleToken.fromRecord({ // 
-				"id": "jade", "x": 150, "y": 150, "visiable": true, "blockView": true, //
-				"color": "#0000FF", "img": { "imgKey": "icons", "sx": 100, "sy": 100, // 
-					"width": 50, "height": 50 }, "type": "Circle", "radius": 25 //
-			}, testSceneData.imgResources);
+			let fnt01 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt01", "x":  60, "y":  60, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources); 
+			let fnt02 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt02", "x": 180, "y":  60, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
+			let fnt03 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt03", "x":  60, "y": 190, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
+			let fnt04 = RectangleToken.fromRecord({"type": "Rectangle", "id": "fnt04", "x": 180, "y": 190, "visiable": true, "blockView": true, "color": "Gray", "img": imgFnt01, "width": 50, "height": 50}, imgResources);
 			//
-			let fnt01 = RectangleToken.fromRecord({ // 
-				"id": "fnt01", "x": 60, "y": 60, "visiable": true, "blockView": true, //
-				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
-			}, testSceneData.imgResources);
-			//
-			let fnt02 = RectangleToken.fromRecord({ // 
-				"id": "fnt02", "x": 180, "y": 60, "visiable": true, "blockView": true, //
-				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
-			}, testSceneData.imgResources);
-			//
-			let fnt03 = RectangleToken.fromRecord({ // 
-				"id": "fnt03", "x":  60, "y": 190, "visiable": true, "blockView": true, //
-				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
-			}, testSceneData.imgResources);
-			//
-			let fnt04 = RectangleToken.fromRecord({ // 
-				"id": "fnt04", "x": 180, "y": 190, "visiable": true, "blockView": true, //
-				"color": "#583338", "img": { "imgKey": "icons", "sx": 0, "sy": 0, // 
-					"width": 50, "height": 50 }, "type": "Rectangle", "width": 50, "height": 50 //
-			}, testSceneData.imgResources);
-			//
-			let bgImgClip: ImageClip = { //
-				"imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, // 
-				"imageElem": testSceneData.imgResources[1].imgElem //
-			};
-			//
-			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt01, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt02, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt03, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
-			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt04, 139, {lineWidth: -3, strokeStyle: "Gray", imgClip: bgImgClip });
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt01, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt02, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt03, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx008, user.c.x, user.c.y, fnt04, 139, styleMith);
 			//
 			user.draw(cvsCtx008);
 			fnt01.draw(cvsCtx008);
@@ -323,6 +168,55 @@ export namespace TestJadeTRPG {
 			fnt03.draw(cvsCtx008);
 			fnt04.draw(cvsCtx008);
 		}
+		/* ========================== */
+		// test 009
+		/* ========================== */
+		let cvsCtx009 = document.querySelector<HTMLCanvasElement>("#testTrpg009")?.getContext("2d");
+		if (null != cvsCtx009) {
+			let wall01 = LineToken.fromRecord({"type": "Line", "id": "wall001", "x": 120, "y":  80, "x2": 180, "y2":  80, "visiable": true, "blockView": true, "color": "Lime"});
+			let wall02 = LineToken.fromRecord({"type": "Line", "id": "wall002", "x": 220, "y": 120, "x2": 220, "y2": 180, "visiable": true, "blockView": true, "color": "Lime"});
+			let wall03 = LineToken.fromRecord({"type": "Line", "id": "wall003", "x": 120, "y": 220, "x2": 180, "y2": 220, "visiable": true, "blockView": true, "color": "Lime"});
+			let wall04 = LineToken.fromRecord({"type": "Line", "id": "wall002", "x":  80, "y": 120, "x2":  80, "y2": 180, "visiable": true, "blockView": true, "color": "Lime"});
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall01, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall02, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall03, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx009, user.c.x, user.c.y, wall04, 139, styleMith);
+			//
+			user.draw(cvsCtx009);
+			wall01.draw(cvsCtx009);
+			wall02.draw(cvsCtx009);
+			wall03.draw(cvsCtx009);
+			wall04.draw(cvsCtx009);
+		}
+		/* ========================== */
+		// test 010
+		/* ========================== */
+		let cvsCtx010 = document.querySelector<HTMLCanvasElement>("#testTrpg010")?.getContext("2d");
+		if (null != cvsCtx010) {
+			let wall01 = LineToken.fromRecord({"type": "Line", "id": "wall001", "x": 180, "y":  80, "x2": 220, "y2": 120, "visiable": true, "blockView": true, "color": "Lime"});
+			let wall02 = LineToken.fromRecord({"type": "Line", "id": "wall002", "x": 220, "y": 180, "x2": 180, "y2": 220, "visiable": true, "blockView": true, "color": "Lime"});
+			let wall03 = LineToken.fromRecord({"type": "Line", "id": "wall003", "x": 120, "y": 220, "x2":  80, "y2": 180, "visiable": true, "blockView": true, "color": "Lime"});
+			let wall04 = LineToken.fromRecord({"type": "Line", "id": "wall002", "x":  80, "y": 120, "x2": 120, "y2":  80, "visiable": true, "blockView": true, "color": "Lime"});
+			//
+			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall01, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall02, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall03, 139, styleMith);
+			CanvasUtils.drawVertexShadowFrom(cvsCtx010, user.c.x, user.c.y, wall04, 139, styleMith);
+			//
+			user.draw(cvsCtx010);
+			wall01.draw(cvsCtx010);
+			wall02.draw(cvsCtx010);
+			wall03.draw(cvsCtx010);
+			wall04.draw(cvsCtx010);
+		}
+
+		/* ================== */
+		// test download
+		/* ================== */
+		// let testDownload = document.querySelector<HTMLCanvasElement>("#testTrpg001");
+		// if (testDownload) { CanvasUtils.downloadCanvasImage(testDownload, 'png'); }
+
 	}
 
 	class TestCanvasWindow extends UIWindowAdpt {
