@@ -1,6 +1,7 @@
+import { TimeUtil } from "./basic.js";
 import { CanvasUtils, ImageClip } from "./canvas.js";
 import { JadeUIResource, DefaultIconGroup } from "./resource.js";
-import { CircleToken, ImageResource, LineToken, RectangleToken, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
+import { CircleToken, ICanvasFrame, ImageResource, LineToken, RectangleToken, SandTable, SandTableUtils, ScenceDataResp } from "./sandtable.js";
 import { JadeWindowUI, UIDesktop, UIObj, UIWindowAdpt, WinParam } from "./UIWindow.js";
 
 export namespace TestJadeTRPG {
@@ -222,6 +223,104 @@ export namespace TestJadeTRPG {
 			user.drawNextLocation(cvsCtx011, 220,  80);
 			user.drawNextLocation(cvsCtx011,  80, 220);
 			user.drawNextLocation(cvsCtx011, 220, 220);
+		}
+		/* ========================== */
+		// test 012
+		/* ========================== */
+		let cvs012    = document.querySelector<HTMLCanvasElement>("#testTrpg012");
+		let cvsCtx012 = document.querySelector<HTMLCanvasElement>("#testTrpg012")?.getContext("2d");
+		let img01: HTMLImageElement | null = null;
+		if (null != cvs012 && null != cvsCtx012 && bgImgClip.imageElem) {
+			let shadowStyle = 'rgba(0, 0, 0, 0.7)';
+			let oriMap = bgImgClip.imageElem;
+			let imgWidth  = 300;
+			let imgHeight = 300;
+			let buff: ICanvasFrame = { cvs: cvs012, ctx: cvsCtx012 };
+			//
+			buff.cvs.width  = imgWidth;
+			buff.cvs.height = imgHeight;
+			buff.cvs.style.width  = `${imgWidth }px`;
+			buff.cvs.style.height = `${imgHeight}px`;
+			img01 = await SandTableUtils.drawDarkScene(buff, oriMap, shadowStyle);
+		}
+		/* ========================== */
+		// test 013
+		/* ========================== */
+		let cvs013    = document.querySelector<HTMLCanvasElement>("#testTrpg013");
+		let cvsCtx013 = document.querySelector<HTMLCanvasElement>("#testTrpg013")?.getContext("2d");
+		let img02: HTMLImageElement | null = null;
+		if (null != cvs013 && null != cvsCtx013 && bgImgClip.imageElem && img01 ) {
+			let darkMapCLip: ImageClip = { "imgKey": "icons", "sx": 0, "sy": 0, "width": 300, "height": 300, "imageElem": img01 };
+			let mistMapStyle = {imgClip: darkMapCLip};
+			//
+			let shadowStyle = 'rgba(0, 0, 0, 0.7)';
+			let oriMap = bgImgClip.imageElem;
+			let imgWidth  = 300;
+			let imgHeight = 300;
+			let buff: ICanvasFrame = { cvs: cvs013, ctx: cvsCtx013 };
+			//
+			buff.cvs.width  = imgWidth;
+			buff.cvs.height = imgHeight;
+			buff.cvs.style.width  = `${imgWidth }px`;
+			buff.cvs.style.height = `${imgHeight}px`;
+			await SandTableUtils.drawDarkScene(buff, oriMap, shadowStyle);
+			img02 = await SandTableUtils.drawBrightScene(buff, oriMap, async (frame) => { 
+				let enm01 = CircleToken.fromRecord({"type": "Circle", "id": "enm01", "x": 100, "y": 100, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+				let enm02 = CircleToken.fromRecord({"type": "Circle", "id": "enm02", "x": 200, "y": 100, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+				let enm03 = CircleToken.fromRecord({"type": "Circle", "id": "enm03", "x": 100, "y": 200, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+				let enm04 = CircleToken.fromRecord({"type": "Circle", "id": "enm04", "x": 200, "y": 200, "visiable": true, "blockView": true, "color": "Red", "img": imgEnm01, "radius": 25}, imgResources);
+				//
+				CanvasUtils.drawVertexShadowFrom(cvsCtx013, user.c.x, user.c.y, enm01, viewSize, mistMapStyle);
+				CanvasUtils.drawVertexShadowFrom(cvsCtx013, user.c.x, user.c.y, enm02, viewSize, mistMapStyle);
+				CanvasUtils.drawVertexShadowFrom(cvsCtx013, user.c.x, user.c.y, enm03, viewSize, mistMapStyle);
+				CanvasUtils.drawVertexShadowFrom(cvsCtx013, user.c.x, user.c.y, enm04, viewSize, mistMapStyle);
+				//
+				user.draw(cvsCtx013);
+				enm01.draw(cvsCtx013);
+				enm02.draw(cvsCtx013);
+				enm03.draw(cvsCtx013);
+				enm04.draw(cvsCtx013);
+				await TimeUtil.sleep(500);
+			 });
+		}
+		/* ========================== */
+		// test 014
+		/* ========================== */
+		let cvs014    = document.querySelector<HTMLCanvasElement>("#testTrpg014");
+		let cvsCtx014 = document.querySelector<HTMLCanvasElement>("#testTrpg014")?.getContext("2d");
+		let img03: HTMLImageElement | null = null;
+		if (null != cvs014 && null != cvsCtx014 && bgImgClip.imageElem && img01 && img02) {
+			let imgWidth  = 300;
+			let imgHeight = 300;
+			let buff: ICanvasFrame = { cvs: cvs014, ctx: cvsCtx014 };
+			let darkMapImage   = img01;
+			let brightmapImage = img02;
+			//
+			buff.cvs.width  = imgWidth;
+			buff.cvs.height = imgHeight;
+			buff.cvs.style.width  = `${imgWidth }px`;
+			buff.cvs.style.height = `${imgHeight}px`;
+			img03 = await SandTableUtils.drawScopeOfVisionOnDarkMap(buff, darkMapImage, brightmapImage, user.c, viewSize);
+		}
+		/* ========================== */
+		// test 015
+		/* ========================== */
+		let cvs015    = document.querySelector<HTMLCanvasElement>("#testTrpg015");
+		let cvsCtx015 = document.querySelector<HTMLCanvasElement>("#testTrpg015")?.getContext("2d");
+		if (null != cvs015 && null != cvsCtx015 && img03) {
+			let imgWidth  = 300;
+			let imgHeight = 300;
+			let show: ICanvasFrame = { cvs: cvs015, ctx: cvsCtx015 };
+			let viewMapImage = img03;
+			//
+			show.cvs.width  = imgWidth;
+			show.cvs.height = imgHeight;
+			show.cvs.style.width  = `${imgWidth }px`;
+			show.cvs.style.height = `${imgHeight}px`;
+			show.ctx.clearRect(0, 0, imgWidth, imgHeight);
+			show.ctx.drawImage(viewMapImage, 0, 0, imgWidth, imgHeight, 0, 0, imgWidth, imgHeight);
+			//
+			user.drawNextLocation(show.ctx,  180, 250);
 		}
 
 

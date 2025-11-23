@@ -430,14 +430,16 @@ export namespace SandTableUtils {
 
 	export let drawScopeOfVisionOnDarkMap = async (frame: ICanvasFrame, // 
 		darkMapImage: HTMLImageElement, brightMapImage: HTMLImageElement, //
-		observer: IObserver, visiable: VisibilityType //
+		// observer: IObserver, visiable: VisibilityType //
+		observer: {x: number, y: number}, range: number//
 	): Promise<HTMLImageElement> => {
 		let width  = darkMapImage.width ;
 		let height = darkMapImage.height;
 		frame.ctx.drawImage(darkMapImage, 0, 0, width, height, 0, 0, width, height);
 		frame.ctx.save();
 		frame.ctx.beginPath();
-		frame.ctx.arc(observer.c.x, observer.c.y, observer.viewRange(visiable), 0, Math.PI * 2);
+		// frame.ctx.arc(observer.c.x, observer.c.y, observer.viewRange(visiable), 0, Math.PI * 2);
+		frame.ctx.arc(observer.x, observer.y, range, 0, Math.PI * 2);
 		frame.ctx.clip();
 		frame.ctx.drawImage(brightMapImage, 0, 0, width, height, 0, 0, width, height);
 		frame.ctx.restore();	
@@ -468,7 +470,9 @@ export namespace SandTableUtils {
 		let brightMapImage = await drawBrightScene(scene.frame.buff, oriMap, async (frame) => { //
 			await TimeUtil.sleep(1000); 
 		});
-		let viewMapImage = await drawScopeOfVisionOnDarkMap(scene.frame.buff, darkMapImage, brightMapImage, observer, scene.visibility);
+		let viewMapImage = await drawScopeOfVisionOnDarkMap(scene.frame.buff, darkMapImage, brightMapImage, 
+			// observer, scene.visibility);
+			observer.c, observer.viewRange(scene.visibility));
 		// 显示到展示的画布上
 		scene.frame.show.ctx.clearRect(0, 0, scene.map.width, scene.map.height);
 		scene.frame.show.ctx.drawImage(viewMapImage, 0, 0, scene.map.width, scene.map.height, 0, 0, scene.map.width, scene.map.height);
