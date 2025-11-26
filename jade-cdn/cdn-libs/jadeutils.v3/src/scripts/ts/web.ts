@@ -30,24 +30,24 @@ export enum Base64ImgType {
 export type IBase64Img = { format: Base64ImgType, data: string };
 
 export interface HttpRequestOption {
-	ingoreCache?: boolean;
-	headers?: SimpleMap<string, string>;
-	timeout?: number;
+	ingoreCache    ?: boolean;
+	headers        ?: SimpleMap<string, string>;
+	timeout        ?: number;
 	withCredentials?: boolean;
 }
 
 export interface HttpRequest<T extends any> {
-	method?: ("GET" | "POST");
-	url: string;
-	opt?: HttpRequestOption;
-	body?: T;
+	method ?: ("GET" | "POST");
+	url     : string;
+	opt    ?: HttpRequestOption;
+	body   ?: T;
 }
 
 export interface HttpResponse<T extends any> {
 	statusCode: number;
-	statusMsg: string;
-	headers?: SimpleMap<string, string>;
-	body: T | null;
+	statusMsg : string;
+	headers  ?: SimpleMap<string, string>;
+	body      : T | null;
 }
 
 export interface HttpRequestHandler<T extends any, R extends any> {
@@ -80,11 +80,11 @@ async function doHttp<T extends any, R extends any>(req: HttpRequest<T>, //
 		}
 		xhr.timeout = req.opt?.timeout ? req.opt.timeout : 1_000;
 		//
-		let onload = hdl?.onLoad;
+		let onload     = hdl?.onLoad;
 		let onprogress = hdl?.onProgress;
-		let onerror = hdl?.onError;
-		let ontimeout = hdl?.onTimeout;
-		let onabort = hdl?.onAbort;
+		let onerror    = hdl?.onError;
+		let ontimeout  = hdl?.onTimeout;
+		let onabort    = hdl?.onAbort;
 
 		if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => { onprogress(evt, xhr, req); }; }
 		if (onload    ) { xhr.onload     = (evt: ProgressEvent) => { resolve(onload   (evt, xhr, req)); }; }
@@ -114,8 +114,8 @@ let defaultImgData = 'data:image/jpeg;base64,' +
 	'18N8f/2Q==';
 
 export interface ImageProxyConfig {
-	proxyUrl?: string, 
-	proxyFunc?: (url: string) => string 
+	proxyUrl  ?: string, 
+	proxyFunc ?: (url: string) => string 
 };
 
 export class WebUtil {
