@@ -46,8 +46,8 @@ set label  9 "P"  at  P[1]-3,  P[2]+2
 set label 10 "C"  at  C[1]+1,  C[2]-2 
 set label 11 "Q1" at Q1[1]-5, Q1[2]-1
 set label 12 "Q2" at Q2[1]+1, Q2[2]-2
-set label 13 "dx" at  P[1]  ,      -1
-set label 14 "dy" at      -4,  P[2]  
+set label 13 "dx" at  P[1]+9,      -1
+set label 14 "dy" at      -3,  P[2]+9
 set label 15 "{/Symbol a}"  at C[1] -2, C[2]+4 tc rgb "#0000FF" 
 set label 16 "-{/Symbol b}" at C[1] -8, C[2]   tc rgb "#FF0000" 
 set label 17 "+{/Symbol b}" at C[1] -5, C[2]-6 tc rgb "#00FF00" 
@@ -59,8 +59,8 @@ set arrow  6 from P[1], P[2] to Q1[1],Q1[2] nofilled size 8,0,0 lc rgb "#FF0000"
 set arrow  7 from P[1], P[2] to Q2[1],Q2[2] nofilled size 8,0,0 lc rgb "#00FF00" lw 1
 set arrow  8 from C[1], C[2] to Q1[1],Q1[2] nofilled size 8,0,0 lc rgb "#FF0000" lw 1
 set arrow  9 from C[1], C[2] to Q2[1],Q2[2] nofilled size 8,0,0 lc rgb "#00FF00" lw 1
-set arrow 10 from P[1], C[2] to     5,    0 nofilled size 8,0,0 lc rgb "#AAAAAA" lw 1
-set arrow 11 from C[1], P[2] to     0,    5 nofilled size 8,0,0 lc rgb "#AAAAAA" lw 1
+set arrow 10 from P[1], C[2] to     5,   -5 nofilled size 8,0,0 lc rgb "#AAAAAA" lw 1
+set arrow 11 from C[1], P[2] to    -5,    5 nofilled size 8,0,0 lc rgb "#AAAAAA" lw 1
 
 set object 1 circle at C[1],C[2] size C[3] fc rgb "#0000FF" lw 2
 set object 2 circle at C[1],C[2] size    3 arc [  0:213] fc rgb "#0000FF" lw 1

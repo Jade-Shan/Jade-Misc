@@ -30,24 +30,24 @@ export enum Base64ImgType {
 export type IBase64Img = { format: Base64ImgType, data: string };
 
 export interface HttpRequestOption {
-	ingoreCache?: boolean;
-	headers?: SimpleMap<string, string>;
-	timeout?: number;
+	ingoreCache    ?: boolean;
+	headers        ?: SimpleMap<string, string>;
+	timeout        ?: number;
 	withCredentials?: boolean;
 }
 
 export interface HttpRequest<T extends any> {
-	method?: ("GET" | "POST");
-	url: string;
-	opt?: HttpRequestOption;
-	body?: T;
+	method ?: ("GET" | "POST");
+	url     : string;
+	opt    ?: HttpRequestOption;
+	body   ?: T;
 }
 
 export interface HttpResponse<T extends any> {
 	statusCode: number;
-	statusMsg: string;
-	headers?: SimpleMap<string, string>;
-	body: T | null;
+	statusMsg : string;
+	headers  ?: SimpleMap<string, string>;
+	body      : T | null;
 }
 
 export interface HttpRequestHandler<T extends any, R extends any> {
@@ -80,11 +80,11 @@ async function doHttp<T extends any, R extends any>(req: HttpRequest<T>, //
 		}
 		xhr.timeout = req.opt?.timeout ? req.opt.timeout : 1_000;
 		//
-		let onload = hdl?.onLoad;
+		let onload     = hdl?.onLoad;
 		let onprogress = hdl?.onProgress;
-		let onerror = hdl?.onError;
-		let ontimeout = hdl?.onTimeout;
-		let onabort = hdl?.onAbort;
+		let onerror    = hdl?.onError;
+		let ontimeout  = hdl?.onTimeout;
+		let onabort    = hdl?.onAbort;
 
 		if (onprogress) { xhr.onprogress = (evt: ProgressEvent) => { onprogress(evt, xhr, req); }; }
 		if (onload    ) { xhr.onload     = (evt: ProgressEvent) => { resolve(onload   (evt, xhr, req)); }; }
@@ -114,8 +114,8 @@ let defaultImgData = 'data:image/jpeg;base64,' +
 	'18N8f/2Q==';
 
 export interface ImageProxyConfig {
-	proxyUrl?: string, 
-	proxyFunc?: (url: string) => string 
+	proxyUrl  ?: string, 
+	proxyFunc ?: (url: string) => string 
 };
 
 export class WebUtil {
@@ -412,5 +412,83 @@ export class WebUtil {
 		return msgMap.get(key);
 	}
 
+	/**
+	 * 下载blog文件
+	 * 
+	 * @param blob Blob文件
+	 * @param filename 文件名
+	 */
+	static downloadBlob(blob: Blob, filename?: string) {
+		const fName = filename ? filename : "default.download";
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = fName;
+		a.click();
+		URL.revokeObjectURL(url);
+		a.remove();
+	}
+
+	/**
+	 * 下载blog文件
+	 * 
+	 * @param content 内容
+	 * @param blobOption blob文件配置
+	 * @param filename 文件名
+	 */
+	static downloadBlobContent(content: any, blobOption?: BlobPropertyBag, filename?: string) {
+		const fileName = filename ? filename : `default-${(new Date()).getTime()}.download`;
+		const opts = blobOption ? blobOption : { type: "application/octet-stream" };
+		const blob = new Blob([content], opts);
+		this.downloadBlob(blob, fileName);
+	}
+
+	/**
+	 * 创建临时对象的URL
+	 * 
+	 * @param blob Blob 对象
+	 * @param idleOption 超时配置
+	 * @returns URL字符串
+	 */
+	static createTmpBlobURL(blob: Blob, idleOption?: IdleRequestOptions): string {
+		const url = URL.createObjectURL(blob);
+		requestIdleCallback(() => URL.revokeObjectURL(url), idleOption);
+		return url;
+	}
+
+	/**
+	 * 
+	 * @param uploader 上传图片的HTMLInput
+	 * @param images 显示上传图片的HTMLImage
+	 */
+	static previewLocalImage(uploader: HTMLInputElement, images: Array<HTMLImageElement>) {
+		uploader.onchange = (ev: Event) => {
+			if (uploader.files && uploader.files.length > 0 && images.length > 0) {
+				const count = uploader.files.length > images.length ? uploader.files.length : images.length;
+				for (let i = 0; i < count; i++) {
+					const file = uploader.files[i];
+					const image = images[i];
+					if (file) {
+						const url = URL.createObjectURL(file);
+						image.src = url;
+						uploader.onload = () => URL.revokeObjectURL(url);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * 预览远程的图片
+	 * @param url 图片URL
+	 * @param image 显示图片的HTMLImage
+	 */
+	static previewRemoteImage(url: string, image: HTMLImageElement) {
+		fetch(url, { mode: 'cors' }).then(resp => resp.blob()).then(blob => {
+			const url = URL.createObjectURL(blob);
+			image.src = url;
+			image.onload = () => URL.revokeObjectURL(url);
+		});
+	}
 
 }
