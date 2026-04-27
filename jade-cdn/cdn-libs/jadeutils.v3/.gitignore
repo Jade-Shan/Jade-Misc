@@ -2,4 +2,3 @@ webroot/
 node_modules/
 package-lock.json
 deploy-test.sh
-*.plt.png
