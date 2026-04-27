@@ -4,7 +4,7 @@
 三角函数备忘图
 -----------------
 
-![circ.angle](cric.tt01.png.png "sample image")
+![circ.angle](cric.tt01.png "sample image")
 
 计算点到图形的切线
 -----------------
