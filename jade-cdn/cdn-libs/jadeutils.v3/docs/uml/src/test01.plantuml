@@ -1,3 +1,0 @@
-@startuml testaa
-Bob -> Alice : hello
-@enduml
