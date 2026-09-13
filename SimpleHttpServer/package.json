@@ -1,0 +1,5 @@
+{
+	"chromium-args": "--user-data-dir='temp/' --disk-cache-size=1 --media-cache-size=1 --incognito", 
+	"name": "nwCrawlDaemon",
+	"main": "index.html"
+}

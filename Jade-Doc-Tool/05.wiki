@@ -1,0 +1,11 @@
+%title 应用基础架构
+
+这一章章的说明
+这一章章的说明
+
+== Section 1 ==
+
+为了建立一个连接需要提供相关的信息，比如：
+
+<img class="atc-img" alt="" src="images/xmpp.paper/des-conn.01.png" />
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+bash build.sh
+
+scp 3rd.tar.gz           user-name@host-name:web-root
+
+scp jadeutils.v2.tar.gz  user-name@host-name:web-root
+
+

@@ -1,0 +1,111 @@
+
+
+\chapter{基础架构}
+
+
+
+\section{连接配置模块}
+
+为了建立一个连接需要提供相关的信息，比如：
+
+
+
+
+\begin{figure}[htbp]\centering
+					\includegraphics[scale=]{img/des-conn.01.png}\caption{这个是连接的状态}\label{fig:des-conn.01.png}
+					\end{figure}
+
+
+
+\subsection{连接信息配置：ConnectionConfig}
+
+为了建立一个连接需要提供相关的信息，比如：
+
+
+
+
+\begin{itemize}
+	\item   \verb|serviceName| ：提供XMPP服务的服务器，可以通过IP地址或是域名指定。
+	\item   \verb|port| ：服务器运行的服务所监听的端口。
+	\item   \verb|username| ：登录服务器时需要的用户名。
+	\item   \verb|password| ：登录服务器时需要的密码。
+	\item   \verb|password| ：登录服务器时需要的密码。
+	\item   \verb|password| ：登录服务器时需要的密码。
+	\item   \verb|resource| ：XMPP协议的Resource，代表了一个连接的客户端。这个连起来
+
+\end{itemize}
+
+这个不应该连起来
+
+
+
+
+\subsubsection{Scala的构造器与成员}
+
+根据上一步  \verb|ConnectionConfig| 类的设计，可以通过Scala语言把它实现出来。在Scala中
+要定义一个类非常简单，代码如下：
+
+
+
+
+\begin{lstlisting}[language=Java]
+class ConnectionConfiguration
+{
+	var serviceName: String = null
+	var port: Int = null 
+	var username: String = null
+	var password: String = null 
+	var resource: String = null
+}
+
+\end{lstlisting}
+
+
+
+
+
+\section{连接配置模块}
+
+
+
+\begin{itemize}
+	\item   \verb|serviceName| ：提供XMPP服务的服务器，可以通过IP地址或是域名指定。
+	\item   \verb|port| ：服务器运行的服务所监听的端口。
+	\item   \verb|username| ：登录服务器时需要的用户名。
+	\item   \verb|password| ：登录服务器时需要的密码。
+	\item   \verb|resource| ：XMPP协议的Resource，代表了一个连接的客户端。
+\end{itemize}
+
+
+
+\subsection{连接信息配置：ConnectionConfig}
+
+为了建立一个连接需要提供相关的信息，比如：
+
+
+
+
+
+
+\subsubsection{Scala的构造器与成员}
+
+根据上一步  \verb|ConnectionConfig| 类的设计，可以通过Scala语言把它实现出来。在Scala中
+要定义一个类非常简单，代码如下：
+
+
+
+
+\begin{lstlisting}[language=Java]
+class ConnectionConfiguration
+{
+	var serviceName: String = null
+	var port: Int = null 
+	var username: String = null
+	var password: String = null 
+	var resource: String = null
+}
+
+\end{lstlisting}
+
+
+

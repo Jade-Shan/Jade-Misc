@@ -1,0 +1,73 @@
+SCIM_Generic_Table_Phrase_Library_TEXT
+VERSION_1_0
+### Begin Table definition.
+BEGIN_DEFINITION
+UUID = ff7a1405-4ee4-49d3-ad27-c1282bc7eccf
+SERIAL_NUMBER = 20070803
+ICON = /usr/share/ibus-table/icons/jtwb.svg
+NAME = jtwb
+NAME.zh_CN = 简体五笔
+NAME.zh_HK = 简体五笔
+NAME.zh_TW = 简体五笔
+LANGUAGES = zh_CN,zh_SG,zh_TW,zh_HK
+AUTHOR = Jade
+STATUS_PROMPT = 中
+KEYBOARD_LAYOUT = US_Default
+VALID_INPUT_CHARS = abcdefghijklmnopqrstuvwxyz
+### KEY_END_CHARS =
+### SINGLE_WILDCARD_CHAR =
+MULTI_WILDCARD_CHAR = *
+SPLIT_KEYS = apostrophe
+COMMIT_KEYS = space
+FORWARD_KEYS = Return
+SELECT_KEYS = 1,2,3,4,5,6,7,8,9
+PAGE_UP_KEYS = Page_Up,comma,minus
+PAGE_DOWN_KEYS = Page_Down,period,equal
+MODE_SWITCH_KEYS = Shift+KeyRelease+Shift_L,Shift+KeyRelease+Shift_R
+FULL_WIDTH_PUNCT_KEYS = Control+period
+FULL_WIDTH_LETTER_KEYS = Shift+space
+MAX_KEY_LENGTH = 12
+SHOW_KEY_PROMPT = FALSE
+AUTO_SELECT = FALSE
+AUTO_WILDCARD = TRUE
+AUTO_COMMIT = FALSE
+AUTO_SPLIT = FALSE
+AUTO_FILL = FALSE
+DISCARD_INVALID_KEY = TRUE
+DYNAMIC_ADJUST = FALSE
+ALWAYS_SHOW_LOOKUP = TRUE
+USE_FULL_WIDTH_PUNCT = TRUE
+DEF_FULL_WIDTH_PUNCT = TRUE
+USE_FULL_WIDTH_LETTER = TRUE
+DEF_FULL_WIDTH_LETTER = FALSE
+BEGIN_CHAR_PROMPTS_DEFINITION
+a 工
+b 了
+c 以
+d 在
+e 有
+f 地
+g 一
+h 上
+i 不
+j 是
+k 中
+l 国
+m 同
+n 民
+o 为
+p 这
+q 我
+r 的
+s 要
+t 和
+u 产
+v 发
+w 人
+x 经
+y 主
+END_CHAR_PROMPTS_DEFINITION
+END_DEFINITION
+
+### Begin Table data.
+BEGIN_TABLE

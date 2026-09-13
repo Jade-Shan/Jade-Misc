@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<!--
+	WenQuanYi Fontconfig Designer
+
+	Author: Qianqian Fang (FangQ)
+	Email:  fangq at nmr.mgh.harvard.edu
+	Homepage: http://nmr.mgh.harvard.edu/~fangq/
+	License: GPL v3
+	History:
+		2009/07/30  publicly announced
+		2009/07/31  added English preview tab
+-->
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>Fontconfig Designer (视觉习惯)</title>
+	<!--
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="http://jquery-fontavailable.googlecode.com/files/jquery.fontavailable-1.1.js" type="text/javascript"></script>
+	-->
+	<script src="./jquery.min.js" type="text/javascript"></script>
+	<script src="./jquery-ui.min.js" type="text/javascript"></script>
+	<script src="./jquery.fontavailable-1.1.js" type="text/javascript"></script>
+</head>
+
+<body id="demos">
+<style type="text/css">
+	A:link {text-decoration: none;border-bottom: gray 1px solid;color:#333333;}
+	A:visited {text-decoration: none;border-bottom: gray 1px solid;color: gray;}
+	A:active {text-decoration: none}
+	A:hover {text-decoration:none; color:black;border-bottom: gray 3px solid;}
+	li{border:1px solid #BBBBBB;background-color:#EEEEEE;margin:5px;padding:3px;white-space:nowrap;}
+	#sanslist,#seriflist,#monolist {list-style-type: none; margin: 0; padding: 0; width: 350px;top:28em; position:absolute;min-height:20em;}
+	li {cursor:pointer;margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size:16px; height: 16px; }
+	li span {position: absolute; margin-left: -1.3em; }
+	.sansfontdiv,.seriffontdiv,.monofontdiv {height:22em;max-height:22em;overflow:auto;background-color:white;font-size:16px;width:350px;position:absolute;}
+	div.fontlist {width: 100%;}
+	#toolbar {width:100%;font-size:10pt;}
+	#demos{font-size: 12pt;margin:0px;font-family:"Droid Sans",sans-serif;}
+	#header{color:white;text-align:right;padding-top:5px;padding-bottom:0px;;height:17pt;margin:0px;background:gray url("http://wenq.org/images/wqy-fcdesigner-logo.png") no-repeat 10px 6px;padding-right:10px;}
+	.previewdiv h3{color:#555555;font-size:20px;margin-left:8pt;margin-top:0px;margin-bottom:0px;}
+	.previewdiv p{text-align: justify;margin:10pt;}
+	.entab {display:none;}
+	span.needdownload {margin-left: -2.3em;background-image:url("http://wenq.org/images/jdownload.png");width:15px;height: 15px;}
+	#bgCover { background:#000; position:absolute; left:0; top:0; display:none; overflow:hidden }
+	#overlayBox {border:5px solid #3399CC;position:absolute;display:none;width:500px;height:600px;background:#fff;}
+	.closeLink {float:right;color:red;}
+	.dlfont {width:20px;height:20px;text-decoration: none;}
+	#fcxml{width:100%;color:#444;overflow:scroll;max-height:510px;font-size:9pt;border-top:dotted 2px gray;}
+</style>
+
+<script type="text/javascript">
+	var sansfonts= new Array(); 
+	sansfonts[sansfonts.length]={"zh":1,"ja":1,"en":1,"bmp":1,"cloud":"","char":"DejaVu Sans", "local":"DejaVu Sans","dl":"http://dejavu-fonts.org/wiki/index.php?title=Download"};
+	sansfonts[sansfonts.length]={"zh":2,"ja":1,"en":4,"bmp":5,"cloud":"http://wenq.org/cloud/min/wqy-microhei-min.ttf","char":"文泉驿微米黑 - WenQuanYi Micro Hei", "local":"WenQuanYi Micro Hei","dl":"http://wenq.org/index.cgi?MicroHei"};
+	sansfonts[sansfonts.length]={"zh":3,"ja":1,"en":5,"bmp":6,"cloud":"http://wenq.org/cloud/min/wqy-zenhei-min.ttf","char":"文泉驿正黑 - WenQuanYi Zen Hei","local":"WenQuanYi Zen Hei","dl":"http://wenq.org/index.cgi?ZenHei"};
+	sansfonts[sansfonts.length]={"zh":4,"ja":1,"en":3,"bmp":4,"cloud":"http://wenq.org/cloud/min/LiberationSans-Regular.ttf","char":"Liberation Sans", "local":"Liberation Sans"};
+	sansfonts[sansfonts.length]={"zh":5,"ja":1,"en":2,"bmp":2,"cloud":"http://wenq.org/cloud/min/DroidSans.ttf","char":"Droid Sans", "local":"Droid Sans"};
+	sansfonts[sansfonts.length]={"zh":6,"ja":1,"en":6,"bmp":3,"cloud":"","char":"文泉驿点阵宋体 - WenQuanYi Bitmap Song", "local":"WenQuanYi Bitmap Song","dl":"http://wenq.org/index.cgi?BitmapSong"};
+
+	var seriffonts= new Array(); 
+	seriffonts[seriffonts.length]={"zh":1,"ja":1,"en":1,"bmp":1,"cloud":"","char":"DejaVu Serif", "local":"DejaVu Serif","dl":"http://dejavu-fonts.org/wiki/index.php?title=Download"};
+	seriffonts[seriffonts.length]={"zh":2,"ja":1,"en":1,"bmp":3,"cloud":"","char":"文泉驿点阵宋体 - WenQuanYi Bitmap Song", "local":"WenQuanYi Bitmap Song","dl":"http://wenq.org/index.cgi?BitmapSong"};
+	seriffonts[seriffonts.length]={"zh":3,"ja":1,"en":1,"bmp":5,"cloud":"","char":"文鼎Uni明体(简体字形) - AR PL UMing CN","local":"AR PL UMing CN"};
+	seriffonts[seriffonts.length]={"zh":4,"ja":1,"en":1,"bmp":8,"cloud":"","char":"文鼎GB宋体(简体字形) - AR PL SungtiL GB","local":"AR PL SungtiL GB"};	
+	seriffonts[seriffonts.length]={"zh":5,"ja":1,"en":1,"bmp":4,"cloud":"","char":"文泉驿点阵正黑 - WenQuanYi Zen Hei Sharp","local":"WenQuanYi Zen Hei Sharp","dl":"http://wenq.org/index.cgi?ZenHei"};
+	seriffonts[seriffonts.length]={"zh":6,"ja":1,"en":1,"bmp":9,"cloud":"","char":"文鼎Uni明体(繁体字形) - AR PL UMing TW","local":"AR PL UMing TW"};
+	seriffonts[seriffonts.length]={"zh":7,"ja":1,"en":1,"bmp":7,"cloud":"","char":"Liberation Serif", "local":"Liberation Serif"};
+	seriffonts[seriffonts.length]={"zh":8,"ja":1,"en":1,"bmp":6,"cloud":"","char":"Bitstream Charter", "local":"Bitstream Charter"};
+	seriffonts[seriffonts.length]={"zh":9,"ja":1,"en":2,"bmp":2,"cloud":"","char":"Droid Serif", "local":"Droid Serif"};
+
+	var monofonts= new Array(); 
+	monofonts[monofonts.length]={"zh":1,"ja":1,"en":1,"bmp":5,"cloud":"http://wenq.org/cloud/min/wqy-zenhei-mono-min.ttf","char":"文泉驿等宽正黑 - WenQuanYi Zen Hei Mono","local":"WenQuanYi Zen Hei Mono","dl":"http://wenq.org/index.cgi?ZenHei"};
+	monofonts[monofonts.length]={"zh":2,"ja":1,"en":1,"bmp":4,"cloud":"http://wenq.org/cloud/min/wqy-microhei-mono-min.ttf","char":"文泉驿等宽微米黑 - WenQuanYi Micro Hei Mono", "local":"WenQuanYi Micro Hei Mono","dl":"http://wenq.org/index.cgi?MicroHei"};
+	monofonts[monofonts.length]={"zh":3,"ja":1,"en":1,"bmp":1,"cloud":"","char":"DejaVu Sans Mono", "local":"DejaVu Sans Mono","dl":"http://dejavu-fonts.org/wiki/index.php?title=Download"};
+	monofonts[monofonts.length]={"zh":3,"ja":1,"en":1,"bmp":2,"cloud":"","char":"Droid Sans Mono", "local":"Droid Sans Mono"};
+	monofonts[monofonts.length]={"zh":4,"ja":1,"en":1,"bmp":3,"cloud":"","char":"文泉驿点阵正黑 - WenQuanYi Zen Hei Sharp","local":"WenQuanYi Zen Hei Sharp","dl":"http://wenq.org/index.cgi?ZenHei"};
+	monofonts[monofonts.length]={"zh":5,"ja":1,"en":1,"bmp":6,"cloud":"","char":"Liberation Sans Mono", "local":"Liberation Sans Mono"};
+	monofonts[monofonts.length]={"zh":6,"ja":1,"en":1,"bmp":7,"cloud":"","char":"文鼎Uni明体(繁体字形) - AR PL UMing TW","local":"AR PL UMing TW"};
+
+        var sortby="zh";
+
+	function updatefont(){
+		$(".sansfontdiv").css("font-family",getfontorder("#sanslist"));
+		$(".seriffontdiv").css("font-family",getfontorder("#seriflist"));
+		$(".monofontdiv").css("font-family",getfontorder("#monolist"));
+	}
+	$(function() {
+		$("#sanslist, #seriflist, #monolist").sortable({
+			update: function(event, ui) {updatefont();}
+		});
+		$("#sanslist, #seriflist, #monolist").disableSelection();
+	});
+	function parseparam(){
+		var parts = location.href.split("#");
+		if(parts.length>1) {
+		    var glyphpath = parts[parts.length-1];
+		    try {
+			glyphpath = decodeURIComponent(glyphpath);
+			var moreopt=glyphpath.split("&");
+			glyphpath="";
+			for(var i in moreopt){
+				if(moreopt[i].match(/^lang=/)){
+					sortby=moreopt[i].replace(/^lang=(.*)/,'$1');
+				}else if(!moreopt[i].match(/=/) && moreopt[i].length){
+					sortby=moreopt[i];
+				}
+			}
+		    } catch(e) {;}
+		}
+		initlist(sortby);
+	}
+	$(document).ready(function(){
+		parseparam();
+		//$(window).bind('resize',showfcbox);
+		$('a.closeLink').click( dofcclose );
+	});
+	function sortsortby(a,b){
+		if(sortby=='zh')
+			return a.zh-b.zh;
+		else if(sortby=='ja')
+			return a.ja-b.ja;
+		else if(sortby=='bmp')
+			return a.bmp-b.bmp;
+		else
+			return a.en-b.en;
+	}
+	function initlist(sortbytag){
+		$("#sanslist").html(printlist(sansfonts.sort(sortsortby)));
+		$("#seriflist").html(printlist(seriffonts.sort(sortsortby)));
+		$("#monolist").html(printlist(monofonts.sort(sortsortby)));
+		if(sortbytag!=undefined) {
+			$(".previewdiv").css({display:'none'});
+			if(sortbytag=="bmp")
+				$(".zhtab").css({display:'block'});
+			else
+				$("."+sortbytag+"tab").css({display:'block'});
+		}
+		updatefont();
+	}
+	function gendynamicfont(ftlist){
+		var tname, res='<style type="text/css">';
+		for(var tfont in ftlist) {
+		   tname=ftlist[tfont].local;
+		   res+='@font-face {font-family: "'+tname+'";src:';
+		   if(ftlist[tfont].local.length)
+		      res+=' local("'+ftlist[tfont].local+'")';
+		   if(ftlist[tfont].cloud.length)
+		      res+=',url("'+ftlist[tfont].cloud+'");';
+		   res+='}\n';
+		}
+	   	return res+'</style>';
+	}
+	function getfontorder(aliasname){
+		var ftorder=$(aliasname).sortable('toArray');
+		var res='';
+		for (i=0;i<ftorder.length;i++){
+		    if(ftorder[i].length) {
+		      res+='"'+ftorder[i]+'"';
+		      if(i<ftorder.length-1) res+=',';
+		    }
+		}
+		return res;
+	}
+	function printlist(flist){
+		var tname, res="";
+		for(var tfont in flist){
+		   tname=flist[tfont].local;
+		   res+='<li id="'+tname+'">'+'<span style="white-space:nowrap;font-family:\''
+			+tname+'\';">'+flist[tfont].char+"</span>";
+		   if(! $.fontAvailable(tname)){
+			if(flist[tfont].dl === undefined)
+			  res+="<span class='needdownload' title='download'></span>";
+			else
+			  res+="<span class='needdownload' title='download' onclick='window.open(\""+flist[tfont].dl+"\");'></span>";
+		   }
+		   res+="</li>";
+		}
+		return res;
+	}
+	function fcprepend(aliasname,fontnames){
+		var res=new Array();
+		res.push('<match>\n\t<test name="family"><string>'+aliasname+'</string></test>\n\t');
+		res.push('<edit name="family" mode="prepend" binding="strong">\n');
+		var fl=fontnames.split(/,/);
+		for (var i = 0; i < fl.length; i++) {
+			res.push("\t\t<string>"+fl[i]+"</string>\n");
+			if(! $.fontAvailable(fl[i])) 
+				res.push("\t\t\t<!-- Please install "+fl[i]+" first -->\n");
+		}
+		res.push("\t</edit>\n</match>\n");
+		return res.join('');
+	}
+	function genoutput(){
+		var res=new Array;
+		res.push('<?xml version="1.0"?>\n<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n<fontconfig>\n');
+		res.push('<!-- created by WenQuanYi FcDesigner v0.5 -->\n');
+		res.push(fcprepend("sans-serif",getfontorder("#sanslist").replace(/\"/g,'')));
+		res.push(fcprepend("serif",getfontorder("#seriflist").replace(/\"/g,'')));
+		res.push(fcprepend("monospace",getfontorder("#monolist").replace(/\"/g,'')));
+		res.push("</fontconfig>\n");
+		$("#fcxml").html(res.join('').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+		$("#fcxml").css("font-family",getfontorder("#monolist"));
+		$("#howtosave").css("font-family",getfontorder("#sanslist"));
+		dofcopen();
+	}
+	// copied from http://kalyanchakravarthy.net/?p=208
+	function showfcbox() {
+		$('#overlayBox').css({
+			display:'block',
+			left:( $(window).width() - $('#overlayBox').width() )/2,
+			top:( $(window).height() - $('#overlayBox').height() )/2 -20,
+			position:'absolute'
+		});
+		$('#bgCover').css({
+			display:'block',
+			width: $(window).width(),
+			height:$(window).height(),
+		});
+	}
+	function dofcopen() {
+		showfcbox();
+		$('#bgCover').css({opacity:0}).animate( {opacity:0.5, backgroundColor:'#000'} );
+		return false;
+	}
+	function dofcclose() {
+		$('#overlayBox').css( 'display', 'none' );
+		$('#bgCover').animate( {opacity:0}, "normal", "linear", function() { $(this).hide(); } );
+	}
+	function genlilist(flist){
+		var tname,res="";
+		for(var i in flist){
+		   tname=flist[i];
+		   res+='<li id="'+tname+'">'+'<span style="color:#006600;white-space:nowrap;font-family:\''
+			+tname+'\';">'+tname+"</span></li>";
+		}
+		return res;
+	}
+	/*example code adapted from 
+	http://www.maratz.com/blog/archives/2006/08/18/detect-visitors-fonts-with-flash/
+        */
+        var fontList = function(user_fonts) {
+		var obj = document.getElementById('font_getter'),fonts;
+		if (typeof(user_fonts) != 'undefined') {
+			/* getURL works well in Safari, Opera nad Firefox, but poorly in IE */
+			fonts = unescape(user_fonts);
+		} else if (typeof(obj.GetVariable) != 'undefined') {
+        		/* element.GetVariable doesn't work in Opera and Safari,
+			but works well in IE where JavaScript directly speaks with Flash */
+			fonts = obj.GetVariable('/:user_fonts');
+		}
+		if(typeof(fonts) == 'string') {
+			/* convert string to array */
+			fonts = fonts.split(',');
+		}
+		$("#sanslist").append(genlilist(fonts));
+		$("#seriflist").append(genlilist(fonts));
+		$("#monolist").append(genlilist(fonts));
+		return fonts;
+	}
+	document.write(gendynamicfont(sansfonts));
+</script>
+
+<div id="header">Fontconfig Designer - <a href="http://wenq.org/en/" style="color:yellow;">WenQuanYi Project</a></div>
+<div id="fontlist">
+    <ul id="sanslist" style="left:10px;"></ul>
+    <ul id="seriflist" style="left:380px;"></ul>
+    <ul id="monolist" style="left:750px;"></ul>
+</div>
+
+<div id="toolbar">
+<p>::<a href="#" onclick="sortby='zh';initlist(sortby);">中文</a>
+	<a href="#" onclick="sortby='ja';initlist(sortby);">日本語</a>
+	<a href="#" onclick="sortby='en';initlist(sortby);">English</a>  预设置(Pre-set):
+	<a href="#" onclick="sortby='bmp';initlist(sortby);">点阵(Prefer bitmap)</a>
+	<a href="#" onclick="sortby='zh';initlist(sortby);">矢量(Prefer outline)</a>
+	<input type="button" onclick="genoutput();" value="生成[create]">
+	<a href="http://nmr.mgh.harvard.edu/~fangq/" style="float:right;">(C)2009 FangQ</a>
+</p>
+</div>
+
+<div class="previewdiv zhtab">
+<div class="sansfontdiv">
+	<h3>Sans-Serif Settings, 无衬线体(sans-serif)字体设置</h3>
+	<p>无衬线体(sans-serif/sans)是指笔画末端没有细小装饰线(拉丁文称为serif)
+	的一类字体。中文sans字体主要包括黑体和圆体。由于笔画简洁清晰，无衬线体特别
+	适合屏幕显示。
+	<p style="font-size:10pt">小字号：10号字体效果测试；日文：第10回フォントのテスト結果</p>
+	<p style="font-size:9pt">更小字号：9号字体效果测试；日文：第9回フォントのテスト結果</p>
+	<p style="font-size:11pt"><b>请拖动下面的字体选项来改变优先级</b>(纯西文字体放在中文字体之前将仅改变英西字体显示)<br>
+	<img src="http://wenq.org/images/jdownload.png" alt="download" title="download link"/>表示该字体未安装，请猛击下载；绿色表示本地字体</p>
+</div>
+<div class="seriffontdiv" style="left:370px;">
+	<h3>Serif Settings, 衬线体(serif)字体设置</h3>
+	<p>衬线体(serif)在笔画末端有细小的装饰线。这类字体表现力丰富，
+	一般在排版打印，特别在大字号显示中比较美观。中文最常见的
+	serif字体是宋体。由于serif在小字号显示清晰感欠缺，所以常见中文字体一般
+	通过嵌入点阵来弥补。
+	<p style="font-size:10pt">小字号：10号字体效果测试；日文：第10回フォントのテスト結果</p>
+	<p style="font-size:9pt">更小字号：9号字体效果测试；日文：第9回フォントのテスト結果</p>
+	<p style="font-size:11pt"><b>请拖动下面的字体选项来改变优先级</b>(Please sort the items to change priorities)</p>
+</div>
+<div class="monofontdiv" style="left:740px;">
+	<h3>Mono Settings,等宽(monospace)字体设置</h3>
+	<p>等宽(monospace)字体是指所有西文符号宽度相同(并为中文符号一半)的一类字体。
+	这类字体一般用于编程、文本显示等需要对齐处理等环境。
+	<p style="font-size:10pt">小字号：10号字体效果测试；日文：第10回フォントのテスト結果</p>
+	<p style="font-size:9pt">更小字号：9号字体效果测试；日文：第9回フォントのテスト結果</p>
+	<p style="font-size:11pt"><b>请拖动下面的字体选项来改变优先级</b>(Please sort the items to change priorities)</p>
+</div>
+</div>
+
+<div class="previewdiv entab">
+<div class="sansfontdiv">
+	<h3>Sans-Serif Settings (无衬线体)</h3>
+	<p>Sans-serif(无衬线体) is not a specific font, but an alias to a class of fonts. In many 
+GNU/Linux distributions, sans-serif is the default choice for desktop fonts (Firefox uses serif by default).</p>
+	<p style="font-size:10pt">10pt: The quick brown fox jumps over the lazy dog; kana:フォントのテスト</p>
+	<p style="font-size:9pt">9pt: The quick brown fox jumps over the lazy dog; kana:フォントのテスト</p>
+	<p style="font-size:11pt"><b>Drag&Drop font names to change order</b> (moving non-CJK fonts before CJK ones will not effect CJK glyphs)<br>
+<img src="http://wenq.org/images/jdownload.png" alt="download" title="download link"/>Installation needed</p>
+</div>
+<div class="seriffontdiv" style="left:370px;">
+	<h3>Serif Settings(衬线体)</h3>
+	<p>Serif is another alias representing a set of fonts with decorative features 
+at the end of strokes. Serif fonts have a classic look, and are great choice for print
+or large titles. In the CJK world, the closest is the Song-style（宋体）.
+	<p style="font-size:10pt">10pt: The quick brown fox jumps over the lazy dog; kana:フォントのテスト</p>
+	<p style="font-size:9pt">9pt: The quick brown fox jumps over the lazy dog; kana:フォントのテスト</p>
+	<p style="font-size:11pt"><b>Drag&Drop font names to change order</b> (moving non-CJK fonts before CJK ones will not effect CJK glyphs)<br>
+</div>
+<div class="monofontdiv" style="left:740px;">
+	<h3>Mono Settings(等宽字体)</h3>
+	<p>In monospace fonts, all Latin/digits have identical width, even "i" and "w". This is 
+typically required to display a pre-formatted text. The Han glyphs(汉字) in many CJK fonts
+are equal-width and twice of Latin glyph width.
+	<p style="font-size:10pt">10pt: The quick brown fox jumps over the lazy dog; kana:フォントのテスト</p>
+	<p style="font-size:9pt">9pt: The quick brown fox jumps over the lazy dog; kana:フォントのテスト</p>
+	<p style="font-size:11pt"><b>Drag&Drop font names to change order</b> (moving non-CJK fonts before CJK ones will not effect CJK glyphs)<br>
+</div>
+</div>
+
+
+<div id="bgCover"></div>
+<div id="overlayBox">
+        <a href="#" class="closeLink">X</a>
+	<p id="howtosave">请将下文保存为$HOME/.fonts.conf，没有请创建<br>Please save the following text as $HOME/.fonts.conf (create if it does not exist)</p>
+	<pre id="fcxml"></pre>
+</div>
+<object id="font_getter" name="font_getter" type="application/x-shockwave-flash" data="listfont.swf" width="1" height="1">
+    <param name="movie" value="listfont.swf" />
+</object>
+
+</body>
+</html>

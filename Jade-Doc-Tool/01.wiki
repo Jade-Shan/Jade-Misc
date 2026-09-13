@@ -1,0 +1,70 @@
+%title 基础架构
+%toc 硕士专业学位论文
+
+== 连接配置模块 ==
+
+为了建立一个连接需要提供相关的信息，比如：
+
+<img class="atc-img" alt="这个是连接的状态" src="images/xmpp.paper/des-conn.01.png" />
+
+=== 连接信息配置：ConnectionConfig ===
+
+为了建立一个连接需要提供相关的信息，比如：
+
+	* `serviceName`：提供XMPP服务的服务器，可以通过IP地址或是域名指定。
+  * `port`：服务器运行的服务所监听的端口。
+* `username`：登录服务器时需要的用户名。
+* `password`：登录服务器时需要的密码。
+- `password`：登录服务器时需要的密码。
+- `password`：登录服务器时需要的密码。
+* `resource`：XMPP协议的Resource，代表了一个连接的客户端。
+这个连起来
+
+这个不应该连起来
+
+==== Scala的构造器与成员 ====
+
+根据上一步`ConnectionConfig`类的设计，可以通过Scala语言把它实现出来。在Scala中
+要定义一个类非常简单，代码如下：
+
+{{{class="brush:scala"
+class ConnectionConfiguration
+{
+	var serviceName: String = null
+	var port: Int = null 
+	
+	var username: String = null
+	var password: String = null 
+	var resource: String = null
+}
+}}}
+
+== 连接配置模块 ==
+
+# `serviceName`：提供XMPP服务的服务器，可以通过IP地址或是域名指定。
+# `port`：服务器运行的服务所监听的端口。
+# `username`：登录服务器时需要的用户名。
+# `password`：登录服务器时需要的密码。
+# `resource`：XMPP协议的Resource，代表了一个连接的客户端。
+
+=== 连接信息配置：ConnectionConfig ===
+
+为了建立一个连接需要提供相关的信息，比如：
+
+
+==== Scala的构造器与成员 ====
+
+根据上一步`ConnectionConfig`类的设计，可以通过Scala语言把它实现出来。在Scala中
+要定义一个类非常简单，代码如下：
+
+{{{class="brush:scala"
+class ConnectionConfiguration
+{
+	var serviceName: String = null
+	var port: Int = null 
+	
+	var username: String = null
+	var password: String = null 
+	var resource: String = null
+}
+}}}
